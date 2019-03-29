@@ -98,5 +98,5 @@ glimpse(suicide)
 
 ### Section 4 - References
 
-\[1\] <https://www.cdc.gov/nchs/fastats/adolescent-health.htm> \[2\]
-<http://hdr.undp.org/en/content/human-development-index-hdi>
+  - \[1\] <https://www.cdc.gov/nchs/fastats/adolescent-health.htm>
+  - \[2\] <http://hdr.undp.org/en/content/human-development-index-hdi>
