@@ -1,12 +1,37 @@
 ---
-title: "PROJECT TITLE"
-author: "NAME HERE"
-date: "TODAY'S DATE"
+title: "Suicide Rates"
+author: "Cam Fam"
+date: "March 29, 2019"
 output: github_document
 ---
 
+```{r load-packages}
+library(nnet)
+library(tidyverse)
+library(knitr)
+library(broom)
+```
+
+
 ## Section 1. Introduction
+
+We want to explore how economic status, along with variables such as age, sex, and human development index, affects suicide rates all across the world. Our hypothesis is that generally, in poorer countries we predict that suicide rates will lower. 
 
 ## Section 2. Analysis plan
 
+Our response variable will be suicides/100k pop, which is the number of suicides per 100,000 people in a country, which is a double in our dataset. Our predictors variables will be age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation. COEFFICIENTS ?? 
+
+Description.
+
+EDA.
+
+We plan to do a multiple linear regression because suicides/100k pop is a quantitative variable (there are no levels to it). 
+
+Based on variables, we plan to predict suicide rate in the future for certain countries, as well as what generation someone who commits suicide is in given other variables.
+
 ## Section 3. Data
+
+```{r load-data}
+suicide <- read_csv("/cloud/project/data/master.csv")
+```
+
