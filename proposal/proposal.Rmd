@@ -1,5 +1,5 @@
 ---
-title: "Suicide Rates"
+title: "The Effect of Socio-Economics on Suicide Rates"
 author: "Cam Fam"
 date: "March 29, 2019"
 output: github_document
@@ -15,7 +15,7 @@ library(broom)
 
 ## Section 1. Introduction
 
-We want to explore how economic status, along with variables such as age, sex, and human development index, affects suicide rates all across the world. Our hypothesis is that generally, in poorer countries we predict that suicide rates will lower. 
+With suicide being one of the leading causes of death for teens in America, we thought it would be interesting to see how the U.S. stacks up against other countries all over the world in terms of the number of suicides that occur, as well as what factors may contribute to the significant number of suicides in the U.S. and other countries.[1] We want to explore how economic status, along with variables such as age, sex, and human development index, affects suicide rates all across the world. Our hypothesis is that generally, in poorer countries we predict that suicide rates will lower. 
 
 ## Section 2. Analysis plan
 
@@ -35,3 +35,10 @@ Based on variables, we plan to predict suicide rate in the future for certain co
 suicide <- read_csv("/cloud/project/data/master.csv")
 ```
 
+```{r}
+glimpse(suicide)
+```
+
+### Section 4 - References
+[1] https://www.cdc.gov/nchs/fastats/adolescent-health.htm
+[2] http://hdr.undp.org/en/content/human-development-index-hdi
