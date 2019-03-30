@@ -65,6 +65,34 @@ pairs(`suicides/100k pop` ~ year + `HDI for year` + `gdp_for_year ($)` + `gdp_pe
 
 From the pairs plot, it looks as if year, HDI for year, and gdp_for_year do not have a clear linear relationship with suicides/100k pop. However, gdp_per_capita seems to be positively correlated with suicides/100k pop, meaning as gdp_per_capita increases, so does suicides/100k pop. Additionally, it looks as if HDI for year and gdp_per_capita seem to have a strong non-linear relationship, indicating that we should continue looking into this relationship and perhaps include an interaction term between these two variables. Similarly, HDI for year and gdp_for_year also seem to have a strong non-linear relationship, so we should include an interaction term between these two variables as well.
 
+```{r}
+ggplot(data=suicide, mapping=aes(x=`year`)) + 
+  geom_histogram() +
+  labs(title="Distribution of Year", x="Year")
+```
+The distribution appears to be normal with two outliers around 1992 and 2008. 
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=`HDI for year`)) + 
+  geom_histogram() +
+  labs(title="Distribution of HDI for year", x="HDI for year")
+```
+The distribution of HDI for year looks slightly left-skewed, but because our sample size is so large, we will proceed with caution.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=`age`, y= 'suicides/100k pop')) + 
+  geom_boxplot() +
+  labs(title="Age vs. Suicides", x="Age", y="Suicides")
+```
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=`country`, y= 'suicides/100k pop')) + 
+  geom_boxplot() +
+  labs(title=" vs. Suicides", x="Country", y="Suicides")
+```
+
+age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation
+
 We plan to do a multiple linear regression because suicides/100k pop is a quantitative variable (there are no levels to it, since it is a continuous variable). 
 
 Based on the variables, we plan to predict suicide rate in the future for certain countries, as well as what generation someone who commits suicide is in given other variables.

@@ -8,14 +8,14 @@ library(nnet)
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ─────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
     ## ✔ tibble  2.0.0     ✔ dplyr   0.7.8
     ## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
     ## ✔ readr   1.3.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ───────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -118,7 +118,7 @@ skim(suicide$`suicides/100k pop`)
     ## 
     ## Skim summary statistics
     ## 
-    ## ── Variable type:numeric ───────────────────────────
+    ## ── Variable type:numeric ──────────────────────────────────────────────────────────
     ##                     variable missing complete     n  mean    sd p0  p25
     ##  suicide$`suicides/100k pop`       0    27820 27820 12.82 18.96  0 0.92
     ##   p50   p75   p100     hist
@@ -184,6 +184,51 @@ relationship and perhaps include an interaction term between these two
 variables. Similarly, HDI for year and gdp\_for\_year also seem to have
 a strong non-linear relationship, so we should include an interaction
 term between these two variables as well.
+
+``` r
+ggplot(data=suicide, mapping=aes(x=`year`)) + 
+  geom_histogram() +
+  labs(title="Distribution of Year", x="Year")
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](proposal_files/figure-gfm/unnamed-chunk-6-1.png)<!-- --> The
+distribution appears to be normal with two outliers around 1992 and
+2008.
+
+``` r
+ggplot(data=suicide, mapping=aes(x=`HDI for year`)) + 
+  geom_histogram() +
+  labs(title="Distribution of HDI for year", x="HDI for year")
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 19456 rows containing non-finite values (stat_bin).
+
+![](proposal_files/figure-gfm/unnamed-chunk-7-1.png)<!-- --> The
+distribution of HDI for year looks slightly left-skewed, but because our
+sample size is so large, we will proceed with caution.
+
+``` r
+ggplot(data=suicide, mapping=aes(x=`age`, y= 'suicides/100k pop')) + 
+  geom_boxplot() +
+  labs(title="Age vs. Suicides", x="Age", y="Suicides")
+```
+
+![](proposal_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+``` r
+ggplot(data=suicide, mapping=aes(x=`country`, y= 'suicides/100k pop')) + 
+  geom_boxplot() +
+  labs(title=" vs. Suicides", x="Country", y="Suicides")
+```
+
+![](proposal_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+age, sex, country, year, HDI for year, gdp\_for\_year, gdp\_per\_capita,
+and generation
 
 We plan to do a multiple linear regression because suicides/100k pop is
 a quantitative variable (there are no levels to it, since it is a
