@@ -95,7 +95,43 @@ ggplot(data=suicide, mapping=aes(x=`country`, y= `suicides/100k pop`)) +
 
 Because there are so many countries, it is hard to tell what the general trend is for suicide rates. We will further examine this potential relationship in our project.
 
-age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation
+```{r}
+ggplot(data=suicide, mapping=aes(x=sex, y=`suicides/100k pop` ))+
+  geom_boxplot()+
+  labs(title = "Boxplot of Gender & Suicide", x = "gender", y = "suicide")
+```
+
+From this boxplot, we notice that males have a higher suicide rate/100k people than females. However, there are many outliers in this data set so we must explore further.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=generation, y=`suicides/100k pop` ))+
+  geom_boxplot()+
+  labs(title = "Boxplot of Generation & Suicide", x = "Generation", y = "Suicide")
+```
+
+From this boxplot, we see that the average suicide rate/100k people is varies among gneeration. More specifically, we notice that Generation Z and Millienials have lower ates than the average value of around 2.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=log(`gdp_for_year ($)`))) +
+  geom_histogram() +
+  labs(title="Distribution of GDPs of Countries", x="Value")
+```
+
+Log transforming the data set, we notice that the distribution of GDPs of countries has a bimodal distribution.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=log(`gdp_per_capita ($)`))) +
+  geom_histogram() +
+  labs(title="Distribution of GDP Per Capita of Countries", x="Value")
+```
+
+Like the GDP of the country, the GDP Per Capita has a non-normal distribution. Rather, it is skewed to the left. Since these variables are so similar, there could be mulitcollinearity between the two.
+
+```{r}
+pairs(`suicides/100k pop` ~ log(`gdp_for_year ($)`) + log(`gdp_per_capita ($)`), data = suicide)
+```
+
+As mentioned before, we do see evidence of multicollinearity that we must address in the model.
 
 We plan to do a multiple linear regression because suicides/100k pop is a quantitative variable (there are no levels to it, since it is a continuous variable). 
 

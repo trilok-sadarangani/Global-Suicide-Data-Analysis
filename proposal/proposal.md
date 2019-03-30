@@ -8,14 +8,14 @@ library(nnet)
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ───────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ───────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
     ## ✔ tibble  2.0.0     ✔ dplyr   0.7.8
     ## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
     ## ✔ readr   1.3.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ──────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ──────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -118,7 +118,7 @@ skim(suicide$`suicides/100k pop`)
     ## 
     ## Skim summary statistics
     ## 
-    ## ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────────────
+    ## ── Variable type:numeric ─────────────────────────
     ##                     variable missing complete     n  mean    sd p0  p25
     ##  suicide$`suicides/100k pop`       0    27820 27820 12.82 18.96  0 0.92
     ##   p50   p75   p100     hist
@@ -241,8 +241,70 @@ Because there are so many countries, it is hard to tell what the general
 trend is for suicide rates. We will further examine this potential
 relationship in our project.
 
-age, sex, country, year, HDI for year, gdp\_for\_year, gdp\_per\_capita,
-and generation
+``` r
+ggplot(data=suicide, mapping=aes(x=sex, y=`suicides/100k pop` ))+
+  geom_boxplot()+
+  labs(title = "Boxplot of Gender & Suicide", x = "gender", y = "suicide")
+```
+
+    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
+
+![](proposal_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+From this boxplot, we notice that males have a higher suicide rate/100k
+people than females. However, there are many outliers in this data set
+so we must explore further.
+
+``` r
+ggplot(data=suicide, mapping=aes(x=generation, y=`suicides/100k pop` ))+
+  geom_boxplot()+
+  labs(title = "Boxplot of Generation & Suicide", x = "Generation", y = "Suicide")
+```
+
+    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
+
+![](proposal_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+From this boxplot, we see that the average suicide rate/100k people is
+varies among gneeration. More specifically, we notice that Generation Z
+and Millienials have lower ates than the average value of around 2.
+
+``` r
+ggplot(data=suicide, mapping=aes(x=log(`gdp_for_year ($)`))) +
+  geom_histogram() +
+  labs(title="Distribution of GDPs of Countries", x="Value")
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](proposal_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+Log transforming the data set, we notice that the distribution of GDPs
+of countries has a bimodal distribution.
+
+``` r
+ggplot(data=suicide, mapping=aes(x=log(`gdp_per_capita ($)`))) +
+  geom_histogram() +
+  labs(title="Distribution of GDP Per Capita of Countries", x="Value")
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](proposal_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+Like the GDP of the country, the GDP Per Capita has a non-normal
+distribution. Rather, it is skewed to the left. Since these variables
+are so similar, there could be mulitcollinearity between the
+two.
+
+``` r
+pairs(`suicides/100k pop` ~ log(`gdp_for_year ($)`) + log(`gdp_per_capita ($)`), data = suicide)
+```
+
+![](proposal_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+As mentioned before, we do see evidence of multicollinearity that we
+must address in the model.
 
 We plan to do a multiple linear regression because suicides/100k pop is
 a quantitative variable (there are no levels to it, since it is a
