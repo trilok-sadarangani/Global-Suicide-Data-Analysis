@@ -140,7 +140,7 @@ suicide <- suicide %>% mutate (`suicides/100k pop` = log(`suicides/100k pop`))
 ``` r
 ggplot(data=suicide, mapping=aes(x=`suicides/100k pop`)) + 
   geom_histogram() +
-  labs(title="Distribution of the Number of Suicides per 100,000 People", x="Number of Suicides per 100,000 People")
+  labs(title="Distribution of the Log Number of Suicides per 100,000 People", x="Log Number of Suicides per 100,000 People")
 ```
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
