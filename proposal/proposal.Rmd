@@ -10,8 +10,12 @@ library(nnet)
 library(tidyverse)
 library(knitr)
 library(broom)
+library(skimr)
 ```
 
+```{r load-data}
+suicide <- read_csv("/cloud/project/data/master.csv")
+```
 
 ## Section 1. Introduction
 
@@ -23,18 +27,49 @@ Our response variable will be suicides/100k pop, which is the number of suicides
 
 The variables relevant to the analysis of our research question are stated above: suicides/100k pop, age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation. Additionally, suicides_no (which is the number of suicides for individuals who are of a certain age group and sex and who passed in a certain country and year) and population, (which is the total number of individuals who are of a certain age group and sex and who live in a certain country in a certain year), since these are used to calculate suicides/100k pop.
 
-EDA.
+We will now perform exploratory data analysis on the variables that we plan to use in our model.
+
+To see the shape of the distribution of the number of suicides per 100,000 people, we can plot a histogram of the suicides/100k pop variable.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=`suicides/100k pop`)) + 
+  geom_histogram() +
+  labs(title="Distribution of the Number of Suicides per 100,000 People", x="Number of Suicides per 100,000 People")
+```
+
+```{r}
+skim(suicide$`suicides/100k pop`)
+```
+
+Based on this histogram, we can see that it is not normally distributed and is extremely right skewed. In fact, from skimming this variable, we can see that the mean number of suicides per 100,000 people is only 12.82, while the maximum number of suicides per 100,000 people in this dataset is 224.97. Thus, there is at least one extreme outlier in the response variable, indicating that we should perform a log transformation on the response variable.
+
+```{r}
+suicide <- suicide %>% mutate (`suicides/100k pop` = log(`suicides/100k pop`))
+```
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=`suicides/100k pop`)) + 
+  geom_histogram() +
+  labs(title="Distribution of the Number of Suicides per 100,000 People", x="Number of Suicides per 100,000 People")
+```
+
+From log transforming suicides/100k pop, we can already see that the extreme outliers have disappeared, and the histogram seems to be approximately normally distributed. 
+
+It is important to note that in the dataset, some of the suicides/100k pop values are -inf. This is because there were 0 suicides in that year and country, and thus dividing by 0 when calculating the number of suicides per 100,000 people resulted in -inf. In the future, we will change all -inf to 0, since if there were 0 suicides in that year and country for the entire population, then there must have been 0 suicides in that year and country for every 100,000 people.
+
+We will now look at an overview of the relationships that suicides/100k pop has with each of the quantitative predictor variables (age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation), as well as the relationships these variables have with each other.
+
+```{r}
+pairs(`suicides/100k pop` ~ year + `HDI for year` + `gdp_for_year ($)` + `gdp_per_capita ($)`, data = suicide)
+```
+
+From the pairs plot, it looks as if year, HDI for year, and gdp_for_year do not have a clear linear relationship with suicides/100k pop. However, gdp_per_capita seems to be positively correlated with suicides/100k pop, meaning as gdp_per_capita increases, so does suicides/100k pop. Additionally, it looks as if HDI for year and gdp_per_capita seem to have a strong non-linear relationship, indicating that we should continue looking into this relationship and perhaps include an interaction term between these two variables. Similarly, HDI for year and gdp_for_year also seem to have a strong non-linear relationship, so we should include an interaction term between these two variables as well.
 
 We plan to do a multiple linear regression because suicides/100k pop is a quantitative variable (there are no levels to it, since it is a continuous variable). 
 
 Based on the variables, we plan to predict suicide rate in the future for certain countries, as well as what generation someone who commits suicide is in given other variables.
 
 ## Section 3. Data
-
-```{r load-data}
-suicide <- read_csv("/cloud/project/data/master.csv")
-```
-
 ```{r}
 glimpse(suicide)
 ```

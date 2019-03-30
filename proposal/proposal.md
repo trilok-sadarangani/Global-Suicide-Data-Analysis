@@ -22,7 +22,35 @@ library(tidyverse)
 ``` r
 library(knitr)
 library(broom)
+library(skimr)
 ```
+
+    ## 
+    ## Attaching package: 'skimr'
+
+    ## The following object is masked from 'package:knitr':
+    ## 
+    ##     kable
+
+``` r
+suicide <- read_csv("/cloud/project/data/master.csv")
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   country = col_character(),
+    ##   year = col_double(),
+    ##   sex = col_character(),
+    ##   age = col_character(),
+    ##   suicides_no = col_double(),
+    ##   population = col_double(),
+    ##   `suicides/100k pop` = col_double(),
+    ##   `country-year` = col_character(),
+    ##   `HDI for year` = col_double(),
+    ##   `gdp_for_year ($)` = col_number(),
+    ##   `gdp_per_capita ($)` = col_double(),
+    ##   generation = col_character()
+    ## )
 
 ## Section 1. Introduction
 
@@ -66,7 +94,96 @@ year) and population, (which is the total number of individuals who are
 of a certain age group and sex and who live in a certain country in a
 certain year), since these are used to calculate suicides/100k pop.
 
-EDA.
+We will now perform exploratory data analysis on the variables that we
+plan to use in our model.
+
+To see the shape of the distribution of the number of suicides per
+100,000 people, we can plot a histogram of the suicides/100k pop
+variable.
+
+``` r
+ggplot(data=suicide, mapping=aes(x=`suicides/100k pop`)) + 
+  geom_histogram() +
+  labs(title="Distribution of the Number of Suicides per 100,000 People", x="Number of Suicides per 100,000 People")
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](proposal_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
+``` r
+skim(suicide$`suicides/100k pop`)
+```
+
+    ## 
+    ## Skim summary statistics
+    ## 
+    ## ── Variable type:numeric ───────────────────────────
+    ##                     variable missing complete     n  mean    sd p0  p25
+    ##  suicide$`suicides/100k pop`       0    27820 27820 12.82 18.96  0 0.92
+    ##   p50   p75   p100     hist
+    ##  5.99 16.62 224.97 ▇▁▁▁▁▁▁▁
+
+Based on this histogram, we can see that it is not normally distributed
+and is extremely right skewed. In fact, from skimming this variable, we
+can see that the mean number of suicides per 100,000 people is only
+12.82, while the maximum number of suicides per 100,000 people in this
+dataset is 224.97. Thus, there is at least one extreme outlier in the
+response variable, indicating that we should perform a log
+transformation on the response
+variable.
+
+``` r
+suicide <- suicide %>% mutate (`suicides/100k pop` = log(`suicides/100k pop`))
+```
+
+``` r
+ggplot(data=suicide, mapping=aes(x=`suicides/100k pop`)) + 
+  geom_histogram() +
+  labs(title="Distribution of the Number of Suicides per 100,000 People", x="Number of Suicides per 100,000 People")
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 4281 rows containing non-finite values (stat_bin).
+
+![](proposal_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+From log transforming suicides/100k pop, we can already see that the
+extreme outliers have disappeared, and the histogram seems to be
+approximately normally distributed.
+
+It is important to note that in the dataset, some of the suicides/100k
+pop values are -inf. This is because there were 0 suicides in that year
+and country, and thus dividing by 0 when calculating the number of
+suicides per 100,000 people resulted in -inf. In the future, we will
+change all -inf to 0, since if there were 0 suicides in that year and
+country for the entire population, then there must have been 0 suicides
+in that year and country for every 100,000 people.
+
+We will now look at an overview of the relationships that suicides/100k
+pop has with each of the quantitative predictor variables (age, sex,
+country, year, HDI for year, gdp\_for\_year, gdp\_per\_capita, and
+generation), as well as the relationships these variables have with each
+other.
+
+``` r
+pairs(`suicides/100k pop` ~ year + `HDI for year` + `gdp_for_year ($)` + `gdp_per_capita ($)`, data = suicide)
+```
+
+![](proposal_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+From the pairs plot, it looks as if year, HDI for year, and
+gdp\_for\_year do not have a clear linear relationship with
+suicides/100k pop. However, gdp\_per\_capita seems to be positively
+correlated with suicides/100k pop, meaning as gdp\_per\_capita
+increases, so does suicides/100k pop. Additionally, it looks as if HDI
+for year and gdp\_per\_capita seem to have a strong non-linear
+relationship, indicating that we should continue looking into this
+relationship and perhaps include an interaction term between these two
+variables. Similarly, HDI for year and gdp\_for\_year also seem to have
+a strong non-linear relationship, so we should include an interaction
+term between these two variables as well.
 
 We plan to do a multiple linear regression because suicides/100k pop is
 a quantitative variable (there are no levels to it, since it is a
@@ -77,26 +194,6 @@ for certain countries, as well as what generation someone who commits
 suicide is in given other variables.
 
 ## Section 3. Data
-
-``` r
-suicide <- read_csv("/cloud/project/data/master.csv")
-```
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   country = col_character(),
-    ##   year = col_double(),
-    ##   sex = col_character(),
-    ##   age = col_character(),
-    ##   suicides_no = col_double(),
-    ##   population = col_double(),
-    ##   `suicides/100k pop` = col_double(),
-    ##   `country-year` = col_character(),
-    ##   `HDI for year` = col_double(),
-    ##   `gdp_for_year ($)` = col_number(),
-    ##   `gdp_per_capita ($)` = col_double(),
-    ##   generation = col_character()
-    ## )
 
 ``` r
 glimpse(suicide)
@@ -110,7 +207,7 @@ glimpse(suicide)
     ## $ age                  <chr> "15-24 years", "35-54 years", "15-24 years"…
     ## $ suicides_no          <dbl> 21, 16, 14, 1, 9, 1, 6, 4, 1, 0, 0, 0, 2, 1…
     ## $ population           <dbl> 312900, 308000, 289700, 21800, 274300, 3560…
-    ## $ `suicides/100k pop`  <dbl> 6.71, 5.19, 4.83, 4.59, 3.28, 2.81, 2.15, 1…
+    ## $ `suicides/100k pop`  <dbl> 1.9035990, 1.6467337, 1.5748465, 1.5238800,…
     ## $ `country-year`       <chr> "Albania1987", "Albania1987", "Albania1987"…
     ## $ `HDI for year`       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
     ## $ `gdp_for_year ($)`   <dbl> 2156624900, 2156624900, 2156624900, 2156624…
