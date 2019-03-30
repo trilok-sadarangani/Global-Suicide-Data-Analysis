@@ -70,26 +70,30 @@ ggplot(data=suicide, mapping=aes(x=`year`)) +
   geom_histogram() +
   labs(title="Distribution of Year", x="Year")
 ```
-The distribution appears to be normal with two outliers around 1992 and 2008. 
+The distribution of year appears to be normal with two outliers around 1992 and 2008. There appears to be a general increase in suicide rate as year increases.
 
 ```{r}
 ggplot(data=suicide, mapping=aes(x=`HDI for year`)) + 
   geom_histogram() +
   labs(title="Distribution of HDI for year", x="HDI for year")
 ```
-The distribution of HDI for year looks slightly left-skewed, but because our sample size is so large, we will proceed with caution.
+The distribution of HDI for year shows that as HDI for year increases, suicide rate increases until about .75 and then begins to slightly decrease.
 
 ```{r}
-ggplot(data=suicide, mapping=aes(x=`age`, y= 'suicides/100k pop')) + 
+ggplot(data=suicide, mapping=aes(x=`age`, y= `suicides/100k pop`)) + 
   geom_boxplot() +
   labs(title="Age vs. Suicides", x="Age", y="Suicides")
 ```
 
+By examining these boxplots, we can tell that as age increases, suicide rate tends to increase in general.
+
 ```{r}
-ggplot(data=suicide, mapping=aes(x=`country`, y= 'suicides/100k pop')) + 
+ggplot(data=suicide, mapping=aes(x=`country`, y= `suicides/100k pop`)) + 
   geom_boxplot() +
   labs(title=" vs. Suicides", x="Country", y="Suicides")
 ```
+
+Because there are so many countries, it is hard to tell what the general trend is for suicide rates. We will further examine this potential relationship in our project.
 
 age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation
 

@@ -8,14 +8,14 @@ library(nnet)
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ───────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
     ## ✔ tibble  2.0.0     ✔ dplyr   0.7.8
     ## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
     ## ✔ readr   1.3.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ───────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ──────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -118,7 +118,7 @@ skim(suicide$`suicides/100k pop`)
     ## 
     ## Skim summary statistics
     ## 
-    ## ── Variable type:numeric ──────────────────────────────────────────────────────────
+    ## ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────────────
     ##                     variable missing complete     n  mean    sd p0  p25
     ##  suicide$`suicides/100k pop`       0    27820 27820 12.82 18.96  0 0.92
     ##   p50   p75   p100     hist
@@ -194,8 +194,9 @@ ggplot(data=suicide, mapping=aes(x=`year`)) +
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
 ![](proposal_files/figure-gfm/unnamed-chunk-6-1.png)<!-- --> The
-distribution appears to be normal with two outliers around 1992 and
-2008.
+distribution of year appears to be normal with two outliers around 1992
+and 2008. There appears to be a general increase in suicide rate as year
+increases.
 
 ``` r
 ggplot(data=suicide, mapping=aes(x=`HDI for year`)) + 
@@ -208,24 +209,37 @@ ggplot(data=suicide, mapping=aes(x=`HDI for year`)) +
     ## Warning: Removed 19456 rows containing non-finite values (stat_bin).
 
 ![](proposal_files/figure-gfm/unnamed-chunk-7-1.png)<!-- --> The
-distribution of HDI for year looks slightly left-skewed, but because our
-sample size is so large, we will proceed with caution.
+distribution of HDI for year shows that as HDI for year increases,
+suicide rate increases until about .75 and then begins to slightly
+decrease.
 
 ``` r
-ggplot(data=suicide, mapping=aes(x=`age`, y= 'suicides/100k pop')) + 
+ggplot(data=suicide, mapping=aes(x=`age`, y= `suicides/100k pop`)) + 
   geom_boxplot() +
   labs(title="Age vs. Suicides", x="Age", y="Suicides")
 ```
 
+    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
+
 ![](proposal_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
+By examining these boxplots, we can tell that as age increases, suicide
+rate tends to increase in
+general.
+
 ``` r
-ggplot(data=suicide, mapping=aes(x=`country`, y= 'suicides/100k pop')) + 
+ggplot(data=suicide, mapping=aes(x=`country`, y= `suicides/100k pop`)) + 
   geom_boxplot() +
   labs(title=" vs. Suicides", x="Country", y="Suicides")
 ```
 
+    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
+
 ![](proposal_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+Because there are so many countries, it is hard to tell what the general
+trend is for suicide rates. We will further examine this potential
+relationship in our project.
 
 age, sex, country, year, HDI for year, gdp\_for\_year, gdp\_per\_capita,
 and generation
