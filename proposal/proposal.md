@@ -8,14 +8,14 @@ library(nnet)
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ─────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
     ## ✔ tibble  2.0.0     ✔ dplyr   0.7.8
     ## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
     ## ✔ readr   1.3.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ───────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -39,20 +39,41 @@ that suicide rates will lower.
 ## Section 2. Analysis plan
 
 Our response variable will be suicides/100k pop, which is the number of
-suicides per 100,000 people in a country, which is a double in our
-dataset. Our predictors variables will be age, sex, country, year, HDI
-for year, gdp\_for\_year, gdp\_per\_capita, and generation. COEFFICIENTS
-??
+suicides per 100,000 people in a certain country and year, which is
+stored as a numeric in our dataset. Our predictors variables will be
+age, sex, country, year, HDI for year, gdp\_for\_year, gdp\_per\_capita,
+and generation. Age is the age an individual was when they passed, sex
+is the gender of that individual, country is the country they are from,
+year is the year they passed, HDI for year is the human development
+index for a given country and year, gdp\_for\_year is the GDP for a
+given country and year, gdp\_per\_capita is the GDP per capita for a
+given country and year, and generation is the generation that an
+individual belongs to. We wish to understand how the number of suicides
+per 100,000 people in a certain country and year changes as year, GDP,
+GDP per capita, and HDI increase or decreases, meaning we want to
+understand the population coefficients for year, gdp\_for\_year,
+gdp\_per\_capita, and HDI for year. Additionally, we want to understand
+whether age, sex, generation, and country have an effect on the number
+of suicides per 100,000 people, meaning we also want to understand the
+population coefficients for these variables.
 
-Description.
+The variables relevant to the analysis of our research question are
+stated above: suicides/100k pop, age, sex, country, year, HDI for year,
+gdp\_for\_year, gdp\_per\_capita, and generation. Additionally,
+suicides\_no (which is the number of suicides for individuals who are of
+a certain age group and sex and who passed in a certain country and
+year) and population, (which is the total number of individuals who are
+of a certain age group and sex and who live in a certain country in a
+certain year), since these are used to calculate suicides/100k pop.
 
 EDA.
 
 We plan to do a multiple linear regression because suicides/100k pop is
-a quantitative variable (there are no levels to it).
+a quantitative variable (there are no levels to it, since it is a
+continuous variable).
 
-Based on variables, we plan to predict suicide rate in the future for
-certain countries, as well as what generation someone who commits
+Based on the variables, we plan to predict suicide rate in the future
+for certain countries, as well as what generation someone who commits
 suicide is in given other variables.
 
 ## Section 3. Data

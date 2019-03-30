@@ -115,7 +115,7 @@ Number of Variables: 12
 - population: population given the country, year, se and age group, stored as a numeric
 - suicides/100k pop: number of suicides per 100,000 people given the country, year, sex and age group, stored as a numeric
 - country-year: the country and year combined into one string, stored as characters 
-- HDI for year: the human development index, which is "a summary measure of average achievement in key dimensions of human development: a long and healthy life, being knowledgeable and have a decent standard of living. The HDI is the geometric mean of normalized indices for each of the three dimensions." [2] Stored as a numeric, however there seems to be a lot of missing values
+- HDI for year: the human development index of given the country and year, which is "a summary measure of average achievement in key dimensions of human development: a long and healthy life, being knowledgeable and have a decent standard of living. The HDI is the geometric mean of normalized indices for each of the three dimensions." [2] Stored as a numeric, however there seems to be a lot of missing values
 - gdp_for_year: the GDP given the country and year, stored as a numeric
 - gdp_per_capita: the GDP per capita given the country and year, stored as a numeric
 - generation: the generation of the individual, stored as characters  
