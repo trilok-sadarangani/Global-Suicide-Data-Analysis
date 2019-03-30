@@ -161,6 +161,8 @@ change all -inf to 0, since if there were 0 suicides in that year and
 country for the entire population, then there must have been 0 suicides
 in that year and country for every 100,000 people.
 
+Note: suicides/100k pop is now log transformed for all plot below.
+
 We will now look at an overview of the relationships that suicides/100k
 pop has with each of the quantitative predictor variables (age, sex,
 country, year, HDI for year, gdp\_for\_year, gdp\_per\_capita, and

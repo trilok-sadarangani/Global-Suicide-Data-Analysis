@@ -57,6 +57,8 @@ From log transforming suicides/100k pop, we can already see that the extreme out
 
 It is important to note that in the dataset, some of the suicides/100k pop values are -inf. This is because there were 0 suicides in that year and country, and thus dividing by 0 when calculating the number of suicides per 100,000 people resulted in -inf. In the future, we will change all -inf to 0, since if there were 0 suicides in that year and country for the entire population, then there must have been 0 suicides in that year and country for every 100,000 people.
 
+Note: suicides/100k pop is now log transformed for all plot below. 
+
 We will now look at an overview of the relationships that suicides/100k pop has with each of the quantitative predictor variables (age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation), as well as the relationships these variables have with each other.
 
 ```{r}
