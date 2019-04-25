@@ -8,7 +8,148 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+```{r load-packages}
+library(nnet)
+library(tidyverse)
+library(knitr)
+library(broom)
+library(skimr)
+```
 
+```{r load-data}
+suicide <- read_csv("/cloud/project/data/master.csv")
+```
+
+## Section 1. Introduction
+
+With suicide being one of the leading causes of death for teens in America, we thought it would be interesting to see how the U.S. stacks up against other countries all over the world in terms of the number of suicides that occur, as well as what factors may contribute to the significant number of suicides in the U.S. and other countries.[1] We want to explore how economic status, along with variables such as age, sex, and human development index, affects suicide rates all across the world. Our hypothesis is that generally, in poorer countries we predict that suicide rates will lower. 
+
+## Section 2. Analysis plan
+
+Our response variable will be suicides/100k pop, which is the number of suicides per 100,000 people in a certain country and year, which is stored as a numeric in our dataset. Our predictors variables will be age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation. Age is the age an individual was when they passed, sex is the gender of that individual, country is the country they are from, year is the year they passed, HDI for year is the human development index for a given country and year, gdp_for_year is the GDP for a given country and year, gdp_per_capita is the GDP per capita for a given country and year, and generation is the generation that an individual belongs to. We wish to understand how the number of suicides per 100,000 people in a certain country and year changes as year, GDP, GDP per capita, and HDI increase or decreases, meaning we want to understand the population coefficients for year, gdp_for_year, gdp_per_capita, and HDI for year. Additionally, we want to understand whether age, sex, generation, and country have an effect on the number of suicides per 100,000 people, meaning we also want to understand the population coefficients for these variables.
+
+The variables relevant to the analysis of our research question are stated above: suicides/100k pop, age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation. Additionally, suicides_no (which is the number of suicides for individuals who are of a certain age group and sex and who passed in a certain country and year) and population, (which is the total number of individuals who are of a certain age group and sex and who live in a certain country in a certain year), since these are used to calculate suicides/100k pop.
+
+We will now perform exploratory data analysis on the variables that we plan to use in our model.
+
+To see the shape of the distribution of the number of suicides per 100,000 people, we can plot a histogram of the suicides/100k pop variable.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=`suicides/100k pop`)) + 
+  geom_histogram() +
+  labs(title="Distribution of the Number of Suicides per 100,000 People", x="Number of Suicides per 100,000 People")
+```
+
+```{r}
+skim(suicide$`suicides/100k pop`)
+```
+
+Based on this histogram, we can see that it is not normally distributed and is extremely right skewed. In fact, from skimming this variable, we can see that the mean number of suicides per 100,000 people is only 12.82, while the maximum number of suicides per 100,000 people in this dataset is 224.97. Thus, there is at least one extreme outlier in the response variable, indicating that we should perform a log transformation on the response variable.
+
+```{r}
+suicide <- suicide %>% mutate (`suicides/100k pop` = log(`suicides/100k pop`))
+```
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=`suicides/100k pop`)) + 
+  geom_histogram() +
+  labs(title="Distribution of the Log Number of Suicides per 100,000 People", x="Log Number of Suicides per 100,000 People")
+```
+
+From log transforming suicides/100k pop, we can already see that the extreme outliers have disappeared, and the histogram seems to be approximately normally distributed. 
+
+It is important to note that in the dataset, some of the suicides/100k pop values are -inf. This is because there were 0 suicides in that year and country, and thus dividing by 0 when calculating the number of suicides per 100,000 people resulted in -inf. In the future, we will change all -inf to 0, since if there were 0 suicides in that year and country for the entire population, then there must have been 0 suicides in that year and country for every 100,000 people.
+
+Note: suicides/100k pop is now log transformed for all plot below. 
+
+We will now look at an overview of the relationships that suicides/100k pop has with each of the quantitative predictor variables (age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation), as well as the relationships these variables have with each other.
+
+```{r}
+pairs(`suicides/100k pop` ~ year + `HDI for year` + `gdp_for_year ($)` + `gdp_per_capita ($)`, data = suicide)
+```
+
+From the pairs plot, it looks as if year, HDI for year, and gdp_for_year do not have a clear linear relationship with suicides/100k pop. However, gdp_per_capita seems to be positively correlated with suicides/100k pop, meaning as gdp_per_capita increases, so does suicides/100k pop. Additionally, it looks as if HDI for year and gdp_per_capita seem to have a strong non-linear relationship, indicating that we should continue looking into this relationship and perhaps include an interaction term between these two variables. Similarly, HDI for year and gdp_for_year also seem to have a strong non-linear relationship, so we should include an interaction term between these two variables as well.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=`year`)) + 
+  geom_histogram() +
+  labs(title="Distribution of Year", x="Year")
+```
+The distribution of year appears to be normal with two outliers around 1992 and 2008. There appears to be a general increase in suicide rate as year increases.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=`HDI for year`)) + 
+  geom_histogram() +
+  labs(title="Distribution of HDI for year", x="HDI for year")
+```
+The distribution of HDI for year shows that as HDI for year increases, suicide rate increases until about .75 and then begins to slightly decrease.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=`age`, y= `suicides/100k pop`)) + 
+  geom_boxplot() +
+  labs(title="Age vs. Suicides", x="Age", y="Suicides")
+```
+
+By examining these boxplots, we can tell that as age increases, suicide rate tends to increase in general.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=`country`, y= `suicides/100k pop`)) + 
+  geom_boxplot() +
+  labs(title=" vs. Suicides", x="Country", y="Suicides")
+```
+
+Because there are so many countries, it is hard to tell what the general trend is for suicide rates. We will further examine this potential relationship in our project.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=sex, y=`suicides/100k pop` ))+
+  geom_boxplot()+
+  labs(title = "Boxplot of Gender & Suicide", x = "gender", y = "suicide")
+```
+
+From this boxplot, we notice that males have a higher suicide rate/100k people than females. However, there are many outliers in this data set so we must explore further.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=generation, y=`suicides/100k pop` ))+
+  geom_boxplot()+
+  labs(title = "Boxplot of Generation & Suicide", x = "Generation", y = "Suicide")
+```
+
+From this boxplot, we see that the average suicide rate/100k people is varies among gneeration. More specifically, we notice that Generation Z and Millienials have lower ates than the average value of around 2.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=log(`gdp_for_year ($)`))) +
+  geom_histogram() +
+  labs(title="Distribution of GDPs of Countries", x="Value")
+```
+
+Log transforming the data set, we notice that the distribution of GDPs of countries has a bimodal distribution.
+
+```{r}
+ggplot(data=suicide, mapping=aes(x=log(`gdp_per_capita ($)`))) +
+  geom_histogram() +
+  labs(title="Distribution of GDP Per Capita of Countries", x="Value")
+```
+
+Like the GDP of the country, the GDP Per Capita has a non-normal distribution. Rather, it is skewed to the left. Since these variables are so similar, there could be mulitcollinearity between the two.
+
+```{r}
+pairs(`suicides/100k pop` ~ log(`gdp_for_year ($)`) + log(`gdp_per_capita ($)`), data = suicide)
+```
+
+As mentioned before, we do see evidence of multicollinearity that we must address in the model.
+
+We plan to do a multiple linear regression because suicides/100k pop is a quantitative variable (there are no levels to it, since it is a continuous variable). 
+
+Based on the variables, we plan to predict suicide rate in the future for certain countries, as well as what generation someone who commits suicide is in given other variables.
+
+## Section 3. Data
+```{r}
+glimpse(suicide)
+```
+
+### Section 4 - References
+- [1] https://www.cdc.gov/nchs/fastats/adolescent-health.htm
+- [2] http://hdr.undp.org/en/content/human-development-index-hdi
 Your project goes here! Before you submit, make sure your chunks are turned off with `echo = FALSE`. 
 
 You can add sections as you see fit. At a minimum, you should have the following sections: 

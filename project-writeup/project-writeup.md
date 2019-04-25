@@ -1,0 +1,265 @@
+PROJECT TITLE
+================
+NAME HERE
+TODAY’S DATE
+
+    ## ── Attaching packages ────────────────────────── tidyverse 1.2.1 ──
+
+    ## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
+    ## ✔ tibble  2.0.0     ✔ dplyr   0.7.8
+    ## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
+    ## ✔ readr   1.3.1     ✔ forcats 0.3.0
+
+    ## ── Conflicts ───────────────────────────── tidyverse_conflicts() ──
+    ## ✖ dplyr::filter() masks stats::filter()
+    ## ✖ dplyr::lag()    masks stats::lag()
+
+    ## 
+    ## Attaching package: 'skimr'
+
+    ## The following object is masked from 'package:knitr':
+    ## 
+    ##     kable
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   country = col_character(),
+    ##   year = col_double(),
+    ##   sex = col_character(),
+    ##   age = col_character(),
+    ##   suicides_no = col_double(),
+    ##   population = col_double(),
+    ##   `suicides/100k pop` = col_double(),
+    ##   `country-year` = col_character(),
+    ##   `HDI for year` = col_double(),
+    ##   `gdp_for_year ($)` = col_number(),
+    ##   `gdp_per_capita ($)` = col_double(),
+    ##   generation = col_character()
+    ## )
+
+## Section 1. Introduction
+
+With suicide being one of the leading causes of death for teens in
+America, we thought it would be interesting to see how the U.S. stacks
+up against other countries all over the world in terms of the number of
+suicides that occur, as well as what factors may contribute to the
+significant number of suicides in the U.S. and other countries.\[1\] We
+want to explore how economic status, along with variables such as age,
+sex, and human development index, affects suicide rates all across the
+world. Our hypothesis is that generally, in poorer countries we predict
+that suicide rates will lower.
+
+## Section 2. Analysis plan
+
+Our response variable will be suicides/100k pop, which is the number of
+suicides per 100,000 people in a certain country and year, which is
+stored as a numeric in our dataset. Our predictors variables will be
+age, sex, country, year, HDI for year, gdp\_for\_year, gdp\_per\_capita,
+and generation. Age is the age an individual was when they passed, sex
+is the gender of that individual, country is the country they are from,
+year is the year they passed, HDI for year is the human development
+index for a given country and year, gdp\_for\_year is the GDP for a
+given country and year, gdp\_per\_capita is the GDP per capita for a
+given country and year, and generation is the generation that an
+individual belongs to. We wish to understand how the number of suicides
+per 100,000 people in a certain country and year changes as year, GDP,
+GDP per capita, and HDI increase or decreases, meaning we want to
+understand the population coefficients for year, gdp\_for\_year,
+gdp\_per\_capita, and HDI for year. Additionally, we want to understand
+whether age, sex, generation, and country have an effect on the number
+of suicides per 100,000 people, meaning we also want to understand the
+population coefficients for these variables.
+
+The variables relevant to the analysis of our research question are
+stated above: suicides/100k pop, age, sex, country, year, HDI for year,
+gdp\_for\_year, gdp\_per\_capita, and generation. Additionally,
+suicides\_no (which is the number of suicides for individuals who are of
+a certain age group and sex and who passed in a certain country and
+year) and population, (which is the total number of individuals who are
+of a certain age group and sex and who live in a certain country in a
+certain year), since these are used to calculate suicides/100k pop.
+
+We will now perform exploratory data analysis on the variables that we
+plan to use in our model.
+
+To see the shape of the distribution of the number of suicides per
+100,000 people, we can plot a histogram of the suicides/100k pop
+variable.
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
+    ## 
+    ## Skim summary statistics
+    ## 
+    ## ── Variable type:numeric ──────────────────────────────────────────
+    ##                     variable missing complete     n  mean    sd p0  p25
+    ##  suicide$`suicides/100k pop`       0    27820 27820 12.82 18.96  0 0.92
+    ##   p50   p75   p100     hist
+    ##  5.99 16.62 224.97 ▇▁▁▁▁▁▁▁
+
+Based on this histogram, we can see that it is not normally distributed
+and is extremely right skewed. In fact, from skimming this variable, we
+can see that the mean number of suicides per 100,000 people is only
+12.82, while the maximum number of suicides per 100,000 people in this
+dataset is 224.97. Thus, there is at least one extreme outlier in the
+response variable, indicating that we should perform a log
+transformation on the response
+    variable.
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 4281 rows containing non-finite values (stat_bin).
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+From log transforming suicides/100k pop, we can already see that the
+extreme outliers have disappeared, and the histogram seems to be
+approximately normally distributed.
+
+It is important to note that in the dataset, some of the suicides/100k
+pop values are -inf. This is because there were 0 suicides in that year
+and country, and thus dividing by 0 when calculating the number of
+suicides per 100,000 people resulted in -inf. In the future, we will
+change all -inf to 0, since if there were 0 suicides in that year and
+country for the entire population, then there must have been 0 suicides
+in that year and country for every 100,000 people.
+
+Note: suicides/100k pop is now log transformed for all plot below.
+
+We will now look at an overview of the relationships that suicides/100k
+pop has with each of the quantitative predictor variables (age, sex,
+country, year, HDI for year, gdp\_for\_year, gdp\_per\_capita, and
+generation), as well as the relationships these variables have with each
+other.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+From the pairs plot, it looks as if year, HDI for year, and
+gdp\_for\_year do not have a clear linear relationship with
+suicides/100k pop. However, gdp\_per\_capita seems to be positively
+correlated with suicides/100k pop, meaning as gdp\_per\_capita
+increases, so does suicides/100k pop. Additionally, it looks as if HDI
+for year and gdp\_per\_capita seem to have a strong non-linear
+relationship, indicating that we should continue looking into this
+relationship and perhaps include an interaction term between these two
+variables. Similarly, HDI for year and gdp\_for\_year also seem to have
+a strong non-linear relationship, so we should include an interaction
+term between these two variables as
+    well.
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-6-1.png)<!-- --> The
+distribution of year appears to be normal with two outliers around 1992
+and 2008. There appears to be a general increase in suicide rate as year
+increases.
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 19456 rows containing non-finite values (stat_bin).
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-7-1.png)<!-- --> The
+distribution of HDI for year shows that as HDI for year increases,
+suicide rate increases until about .75 and then begins to slightly
+decrease.
+
+    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+By examining these boxplots, we can tell that as age increases, suicide
+rate tends to increase in
+    general.
+
+    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+Because there are so many countries, it is hard to tell what the general
+trend is for suicide rates. We will further examine this potential
+relationship in our
+    project.
+
+    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+From this boxplot, we notice that males have a higher suicide rate/100k
+people than females. However, there are many outliers in this data set
+so we must explore
+    further.
+
+    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+From this boxplot, we see that the average suicide rate/100k people is
+varies among gneeration. More specifically, we notice that Generation Z
+and Millienials have lower ates than the average value of around
+    2.
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+Log transforming the data set, we notice that the distribution of GDPs
+of countries has a bimodal
+    distribution.
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+Like the GDP of the country, the GDP Per Capita has a non-normal
+distribution. Rather, it is skewed to the left. Since these variables
+are so similar, there could be mulitcollinearity between the two.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+As mentioned before, we do see evidence of multicollinearity that we
+must address in the model.
+
+We plan to do a multiple linear regression because suicides/100k pop is
+a quantitative variable (there are no levels to it, since it is a
+continuous variable).
+
+Based on the variables, we plan to predict suicide rate in the future
+for certain countries, as well as what generation someone who commits
+suicide is in given other variables.
+
+## Section 3. Data
+
+    ## Observations: 27,820
+    ## Variables: 12
+    ## $ country              <chr> "Albania", "Albania", "Albania", "Albania",…
+    ## $ year                 <dbl> 1987, 1987, 1987, 1987, 1987, 1987, 1987, 1…
+    ## $ sex                  <chr> "male", "male", "female", "male", "male", "…
+    ## $ age                  <chr> "15-24 years", "35-54 years", "15-24 years"…
+    ## $ suicides_no          <dbl> 21, 16, 14, 1, 9, 1, 6, 4, 1, 0, 0, 0, 2, 1…
+    ## $ population           <dbl> 312900, 308000, 289700, 21800, 274300, 3560…
+    ## $ `suicides/100k pop`  <dbl> 1.9035990, 1.6467337, 1.5748465, 1.5238800,…
+    ## $ `country-year`       <chr> "Albania1987", "Albania1987", "Albania1987"…
+    ## $ `HDI for year`       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+    ## $ `gdp_for_year ($)`   <dbl> 2156624900, 2156624900, 2156624900, 2156624…
+    ## $ `gdp_per_capita ($)` <dbl> 796, 796, 796, 796, 796, 796, 796, 796, 796…
+    ## $ generation           <chr> "Generation X", "Silent", "Generation X", "…
+
+### Section 4 - References
+
+  - \[1\] <https://www.cdc.gov/nchs/fastats/adolescent-health.htm>
+  - \[2\] <http://hdr.undp.org/en/content/human-development-index-hdi>
+    Your project goes here\! Before you submit, make sure your chunks
+    are turned off with `echo = FALSE`.
+
+You can add sections as you see fit. At a minimum, you should have the
+following sections:
+
+  - Section 1: Introduction (includes introduction and exploratory data
+    analysis)
+  - Section 2: Regression Analysis (includes the final model and
+    discussion of assumptions)
+  - Section 3: Discussion and Limitations
+  - Section 4: Conclusion
+  - Section 5: Additional Work
