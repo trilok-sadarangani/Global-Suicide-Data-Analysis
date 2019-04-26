@@ -8,14 +8,14 @@ library(nnet)
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ───────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ─────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
     ## ✔ tibble  2.0.0     ✔ dplyr   0.7.8
     ## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
     ## ✔ readr   1.3.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ──────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -107,8 +107,6 @@ ggplot(data=suicide, mapping=aes(x=`suicides/100k pop`)) +
   labs(title="Distribution of the Number of Suicides per 100,000 People", x="Number of Suicides per 100,000 People")
 ```
 
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
 ![](proposal_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
 ``` r
@@ -118,7 +116,7 @@ skim(suicide$`suicides/100k pop`)
     ## 
     ## Skim summary statistics
     ## 
-    ## ── Variable type:numeric ─────────────────────────
+    ## ── Variable type:numeric ───────────────────────────────────────────────────────────────
     ##                     variable missing complete     n  mean    sd p0  p25
     ##  suicide$`suicides/100k pop`       0    27820 27820 12.82 18.96  0 0.92
     ##   p50   p75   p100     hist
@@ -142,10 +140,6 @@ ggplot(data=suicide, mapping=aes(x=`suicides/100k pop`)) +
   geom_histogram() +
   labs(title="Distribution of the Log Number of Suicides per 100,000 People", x="Log Number of Suicides per 100,000 People")
 ```
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-    ## Warning: Removed 4281 rows containing non-finite values (stat_bin).
 
 ![](proposal_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
@@ -193,8 +187,6 @@ ggplot(data=suicide, mapping=aes(x=`year`)) +
   labs(title="Distribution of Year", x="Year")
 ```
 
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
 ![](proposal_files/figure-gfm/unnamed-chunk-6-1.png)<!-- --> The
 distribution of year appears to be normal with two outliers around 1992
 and 2008. There appears to be a general increase in suicide rate as year
@@ -205,10 +197,6 @@ ggplot(data=suicide, mapping=aes(x=`HDI for year`)) +
   geom_histogram() +
   labs(title="Distribution of HDI for year", x="HDI for year")
 ```
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-    ## Warning: Removed 19456 rows containing non-finite values (stat_bin).
 
 ![](proposal_files/figure-gfm/unnamed-chunk-7-1.png)<!-- --> The
 distribution of HDI for year shows that as HDI for year increases,
@@ -221,23 +209,42 @@ ggplot(data=suicide, mapping=aes(x=`age`, y= `suicides/100k pop`)) +
   labs(title="Age vs. Suicides", x="Age", y="Suicides")
 ```
 
-    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
-
 ![](proposal_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 By examining these boxplots, we can tell that as age increases, suicide
-rate tends to increase in
-general.
+rate tends to increase in general.
 
 ``` r
-ggplot(data=suicide, mapping=aes(x=`country`, y= `suicides/100k pop`)) + 
+first50 <- suicide %>%
+  distinct(country) %>%
+  slice(1:50)
+first50
+```
+
+    ## # A tibble: 50 x 1
+    ##    country            
+    ##    <chr>              
+    ##  1 Albania            
+    ##  2 Antigua and Barbuda
+    ##  3 Argentina          
+    ##  4 Armenia            
+    ##  5 Aruba              
+    ##  6 Australia          
+    ##  7 Austria            
+    ##  8 Azerbaijan         
+    ##  9 Bahamas            
+    ## 10 Bahrain            
+    ## # … with 40 more rows
+
+``` r
+first50data <- suicide %>%
+  filter(country %in% first50$country)
+ggplot(data=first50data, mapping=aes(x=`country`, y= `suicides/100k pop`)) + 
   geom_boxplot() +
   labs(title=" vs. Suicides", x="Country", y="Suicides")
 ```
 
-    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
-
-![](proposal_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](proposal_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 Because there are so many countries, it is hard to tell what the general
 trend is for suicide rates. We will further examine this potential
@@ -249,9 +256,7 @@ ggplot(data=suicide, mapping=aes(x=sex, y=`suicides/100k pop` ))+
   labs(title = "Boxplot of Gender & Suicide", x = "gender", y = "suicide")
 ```
 
-    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
-
-![](proposal_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](proposal_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 From this boxplot, we notice that males have a higher suicide rate/100k
 people than females. However, there are many outliers in this data set
@@ -263,9 +268,7 @@ ggplot(data=suicide, mapping=aes(x=generation, y=`suicides/100k pop` ))+
   labs(title = "Boxplot of Generation & Suicide", x = "Generation", y = "Suicide")
 ```
 
-    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
-
-![](proposal_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](proposal_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 From this boxplot, we see that the average suicide rate/100k people is
 varies among gneeration. More specifically, we notice that Generation Z
@@ -277,9 +280,7 @@ ggplot(data=suicide, mapping=aes(x=log(`gdp_for_year ($)`))) +
   labs(title="Distribution of GDPs of Countries", x="Value")
 ```
 
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-![](proposal_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](proposal_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 Log transforming the data set, we notice that the distribution of GDPs
 of countries has a bimodal distribution.
@@ -290,9 +291,7 @@ ggplot(data=suicide, mapping=aes(x=log(`gdp_per_capita ($)`))) +
   labs(title="Distribution of GDP Per Capita of Countries", x="Value")
 ```
 
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-![](proposal_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](proposal_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 Like the GDP of the country, the GDP Per Capita has a non-normal
 distribution. Rather, it is skewed to the left. Since these variables
@@ -303,7 +302,7 @@ two.
 pairs(`suicides/100k pop` ~ log(`gdp_for_year ($)`) + log(`gdp_per_capita ($)`), data = suicide)
 ```
 
-![](proposal_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](proposal_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 As mentioned before, we do see evidence of multicollinearity that we
 must address in the model.
