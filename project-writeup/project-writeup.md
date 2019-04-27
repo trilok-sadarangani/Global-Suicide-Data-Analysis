@@ -86,6 +86,36 @@ To see the shape of the distribution of the number of suicides per
 100,000 people, we can plot a histogram of the suicides/100k pop
 variable.
 
+    ## Skim summary statistics
+    ##  n obs: 27820 
+    ##  n variables: 12 
+    ## 
+    ## ── Variable type:character ────────────────────────────────────────
+    ##      variable missing complete     n min max empty n_unique
+    ##           age       0    27820 27820   9  11     0        6
+    ##       country       0    27820 27820   4  28     0      101
+    ##  country-year       0    27820 27820   8  32     0     2321
+    ##    generation       0    27820 27820   6  15     0        6
+    ##           sex       0    27820 27820   4   6     0        2
+    ## 
+    ## ── Variable type:numeric ──────────────────────────────────────────
+    ##            variable missing complete     n          mean            sd
+    ##    gdp_for_year ($)       0    27820 27820       4.5e+11       1.5e+12
+    ##  gdp_per_capita ($)       0    27820 27820   16866.46      18887.58   
+    ##        HDI for year   19456     8364 27820       0.78          0.093  
+    ##          population       0    27820 27820 1844793.62    3911779.44   
+    ##         suicides_no       0    27820 27820     242.57        902.05   
+    ##   suicides/100k pop       0    27820 27820      12.82         18.96   
+    ##                year       0    27820 27820    2001.26          8.47   
+    ##          p0      p25          p50           p75         p100     hist
+    ##     4.7e+07 9e+09         4.8e+10       2.6e+11      1.8e+13 ▇▁▁▁▁▁▁▁
+    ##   251        3447      9372         24874       126352       ▇▂▁▁▁▁▁▁
+    ##     0.48        0.71      0.78          0.85         0.94    ▁▁▃▅▇▇▇▆
+    ##   278       97498.5  430150       1486143.25         4.4e+07 ▇▁▁▁▁▁▁▁
+    ##     0           3        25           131        22338       ▇▁▁▁▁▁▁▁
+    ##     0           0.92      5.99         16.62       224.97    ▇▁▁▁▁▁▁▁
+    ##  1985        1995      2002          2008         2016       ▅▆▇▇▇▇▇▆
+
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
 ![](project-writeup_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
@@ -105,14 +135,17 @@ can see that the mean number of suicides per 100,000 people is only
 12.82, while the maximum number of suicides per 100,000 people in this
 dataset is 224.97. Thus, there is at least one extreme outlier in the
 response variable, indicating that we should perform a log
-transformation on the response
-    variable.
+transformation on the response variable.
+
+However, since this response variable has many negative infinity values
+(this stems from the fact that some countries have 0 suicides), we will
+first increase the suicide number by 1 for each country and then
+recalculate suicides per
+    100k.
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-    ## Warning: Removed 4281 rows containing non-finite values (stat_bin).
-
-![](project-writeup_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](project-writeup_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 From log transforming suicides/100k pop, we can already see that the
 extreme outliers have disappeared, and the histogram seems to be
@@ -134,7 +167,7 @@ country, year, HDI for year, gdp\_for\_year, gdp\_per\_capita, and
 generation), as well as the relationships these variables have with each
 other.
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](project-writeup_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 From the pairs plot, it looks as if year, HDI for year, and
 gdp\_for\_year do not have a clear linear relationship with
@@ -151,7 +184,7 @@ term between these two variables as
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-6-1.png)<!-- --> The
+![](project-writeup_files/figure-gfm/unnamed-chunk-8-1.png)<!-- --> The
 distribution of year appears to be normal with two outliers around 1992
 and 2008. There appears to be a general increase in suicide rate as year
 increases.
@@ -160,40 +193,29 @@ increases.
 
     ## Warning: Removed 19456 rows containing non-finite values (stat_bin).
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-7-1.png)<!-- --> The
+![](project-writeup_files/figure-gfm/unnamed-chunk-9-1.png)<!-- --> The
 distribution of HDI for year shows that as HDI for year increases,
 suicide rate increases until about .75 and then begins to slightly
 decrease.
 
-    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
-
-![](project-writeup_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](project-writeup_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 By examining these boxplots, we can tell that as age increases, suicide
-rate tends to increase in
-    general.
+rate tends to increase in general.
 
-    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
-
-![](project-writeup_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](project-writeup_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 Because there are so many countries, it is hard to tell what the general
 trend is for suicide rates. We will further examine this potential
-relationship in our
-    project.
+relationship in our project.
 
-    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
-
-![](project-writeup_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](project-writeup_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 From this boxplot, we notice that males have a higher suicide rate/100k
 people than females. However, there are many outliers in this data set
-so we must explore
-    further.
+so we must explore further.
 
-    ## Warning: Removed 4281 rows containing non-finite values (stat_boxplot).
-
-![](project-writeup_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](project-writeup_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 From this boxplot, we see that the average suicide rate/100k people is
 varies among gneeration. More specifically, we notice that Generation Z
@@ -202,7 +224,7 @@ and Millienials have lower ates than the average value of around
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](project-writeup_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 Log transforming the data set, we notice that the distribution of GDPs
 of countries has a bimodal
@@ -210,13 +232,13 @@ of countries has a bimodal
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](project-writeup_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 Like the GDP of the country, the GDP Per Capita has a non-normal
 distribution. Rather, it is skewed to the left. Since these variables
 are so similar, there could be mulitcollinearity between the two.
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](project-writeup_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 As mentioned before, we do see evidence of multicollinearity that we
 must address in the model.
@@ -237,9 +259,9 @@ suicide is in given other variables.
     ## $ year                 <dbl> 1987, 1987, 1987, 1987, 1987, 1987, 1987, 1…
     ## $ sex                  <chr> "male", "male", "female", "male", "male", "…
     ## $ age                  <chr> "15-24 years", "35-54 years", "15-24 years"…
-    ## $ suicides_no          <dbl> 21, 16, 14, 1, 9, 1, 6, 4, 1, 0, 0, 0, 2, 1…
+    ## $ suicides_no          <dbl> 22, 17, 15, 2, 10, 2, 7, 5, 2, 1, 1, 1, 3, …
     ## $ population           <dbl> 312900, 308000, 289700, 21800, 274300, 3560…
-    ## $ `suicides/100k pop`  <dbl> 1.9035990, 1.6467337, 1.5748465, 1.5238800,…
+    ## $ `suicides/100k pop`  <dbl> 1.9503290, 1.7082837, 1.6443745, 2.2164074,…
     ## $ `country-year`       <chr> "Albania1987", "Albania1987", "Albania1987"…
     ## $ `HDI for year`       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
     ## $ `gdp_for_year ($)`   <dbl> 2156624900, 2156624900, 2156624900, 2156624…

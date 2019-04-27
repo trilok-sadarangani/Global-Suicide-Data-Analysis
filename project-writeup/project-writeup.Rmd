@@ -35,6 +35,7 @@ We will now perform exploratory data analysis on the variables that we plan to u
 To see the shape of the distribution of the number of suicides per 100,000 people, we can plot a histogram of the suicides/100k pop variable.
 
 ```{r}
+skim(suicide)
 ggplot(data=suicide, mapping=aes(x=`suicides/100k pop`)) + 
   geom_histogram() +
   labs(title="Distribution of the Number of Suicides per 100,000 People", x="Number of Suicides per 100,000 People")
@@ -44,7 +45,17 @@ ggplot(data=suicide, mapping=aes(x=`suicides/100k pop`)) +
 skim(suicide$`suicides/100k pop`)
 ```
 
-Based on this histogram, we can see that it is not normally distributed and is extremely right skewed. In fact, from skimming this variable, we can see that the mean number of suicides per 100,000 people is only 12.82, while the maximum number of suicides per 100,000 people in this dataset is 224.97. Thus, there is at least one extreme outlier in the response variable, indicating that we should perform a log transformation on the response variable.
+Based on this histogram, we can see that it is not normally distributed and is extremely right skewed. In fact, from skimming this variable, we can see that the mean number of suicides per 100,000 people is only 12.82, while the maximum number of suicides per 100,000 people in this dataset is 224.97. Thus, there is at least one extreme outlier in the response variable, indicating that we should perform a log transformation on the response variable. 
+
+However, since this response variable has many negative infinity values (this stems from the fact that some countries have 0 suicides), we will first increase the suicide number by 1 for each country and then recalculate suicides per 100k.
+
+```{r}
+suicide <- suicide %>% mutate (`suicides_no` = `suicides_no`+1)
+```
+
+```{r}
+suicide <- suicide %>% mutate (`suicides/100k pop` = `suicides_no`/(population/100000))
+```
 
 ```{r}
 suicide <- suicide %>% mutate (`suicides/100k pop` = log(`suicides/100k pop`))
