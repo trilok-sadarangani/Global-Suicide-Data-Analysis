@@ -1,36 +1,71 @@
 ---
-title: "PROJECT TITLE"
-author: "NAME HERE"
-date: "TODAY'S DATE"
+title: "Stat210 Final Project"
+author: "CamFam"
+date: "May 1st, 2019"
 output: github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+
 ```{r load-packages}
-library(nnet)
 library(tidyverse)
+library(dslabs)
+library(nnet)
 library(knitr)
 library(broom)
 library(skimr)
+library(modelr)
+library(leaps)
 ```
 
 ```{r load-data}
 suicide <- read_csv("/cloud/project/data/master.csv")
+fullSet <-read_csv("/cloud/project/data/master.csv")
 ```
 
 ## Section 1. Introduction
 
 With suicide being one of the leading causes of death for teens in America, we thought it would be interesting to see how the U.S. stacks up against other countries all over the world in terms of the number of suicides that occur, as well as what factors may contribute to the significant number of suicides in the U.S. and other countries.[1] We want to explore how economic status, along with variables such as age, sex, and human development index, affects suicide rates all across the world. Our hypothesis is that generally, in poorer countries we predict that suicide rates will lower. 
 
-## Section 2. Analysis plan
-
 Our response variable will be suicides/100k pop, which is the number of suicides per 100,000 people in a certain country and year, which is stored as a numeric in our dataset. Our predictors variables will be age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation. Age is the age an individual was when they passed, sex is the gender of that individual, country is the country they are from, year is the year they passed, HDI for year is the human development index for a given country and year, gdp_for_year is the GDP for a given country and year, gdp_per_capita is the GDP per capita for a given country and year, and generation is the generation that an individual belongs to. We wish to understand how the number of suicides per 100,000 people in a certain country and year changes as year, GDP, GDP per capita, and HDI increase or decreases, meaning we want to understand the population coefficients for year, gdp_for_year, gdp_per_capita, and HDI for year. Additionally, we want to understand whether age, sex, generation, and country have an effect on the number of suicides per 100,000 people, meaning we also want to understand the population coefficients for these variables.
 
 The variables relevant to the analysis of our research question are stated above: suicides/100k pop, age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation. Additionally, suicides_no (which is the number of suicides for individuals who are of a certain age group and sex and who passed in a certain country and year) and population, (which is the total number of individuals who are of a certain age group and sex and who live in a certain country in a certain year), since these are used to calculate suicides/100k pop.
 
 We will now perform exploratory data analysis on the variables that we plan to use in our model.
+
+Given the longitudinal structure of our data and the need for making a multilevel model, we are going to use the data collected in 2010 as that year has a majority of the countries in the origianl data set and also is the year HDI values were collected.
+```{r}
+suicideNew <- suicide%>% filter(year == 2010)
+skim(suicideNew)
+```
+
+```{r}
+HDINA <- suicideNew %>% filter(is.na(`HDI for year`))
+```
+The countries that do not have HDI calculated for them are Aruba, Puerto Rico, Korea, and Russia. 
+
+Later on in this EDA, we will want to do a boxplot of the countries; however, that will be indiscernable based on the number of countries. Instead, we should group countries into regions and their continents. 
+
+We will use the gapminder dataset for countries and regions. We will extract the country, continent, and region from gapMinder, change the names of differing countries, and then merge.
+```{r}
+gapminderNew = gapminder %>% select(country, continent, region)
+
+gapminderNew <- data.frame(lapply(gapminderNew, as.character), stringsAsFactors=FALSE)
+
+gapminderNew$country <- replace(gapminderNew$country, gapminderNew$country=="Kyrgyz Republic", "Kyrgyzstan")
+
+gapminderNew$country <- replace(gapminderNew$country, gapminderNew$country=="South Korea", "Republic of Korea")
+
+gapminderNew$country <- replace(gapminderNew$country, gapminderNew$country=="Russia", "Russian Federation")
+
+gapminderNew$country <- replace(gapminderNew$country, gapminderNew$country=="St. Lucia", "Saint Lucia")
+
+gapminderNew <- data.frame(lapply(gapminderNew, as.character), stringsAsFactors=TRUE)
+
+suicide <- merge(suicideNew, gapminderNew, by = "country", all.x = TRUE)
+```
 
 To see the shape of the distribution of the number of suicides per 100,000 people, we can plot a histogram of the suicides/100k pop variable.
 
@@ -45,21 +80,9 @@ ggplot(data=suicide, mapping=aes(x=`suicides/100k pop`)) +
 skim(suicide$`suicides/100k pop`)
 ```
 
-Based on this histogram, we can see that it is not normally distributed and is extremely right skewed. In fact, from skimming this variable, we can see that the mean number of suicides per 100,000 people is only 12.82, while the maximum number of suicides per 100,000 people in this dataset is 224.97. Thus, there is at least one extreme outlier in the response variable, indicating that we should perform a log transformation on the response variable. 
+Based on this histogram, we can see that it is not normally distributed and is extremely right skewed. In fact, from skimming this variable, we can see that the mean number of suicides per 100,000 people is only 11.22, while the maximum number of suicides per 100,000 people in this dataset is 182.32. Thus, there is at least one extreme outlier in the response variable, indicating that we should perform a log transformation on the response variable. 
 
-However, since this response variable has many negative infinity values (this stems from the fact that some countries have 0 suicides), we will first increase the suicide number by 1 for each country and then recalculate suicides per 100k.
-
-```{r}
-suicide <- suicide %>% mutate (`suicides_no` = `suicides_no`+1)
-```
-
-```{r}
-suicide <- suicide %>% mutate (`suicides/100k pop` = `suicides_no`/(population/100000))
-```
-
-```{r}
-suicide <- suicide %>% mutate (`suicides/100k pop` = log(`suicides/100k pop`))
-```
+Since this response variable has negative infinity values (this stems from the fact that some countries have 0 suicides), we will first increase the suicide number by 1 for each country and then recalculate suicides per 100k.
 
 ```{r}
 ggplot(data=suicide, mapping=aes(x=`suicides/100k pop`)) + 

@@ -1,16 +1,16 @@
-PROJECT TITLE
+Stat210 Final Project
 ================
-NAME HERE
-TODAY’S DATE
+CamFam
+May 1st, 2019
 
-    ## ── Attaching packages ────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ─────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
     ## ✔ tibble  2.0.0     ✔ dplyr   0.7.8
     ## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
     ## ✔ readr   1.3.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ───────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -21,6 +21,32 @@ TODAY’S DATE
     ## 
     ##     kable
 
+    ## 
+    ## Attaching package: 'modelr'
+
+    ## The following object is masked from 'package:broom':
+    ## 
+    ##     bootstrap
+
+    ## The following object is masked from 'package:dslabs':
+    ## 
+    ##     heights
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   country = col_character(),
+    ##   year = col_double(),
+    ##   sex = col_character(),
+    ##   age = col_character(),
+    ##   suicides_no = col_double(),
+    ##   population = col_double(),
+    ##   `suicides/100k pop` = col_double(),
+    ##   `country-year` = col_character(),
+    ##   `HDI for year` = col_double(),
+    ##   `gdp_for_year ($)` = col_number(),
+    ##   `gdp_per_capita ($)` = col_double(),
+    ##   generation = col_character()
+    ## )
     ## Parsed with column specification:
     ## cols(
     ##   country = col_character(),
@@ -48,8 +74,6 @@ want to explore how economic status, along with variables such as age,
 sex, and human development index, affects suicide rates all across the
 world. Our hypothesis is that generally, in poorer countries we predict
 that suicide rates will lower.
-
-## Section 2. Analysis plan
 
 Our response variable will be suicides/100k pop, which is the number of
 suicides per 100,000 people in a certain country and year, which is
@@ -82,65 +106,119 @@ certain year), since these are used to calculate suicides/100k pop.
 We will now perform exploratory data analysis on the variables that we
 plan to use in our model.
 
+Given the longitudinal structure of our data and the need for making a
+multilevel model, we are going to use the data collected in 2010 as that
+year has a majority of the countries in the origianl data set and also
+is the year HDI values were collected.
+
+    ## Skim summary statistics
+    ##  n obs: 1056 
+    ##  n variables: 12 
+    ## 
+    ## ── Variable type:character ─────────────────────────────────────────
+    ##      variable missing complete    n min max empty n_unique
+    ##           age       0     1056 1056   9  11     0        6
+    ##       country       0     1056 1056   4  28     0       88
+    ##  country-year       0     1056 1056   8  32     0       88
+    ##    generation       0     1056 1056   6  12     0        4
+    ##           sex       0     1056 1056   4   6     0        2
+    ## 
+    ## ── Variable type:numeric ───────────────────────────────────────────
+    ##            variable missing complete    n          mean            sd
+    ##    gdp_for_year ($)       0     1056 1056       5.9e+11       1.8e+12
+    ##  gdp_per_capita ($)       0     1056 1056   23857.19      22474.17   
+    ##        HDI for year      48     1008 1056       0.79          0.086  
+    ##          population       0     1056 1056 1891380.05    4052946.65   
+    ##         suicides_no       0     1056 1056     226.04        805.51   
+    ##   suicides/100k pop       0     1056 1056      11.22         16.94   
+    ##                year       0     1056 1056    2010             0      
+    ##          p0       p25          p50           p75         p100     hist
+    ##     6.8e+08  2e+10         9.4e+10       3.8e+11      1.5e+13 ▇▁▁▁▁▁▁▁
+    ##   991         7008.5   13817.5       36326       111328       ▇▂▂▂▁▁▁▁
+    ##     0.61         0.73      0.8           0.88         0.94    ▃▃▆▇▆▆▇▇
+    ##  1015       107517.75 453842.5     1548637.25         4.3e+07 ▇▁▁▁▁▁▁▁
+    ##     0            2        22           107.5      11767       ▇▁▁▁▁▁▁▁
+    ##     0            0.8       4.81         14.37       182.32    ▇▁▁▁▁▁▁▁
+    ##  2010         2010      2010          2010         2010       ▁▁▁▇▁▁▁▁
+
+The countries that do not have HDI calculated for them are Aruba, Puerto
+Rico, Korea, and Russia.
+
+Later on in this EDA, we will want to do a boxplot of the countries;
+however, that will be indiscernable based on the number of countries.
+Instead, we should group countries into regions and their continents.
+
+We will use the gapminder dataset for countries and regions. We will
+extract the country, continent, and region from gapMinder, change the
+names of differing countries, and then merge.
+
 To see the shape of the distribution of the number of suicides per
 100,000 people, we can plot a histogram of the suicides/100k pop
 variable.
 
     ## Skim summary statistics
-    ##  n obs: 27820 
-    ##  n variables: 12 
+    ##  n obs: 58848 
+    ##  n variables: 14 
     ## 
-    ## ── Variable type:character ────────────────────────────────────────
+    ## ── Variable type:character ─────────────────────────────────────────
     ##      variable missing complete     n min max empty n_unique
-    ##           age       0    27820 27820   9  11     0        6
-    ##       country       0    27820 27820   4  28     0      101
-    ##  country-year       0    27820 27820   8  32     0     2321
-    ##    generation       0    27820 27820   6  15     0        6
-    ##           sex       0    27820 27820   4   6     0        2
+    ##           age       0    58848 58848   9  11     0        6
+    ##       country       0    58848 58848   4  28     0       88
+    ##  country-year       0    58848 58848   8  32     0       88
+    ##    generation       0    58848 58848   6  12     0        4
+    ##           sex       0    58848 58848   4   6     0        2
     ## 
-    ## ── Variable type:numeric ──────────────────────────────────────────
+    ## ── Variable type:factor ────────────────────────────────────────────
+    ##   variable missing complete     n n_unique
+    ##  continent      24    58824 58848        5
+    ##     region      24    58824 58848       16
+    ##                                     top_counts ordered
+    ##  Eur: 23256, Ame: 18468, Asi: 13680, Afr: 2052   FALSE
+    ##     Nor: 6840, Wes: 6840, Car: 6156, Sou: 6156   FALSE
+    ## 
+    ## ── Variable type:numeric ───────────────────────────────────────────
     ##            variable missing complete     n          mean            sd
-    ##    gdp_for_year ($)       0    27820 27820       4.5e+11       1.5e+12
-    ##  gdp_per_capita ($)       0    27820 27820   16866.46      18887.58   
-    ##        HDI for year   19456     8364 27820       0.78          0.093  
-    ##          population       0    27820 27820 1844793.62    3911779.44   
-    ##         suicides_no       0    27820 27820     242.57        902.05   
-    ##   suicides/100k pop       0    27820 27820      12.82         18.96   
-    ##                year       0    27820 27820    2001.26          8.47   
-    ##          p0      p25          p50           p75         p100     hist
-    ##     4.7e+07 9e+09         4.8e+10       2.6e+11      1.8e+13 ▇▁▁▁▁▁▁▁
-    ##   251        3447      9372         24874       126352       ▇▂▁▁▁▁▁▁
-    ##     0.48        0.71      0.78          0.85         0.94    ▁▁▃▅▇▇▇▆
-    ##   278       97498.5  430150       1486143.25         4.4e+07 ▇▁▁▁▁▁▁▁
-    ##     0           3        25           131        22338       ▇▁▁▁▁▁▁▁
-    ##     0           0.92      5.99         16.62       224.97    ▇▁▁▁▁▁▁▁
-    ##  1985        1995      2002          2008         2016       ▅▆▇▇▇▇▇▆
+    ##    gdp_for_year ($)       0    58848 58848       6.1e+11       1.8e+12
+    ##  gdp_per_capita ($)       0    58848 58848   24125.76      22633.48   
+    ##        HDI for year    2736    56112 58848       0.79          0.087  
+    ##          population       0    58848 58848 1929582.68    4088895.06   
+    ##         suicides_no       0    58848 58848     230.6         813.66   
+    ##   suicides/100k pop       0    58848 58848      11.28         17.01   
+    ##                year       0    58848 58848    2010             0      
+    ##          p0       p25          p50           p75         p100     hist
+    ##     6.8e+08  2e+10         9.8e+10       3.9e+11      1.5e+13 ▇▁▁▁▁▁▁▁
+    ##   991         7066     13817.5       36869       111328       ▇▂▂▂▁▁▁▁
+    ##     0.61         0.73      0.8           0.88         0.94    ▃▃▆▇▆▆▇▇
+    ##  1015       113923    462298       1588670            4.3e+07 ▇▁▁▁▁▁▁▁
+    ##     0            2        23           110        11767       ▇▁▁▁▁▁▁▁
+    ##     0            0.84      4.91         14.38       182.32    ▇▁▁▁▁▁▁▁
+    ##  2010         2010      2010          2010         2010       ▁▁▁▇▁▁▁▁
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](project-writeup_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
     ## 
     ## Skim summary statistics
     ## 
-    ## ── Variable type:numeric ──────────────────────────────────────────
+    ## ── Variable type:numeric ───────────────────────────────────────────
     ##                     variable missing complete     n  mean    sd p0  p25
-    ##  suicide$`suicides/100k pop`       0    27820 27820 12.82 18.96  0 0.92
+    ##  suicide$`suicides/100k pop`       0    58848 58848 11.28 17.01  0 0.84
     ##   p50   p75   p100     hist
-    ##  5.99 16.62 224.97 ▇▁▁▁▁▁▁▁
+    ##  4.91 14.38 182.32 ▇▁▁▁▁▁▁▁
 
 Based on this histogram, we can see that it is not normally distributed
 and is extremely right skewed. In fact, from skimming this variable, we
 can see that the mean number of suicides per 100,000 people is only
-12.82, while the maximum number of suicides per 100,000 people in this
-dataset is 224.97. Thus, there is at least one extreme outlier in the
+11.22, while the maximum number of suicides per 100,000 people in this
+dataset is 182.32. Thus, there is at least one extreme outlier in the
 response variable, indicating that we should perform a log
 transformation on the response variable.
 
-However, since this response variable has many negative infinity values
-(this stems from the fact that some countries have 0 suicides), we will
-first increase the suicide number by 1 for each country and then
-recalculate suicides per
+Since this response variable has negative infinity values (this stems
+from the fact that some countries have 0 suicides), we will first
+increase the suicide number by 1 for each country and then recalculate
+suicides per
     100k.
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
@@ -184,6 +262,9 @@ term between these two variables as
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
+    ## Warning: Computation failed in `stat_bin()`:
+    ## `binwidth` must be positive
+
 ![](project-writeup_files/figure-gfm/unnamed-chunk-8-1.png)<!-- --> The
 distribution of year appears to be normal with two outliers around 1992
 and 2008. There appears to be a general increase in suicide rate as year
@@ -191,7 +272,7 @@ increases.
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-    ## Warning: Removed 19456 rows containing non-finite values (stat_bin).
+    ## Warning: Removed 2736 rows containing non-finite values (stat_bin).
 
 ![](project-writeup_files/figure-gfm/unnamed-chunk-9-1.png)<!-- --> The
 distribution of HDI for year shows that as HDI for year increases,
@@ -253,20 +334,22 @@ suicide is in given other variables.
 
 ## Section 3. Data
 
-    ## Observations: 27,820
-    ## Variables: 12
+    ## Observations: 58,848
+    ## Variables: 14
     ## $ country              <chr> "Albania", "Albania", "Albania", "Albania",…
-    ## $ year                 <dbl> 1987, 1987, 1987, 1987, 1987, 1987, 1987, 1…
-    ## $ sex                  <chr> "male", "male", "female", "male", "male", "…
-    ## $ age                  <chr> "15-24 years", "35-54 years", "15-24 years"…
-    ## $ suicides_no          <dbl> 22, 17, 15, 2, 10, 2, 7, 5, 2, 1, 1, 1, 3, …
-    ## $ population           <dbl> 312900, 308000, 289700, 21800, 274300, 3560…
-    ## $ `suicides/100k pop`  <dbl> 1.9503290, 1.7082837, 1.6443745, 2.2164074,…
-    ## $ `country-year`       <chr> "Albania1987", "Albania1987", "Albania1987"…
-    ## $ `HDI for year`       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-    ## $ `gdp_for_year ($)`   <dbl> 2156624900, 2156624900, 2156624900, 2156624…
-    ## $ `gdp_per_capita ($)` <dbl> 796, 796, 796, 796, 796, 796, 796, 796, 796…
-    ## $ generation           <chr> "Generation X", "Silent", "Generation X", "…
+    ## $ year                 <dbl> 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2…
+    ## $ sex                  <chr> "female", "female", "female", "female", "fe…
+    ## $ age                  <chr> "15-24 years", "15-24 years", "15-24 years"…
+    ## $ suicides_no          <dbl> 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6…
+    ## $ population           <dbl> 263581, 263581, 263581, 263581, 263581, 263…
+    ## $ `suicides/100k pop`  <dbl> 2.28, 2.28, 2.28, 2.28, 2.28, 2.28, 2.28, 2…
+    ## $ `country-year`       <chr> "Albania2010", "Albania2010", "Albania2010"…
+    ## $ `HDI for year`       <dbl> 0.722, 0.722, 0.722, 0.722, 0.722, 0.722, 0…
+    ## $ `gdp_for_year ($)`   <dbl> 11926953259, 11926953259, 11926953259, 1192…
+    ## $ `gdp_per_capita ($)` <dbl> 4359, 4359, 4359, 4359, 4359, 4359, 4359, 4…
+    ## $ generation           <chr> "Millenials", "Millenials", "Millenials", "…
+    ## $ continent            <fct> Europe, Europe, Europe, Europe, Europe, Eur…
+    ## $ region               <fct> Southern Europe, Southern Europe, Southern …
 
 ### Section 4 - References
 
