@@ -86,7 +86,6 @@ names(suicideFinal)[names(suicideFinal) == 'HDI for year'] <- 'HDI'
 Online, we can find the HDI from 2010 of South Korea and Russia, which are .884 and .780 respectively. 
 Since the HDI's of Puerto Rico and Aruba are not publicly available, those we will find use the average HDI from the Caribbean to impute. 
 
-
 ```{r}
 group.means<-ddply(suicideFinal,c("region"),summarise,mean=mean(HDI, na.rm = TRUE))
 group.means
