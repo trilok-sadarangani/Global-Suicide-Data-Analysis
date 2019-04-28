@@ -32,6 +32,26 @@ May 1st, 2019
     ## 
     ##     heights
 
+    ## -------------------------------------------------------------------------
+
+    ## You have loaded plyr after dplyr - this is likely to cause problems.
+    ## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+    ## library(plyr); library(dplyr)
+
+    ## -------------------------------------------------------------------------
+
+    ## 
+    ## Attaching package: 'plyr'
+
+    ## The following objects are masked from 'package:dplyr':
+    ## 
+    ##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+    ##     summarize
+
+    ## The following object is masked from 'package:purrr':
+    ## 
+    ##     compact
+
     ## Parsed with column specification:
     ## cols(
     ##   country = col_character(),
@@ -142,10 +162,27 @@ extract the country, continent, and region from gapMinder, change the
 names of differing countries, and then merge.
 
 Online, we can find the HDI from 2010 of South Korea and Russia, which
-are .884 and .780 respectively. We will do these after
+are .884 and .780 respectively. Since the HDI’s of Puerto Rico and Aruba
+are not publicly available, those we will find use the average HDI from
+the Caribbean to impute.
 
-Since the HDI’s of Puerto Rico and Aruba, since those we will find use
-the average HDI from that region to impute.
+    ##                       region      mean
+    ## 1  Australia and New Zealand 0.9160000
+    ## 2                  Caribbean 0.7511250
+    ## 3            Central America 0.6928571
+    ## 4               Central Asia 0.6802500
+    ## 5             Eastern Africa 0.7495000
+    ## 6               Eastern Asia 0.8840000
+    ## 7             Eastern Europe 0.8020000
+    ## 8           Northern America 0.9060000
+    ## 9            Northern Europe 0.8809000
+    ## 10             South America 0.7293333
+    ## 11        South-Eastern Asia 0.7556667
+    ## 12           Southern Africa 0.6430000
+    ## 13             Southern Asia 0.6830000
+    ## 14           Southern Europe 0.8231111
+    ## 15              Western Asia 0.8020000
+    ## 16            Western Europe 0.8954286
 
 To see the shape of the distribution of the number of suicides per
 100,000 people, we can plot a histogram of the suicides/100k pop
@@ -179,7 +216,7 @@ variable.
     ##            variable missing complete    n          mean            sd
     ##    gdp_for_year ($)       0     1056 1056       5.9e+11       1.8e+12
     ##  gdp_per_capita ($)       0     1056 1056   23857.19      22474.17   
-    ##                 HDI      48     1008 1056       0.79          0.086  
+    ##                 HDI       0     1056 1056       0.79          0.085  
     ##          population       0     1056 1056 1891380.05    4052946.65   
     ##         suicides_no       0     1056 1056     226.04        805.51   
     ##   suicides/100k pop       0     1056 1056      11.22         16.94   
@@ -187,7 +224,7 @@ variable.
     ##          p0       p25          p50           p75         p100     hist
     ##     6.8e+08  2e+10         9.4e+10       3.8e+11      1.5e+13 ▇▁▁▁▁▁▁▁
     ##   991         7008.5   13817.5       36326       111328       ▇▂▂▂▁▁▁▁
-    ##     0.61         0.73      0.8           0.88         0.94    ▃▃▆▇▆▆▇▇
+    ##     0.61         0.73      0.79          0.88         0.94    ▂▃▆▇▆▆▇▆
     ##  1015       107517.75 453842.5     1548637.25         4.3e+07 ▇▁▁▁▁▁▁▁
     ##     0            2        22           107.5      11767       ▇▁▁▁▁▁▁▁
     ##     0            0.8       4.81         14.37       182.32    ▇▁▁▁▁▁▁▁
@@ -278,8 +315,6 @@ and Millienials have lower rates than the average value of around
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-    ## Warning: Removed 48 rows containing non-finite values (stat_bin).
-
 ![](project-writeup_files/figure-gfm/unnamed-chunk-21-1.png)<!-- --> The
 distribution of HDI shows that as HDI increases, suicide rate increases
 until about .75 and then begins to slightly
@@ -313,14 +348,10 @@ Like the GDP of the country, the GDP Per Capita has a non-normal
 distribution. Rather, it is skewed to the left. Since these variables
 are so similar, there could be mulitcollinearity between the two.
 
-    ## Warning: Removed 48 rows containing missing values (geom_point).
-
 ![](project-writeup_files/figure-gfm/unnamed-chunk-26-1.png)<!-- --> We
 do not see a correlation between HDI and Suicides/100k.
 ![](project-writeup_files/figure-gfm/unnamed-chunk-27-1.png)<!-- --> We
 do not see a correlation between GDP and Suicides/100k.
-
-    ## Warning: Removed 48 rows containing missing values (geom_point).
 
 ![](project-writeup_files/figure-gfm/unnamed-chunk-28-1.png)<!-- --> We
 do not see a correlation between GDP per capita and Suicides/100k.

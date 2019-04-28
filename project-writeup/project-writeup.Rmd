@@ -18,6 +18,7 @@ library(broom)
 library(skimr)
 library(modelr)
 library(leaps)
+library(plyr)
 ```
 
 ```{r load-data}
@@ -49,6 +50,7 @@ suicideNew <- suicideNew %>% mutate(sex = as.factor(sex))
 
 ```{r}
 HDINA <- suicideNew %>% filter(is.na(`HDI for year`))
+
 ```
 The countries that do not have HDI calculated for them are Aruba, Puerto Rico, Korea, and Russia. Online, we can find the HDI from 2010 of South Korea and Russia, which are .884 and .780 respectively. We will do these after we add regions to our data set. 
 
@@ -77,16 +79,31 @@ gapminder2010$country <- replace(gapminder2010$country, gapminder2010$country=="
 gapminder2010 <- data.frame(lapply(gapminder2010, as.character), stringsAsFactors=TRUE)
 
 suicideFinal <- merge(suicideNew, gapminder2010, by = "country", all.x = TRUE)
+names(suicideFinal)[names(suicideFinal) == 'HDI for year'] <- 'HDI'
+
 ```
+
+Online, we can find the HDI from 2010 of South Korea and Russia, which are .884 and .780 respectively. 
+Since the HDI's of Puerto Rico and Aruba are not publicly available, those we will find use the average HDI from the Caribbean to impute. 
+
 
 ```{r}
-donor <- data.frame(country=c("Republic of Korea", "Russian Federation"), "HDI"=c(.884, .780))
+group.means<-ddply(suicideFinal,c("region"),summarise,mean=mean(HDI, na.rm = TRUE))
+group.means
 
-names(suicideFinal)[names(suicideFinal) == 'HDI for year'] <- 'HDI'
+for(i in 1:nrow(suicideFinal)){
+  if (suicideFinal$country[i] == "Republic of Korea"){
+    suicideFinal$HDI[i] = .884
+  }
+  if (suicideFinal$country[i] == "Russian Federation"){
+    suicideFinal$HDI[i] = .780
+  }
+  if (suicideFinal$country[i] == "Aruba" | suicideFinal$country[i] == "Puerto Rico"){
+    suicideFinal$HDI[i] = .751
+  }
+}
 ```
-Online, we can find the HDI from 2010 of South Korea and Russia, which are .884 and .780 respectively. We will do these after 
 
-Since the HDI's of Puerto Rico and Aruba, since those we will find use the average HDI from that region to impute. 
 
 To see the shape of the distribution of the number of suicides per 100,000 people, we can plot a histogram of the suicides/100k pop variable.
 
