@@ -299,7 +299,6 @@ model1 <- lm(`suicides/100k pop` ~ sex + age + population + HDI + (`gdp_for_year
 
 regfit_backward <- step(model1, direction = "backward")
 regfit_backward
-
 ```
 
 We chose a multiple linear regression model because we want to predict the value of a variable based on multile different independent variables. Based on backward selection, we found that sex, age  population, HDI, gdp for year, and gdp per capita, and region are relevant predictors, whereas population, continent, and generation are not. 
@@ -395,7 +394,10 @@ finalmodel <- lm(formula = `suicides/100k pop` ~ country + sex + age + suicides_
 kable(tidy(finalmodel))
 ```
 
-
+-interpret economic situations for prediction
+-pick different types of countries -- rich and poor to predict on
+-region with other variables as interactions 
+-can use regions unless there are too many but defo dont use countries
 
 ### Section 4 - References
 - [1] https://www.cdc.gov/nchs/fastats/adolescent-health.htm
