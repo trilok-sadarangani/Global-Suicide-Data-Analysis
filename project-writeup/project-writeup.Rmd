@@ -137,13 +137,6 @@ Note: suicides/100k pop is now log transformed for all plots below.
 
 We will now look at an overview of the relationships that suicides/100k pop has with each of the quantitative predictor variables (age, sex, country, year, HDI, gdp_for_year, gdp_per_capita, and generation), as well as the relationships these variables have with each other.
 
-First, we will mean center our quantitative variables.
-```{r}
-suicideFinal <- suicideFinal %>%
-  mutate(population = population - mean(population), HDI = HDI - mean(HDI), `gdp_for_year ($)` = `gdp_for_year ($)` - mean(`gdp_for_year ($)`), `gdp_per_capita ($)` = `gdp_per_capita ($)` - mean(`gdp_per_capita ($)`))
-```
-
-
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`age`)) + 
   geom_bar() +
@@ -210,40 +203,63 @@ ggplot(data=suicideFinal, mapping=aes(x=generation, y=`suicides/100k pop` ))+
 From this boxplot, we see that the average suicide rate/100k people is varied among generation. More specifically, we notice that Generation Z and Millienials have lower rates than the average value of around 2.
 
 ```{r}
+ggplot(data=suicideFinal, mapping=aes(x=`population`)) + 
+  geom_histogram() +
+  labs(title="Distribution of Population", x="Population")
+```
+We will have to log transform population. In addition, we will mean center it so it is easier to interpret.
+
+```{r}
+suicideFinal <- suicideFinal %>% mutate(population = log(population), population = population - mean(population))
+ggplot(data=suicideFinal, mapping=aes(x=`population`)) + 
+  geom_histogram() +
+  labs(title="Distribution of Population", x="Population")
+```
+We see that this plot has is skewed left and has a unimodal distribution. 
+
+We will mean center HDI so it makes it easier to interpret. 
+
+```{r}
+suicideFinal <- suicideFinal %>% mutate(HDI = HDI - mean(HDI))
 ggplot(data=suicideFinal, mapping=aes(x=`HDI`)) + 
   geom_histogram() +
   labs(title="Distribution of HDI", x="HDI")
 ```
-The distribution of HDI shows that as HDI increases, suicide rate increases until about .75 and then begins to slightly decrease.
-
+The HDI does not have a set distribution. Rather, it is quite parse. 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=(`gdp_for_year ($)`))) + geom_histogram() +
   labs(title="Distribution of GDPs of Countries", x="Value")
 ```
-Because this is skewed greatly, a log transformation of gdp is needed. 
+Because this is skewed greatly, a log transformation of gdp is needed. We will also mean center this variable. 
 ```{r}
 suicideFinal<- suicideFinal %>% mutate (`gdp_for_year ($)` = log(`gdp_for_year ($)`))
+
+suicideFinal <- suicideFinal %>% mutate(`gdp_for_year ($)` = `gdp_for_year ($)` - mean(`gdp_for_year ($)`))
+
 ggplot(data=suicideFinal, mapping=aes(x=(`gdp_for_year ($)`))) + geom_histogram() +
   labs(title="Distribution of GDPs of Countries", x="Value")
 ```
 
-Log transforming the data set, we notice that the distribution of GDPs of countries has a bimodal distribution.
+Log transforming the data set, we notice that the distribution of GDPs of countries has a near-bimodal distribution.
 
 ```{r}
 ggplot(data=suicide, mapping=aes(x=(`gdp_per_capita ($)`))) +
   geom_histogram() +
   labs(title="Distribution of GDP Per Capita of Countries", x="Value")
 ```
-Like GDP, we will need to log transform this data set.
+Like GDP, we will need to log transform this data set. We will also mean center this. 
 
 ```{r}
 suicideFinal<- suicideFinal %>% mutate (`gdp_per_capita ($)` = log(`gdp_per_capita ($)`))
+
+suicideFinal <- suicideFinal %>% mutate(`gdp_per_capita ($)` = `gdp_per_capita ($)` - mean(`gdp_per_capita ($)`))
+
 ggplot(data=suicideFinal, mapping=aes(x=(`gdp_per_capita ($)`))) +
   geom_histogram() +
   labs(title="Distribution of GDP Per Capita of Countries", x="Value")
 ```
 
-Like the GDP of the country, the GDP Per Capita has a non-normal distribution. Rather, it is skewed to the left. Since these variables are so similar, there could be mulitcollinearity between the two.
+Like the GDP of the country, the GDP Per Capita has a non-normal distribution. Rather, it is skewed to the left and is bimodal. Since these variables are so similar, there could be mulitcollinearity between the two.
 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`HDI`, y=`suicides/100k pop`))+
