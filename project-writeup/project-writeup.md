@@ -3,14 +3,22 @@ Stat210 Final Project
 CamFam
 May 1st, 2019
 
+<<<<<<< HEAD
     ## ── Attaching packages ───────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+=======
+    ## ── Attaching packages ────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+>>>>>>> f28a023c91befce4c65ed6dc68e42c26d8f75978
 
     ## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
     ## ✔ tibble  2.0.0     ✔ dplyr   0.7.8
     ## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
     ## ✔ readr   1.3.1     ✔ forcats 0.3.0
 
+<<<<<<< HEAD
     ## ── Conflicts ──────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+=======
+    ## ── Conflicts ───────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+>>>>>>> f28a023c91befce4c65ed6dc68e42c26d8f75978
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -152,7 +160,11 @@ is the year HDI values were collected.
     ##  n obs: 1056 
     ##  n variables: 12 
     ## 
+<<<<<<< HEAD
     ## ── Variable type:character ───────────────────────────────────────────────────────────────────────────────────────────
+=======
+    ## ── Variable type:character ────────────────────────────────────────────────────────────────────────
+>>>>>>> f28a023c91befce4c65ed6dc68e42c26d8f75978
     ##      variable missing complete    n min max empty n_unique
     ##           age       0     1056 1056   9  11     0        6
     ##       country       0     1056 1056   4  28     0       88
@@ -160,7 +172,11 @@ is the year HDI values were collected.
     ##    generation       0     1056 1056   6  12     0        4
     ##           sex       0     1056 1056   4   6     0        2
     ## 
+<<<<<<< HEAD
     ## ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────────────────────
+=======
+    ## ── Variable type:numeric ──────────────────────────────────────────────────────────────────────────
+>>>>>>> f28a023c91befce4c65ed6dc68e42c26d8f75978
     ##            variable missing complete    n          mean            sd
     ##    gdp_for_year ($)       0     1056 1056       5.9e+11       1.8e+12
     ##  gdp_per_capita ($)       0     1056 1056   23857.19      22474.17   
@@ -224,11 +240,19 @@ variable.
     ##  n obs: 1056 
     ##  n variables: 14 
     ## 
+<<<<<<< HEAD
     ## ── Variable type:character ───────────────────────────────────────────────────────────────────────────────────────────
     ##      variable missing complete    n min max empty n_unique
     ##  country-year       0     1056 1056   8  32     0       88
     ## 
     ## ── Variable type:factor ──────────────────────────────────────────────────────────────────────────────────────────────
+=======
+    ## ── Variable type:character ────────────────────────────────────────────────────────────────────────
+    ##      variable missing complete    n min max empty n_unique
+    ##  country-year       0     1056 1056   8  32     0       88
+    ## 
+    ## ── Variable type:factor ───────────────────────────────────────────────────────────────────────────
+>>>>>>> f28a023c91befce4c65ed6dc68e42c26d8f75978
     ##    variable missing complete    n n_unique
     ##         age       0     1056 1056        6
     ##   continent       0     1056 1056        5
@@ -244,7 +268,11 @@ variable.
     ##  Car: 120, Nor: 120, Wes: 120, Eas: 108   FALSE
     ##               fem: 528, mal: 528, NA: 0   FALSE
     ## 
+<<<<<<< HEAD
     ## ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────────────────────
+=======
+    ## ── Variable type:numeric ──────────────────────────────────────────────────────────────────────────
+>>>>>>> f28a023c91befce4c65ed6dc68e42c26d8f75978
     ##            variable missing complete    n          mean            sd
     ##    gdp_for_year ($)       0     1056 1056       5.9e+11       1.8e+12
     ##  gdp_per_capita ($)       0     1056 1056   23857.19      22474.17   
@@ -269,7 +297,11 @@ variable.
     ## 
     ## Skim summary statistics
     ## 
+<<<<<<< HEAD
     ## ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────────────────────
+=======
+    ## ── Variable type:numeric ──────────────────────────────────────────────────────────────────────────
+>>>>>>> f28a023c91befce4c65ed6dc68e42c26d8f75978
     ##                          variable missing complete    n  mean    sd p0 p25
     ##  suicideFinal$`suicides/100k pop`       0     1056 1056 11.22 16.94  0 0.8
     ##   p50   p75   p100     hist
@@ -510,7 +542,7 @@ population, HDI, gdp for year, and gdp per capita, and region are
 relevant predictors, whereas population, continent, and generation are
 not.
 
-# Testing of Interesting Interactions
+### Testing of Interesting Interactions
 
 For the interaction effects, we will look into the interaction of each
 quantitative variable with each qualitative variable. We will also look
@@ -739,6 +771,76 @@ model
 |      age5-14 years:`gdp_for_year ($)`       |  0.3607650   | 0.2951526  |  1.2222998  | 0.2218882 |
 |      age55-74 years:`gdp_for_year ($)`      |  0.0088806   | 0.2681111  |  0.0331229  | 0.9735833 |
 |       age75+ years:`gdp_for_year ($)`       |  0.3127316   | 0.2495005  |  1.2534309  | 0.2103479 |
+
+### Model Assumptions
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
+
+From the residual vs. predicted values, the residuals with lower
+predicted values seem to be more sparse and spread out than the others,
+which may be worth looking into. However, for the most part, the
+majority of the residuals are randomly distributed around the red line
+and do not exhibit any obvious nonlinear trends. Thus, we can conclude
+that constant variance is satisfied.
+
+We will now look at predictors vs. residuals to more closely examine
+linearity.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
+
+While there are some differences between some of the means of the
+residuals for some regions, these means do not seem to vary by too much,
+and thus the linearity assumption is moderately satisfied for this
+variable. However, there are a few regions with some extreme residuals,
+such as the Carribean and Western Asia. It could be worth looking into
+these more.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
+
+While there is some differences between the means of the residuals for
+the two gender groups, these means do not seem to vary by too much, and
+the plots seem to have very similar distributions, and thus the
+linearity assumption is moderately satisfied for this variable.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+
+Again, while there are some differences between some of the means of the
+residuals for some age groups, these means do not seem to vary by too
+much, and thus the linearity assumption is satisfied for this variable.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-49-1.png)<!-- -->
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-51-1.png)<!-- -->
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
+
+For all of these scatterplots, the residuals seem to be scattered pretty
+evenly around the 0 line, and none of them show an obvious curving
+shape, so we can conclude that the linearity assumption is met for these
+predictors as well.
+
+We also need to check the normality and independence assumptions. For
+normality, we can create a QQ-plot of the residuals and a histogram of
+the distribution of residuals for this
+    model.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-53-1.png)<!-- -->
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-54-1.png)<!-- -->
+
+According to the QQ-plot, the normality assumption seems to be satisfied
+because the majority of the points seem to align well with the expected
+QQ-plot line. In addition, the histogram seems to be approximately
+normal and follows a mostly smooth curve.
+
+Finally, based on the description of the data, the independence
+assumption seems to be met because this data was not collected over
+time, since we only took the year 2010, and there does not appear to be
+a cluster effect.
 
 ### Section 4 - References
 
