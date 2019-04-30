@@ -83,15 +83,15 @@ Since the HDI's of Puerto Rico and Aruba are not publicly available, those we wi
 group.means<-ddply(suicideFinal,c("region"),summarise,mean=mean(HDI, na.rm = TRUE))
 group.means
 for(i in 1:nrow(suicideFinal)){
-  if (suicideFinal$country[i] == "Republic of Korea"){
-    suicideFinal$HDI[i] = .884
-  }
-  if (suicideFinal$country[i] == "Russian Federation"){
-    suicideFinal$HDI[i] = .780
-  }
-  if (suicideFinal$country[i] == "Aruba" | suicideFinal$country[i] == "Puerto Rico"){
-    suicideFinal$HDI[i] = .751
-  }
+if (suicideFinal$country[i] == "Republic of Korea"){
+suicideFinal$HDI[i] = .884
+}
+if (suicideFinal$country[i] == "Russian Federation"){
+suicideFinal$HDI[i] = .780
+}
+if (suicideFinal$country[i] == "Aruba" | suicideFinal$country[i] == "Puerto Rico"){
+suicideFinal$HDI[i] = .751
+}
 }
 ```
 
@@ -101,8 +101,8 @@ To see the shape of the distribution of the number of suicides per 100,000 peopl
 ```{r}
 skim(suicideFinal)
 ggplot(data=suicideFinal, mapping=aes(x=`suicides/100k pop`)) + 
-  geom_histogram() +
-  labs(title="Distribution of the Number of Suicides per 100,000 People", x="Number of Suicides per 100,000 People")
+geom_histogram() +
+labs(title="Distribution of the Number of Suicides per 100,000 People", x="Number of Suicides per 100,000 People")
 ```
 
 ```{r}
@@ -127,8 +127,8 @@ suicideFinal <- suicideFinal %>% mutate (`suicides/100k pop` = log(`suicides/100
 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`suicides/100k pop`)) + 
-  geom_histogram() +
-  labs(title="Distribution of the Log Number of Suicides per 100,000 People", x="Log Number of Suicides per 100,000 People")
+geom_histogram() +
+labs(title="Distribution of the Log Number of Suicides per 100,000 People", x="Log Number of Suicides per 100,000 People")
 ```
 
 From log transforming suicides/100k pop, we can already see that the extreme outliers have disappeared, and the histogram seems to be approximately normally distributed. 
@@ -139,81 +139,81 @@ We will now look at an overview of the relationships that suicides/100k pop has 
 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`age`)) + 
-  geom_bar() +
-  labs(title="Bar Plot of Ages", x="Age")
+geom_bar() +
+labs(title="Bar Plot of Ages", x="Age")
 ```
 In our data set, all ages have the same number of counts. 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`sex`)) + 
-  geom_bar() +
-  labs(title="Bar Plot of gender", x="Sex")
+geom_bar() +
+labs(title="Bar Plot of gender", x="Sex")
 ```
 In our data set, male and female have the same count
 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`continent`)) + 
-  geom_bar() +
-  labs(title="Bar Plot of Continents", x="Continent")
+geom_bar() +
+labs(title="Bar Plot of Continents", x="Continent")
 ```
 In our data set, we see that most of the countries are from the Americas and Europe. 
 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`region`)) + 
-  geom_bar() +
-  labs(title="Bar Plot of Regions", x="Region") + coord_flip()
+geom_bar() +
+labs(title="Bar Plot of Regions", x="Region") + coord_flip()
 ```
 From this bar graph, we notice that most of our data set seems high in regions from Western Asia, Southern Europe, South America, Northern Europe, and the Caribbean. 
 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`age`, y= `suicides/100k pop`)) + 
-  geom_boxplot() +
-  labs(title="Age vs. Suicides", x="Age", y="Suicides")
+geom_boxplot() +
+labs(title="Age vs. Suicides", x="Age", y="Suicides")
 ```
 
 By examining these boxplots, we can tell that as age increases, suicide rate tends to increase in general.
 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`continent`, y= `suicides/100k pop`)) + 
-  geom_boxplot() +
-  labs(title="Continent vs. Suicides", x="Continent", y="Suicides")
+geom_boxplot() +
+labs(title="Continent vs. Suicides", x="Continent", y="Suicides")
 ```
 In general, each continent has a similar average number of suicides, with Europe having much more outliers with fewer suicides than the others. 
 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`region`, y= `suicides/100k pop`)) + 
-  geom_boxplot() +
-  labs(title="Region vs. Suicides", x="Region", y="Suicides") + coord_flip()
+geom_boxplot() +
+labs(title="Region vs. Suicides", x="Region", y="Suicides") + coord_flip()
 ```
 The average number of suicides/100k for each region is around 2. We see Souther Africa as a key outlier with far less suicides and Eastern Africa with far more suicides than the average. 
 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=sex, y=`suicides/100k pop` ))+
-  geom_boxplot()+
-  labs(title = "Boxplot of Gender & Suicide", x = "gender", y = "suicide")
+geom_boxplot()+
+labs(title = "Boxplot of Gender & Suicide", x = "gender", y = "suicide")
 ```
 
 From this boxplot, we notice that males have a higher suicide rate/100k people than females. However, there are many outliers in this data set so we must explore further.
 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=generation, y=`suicides/100k pop` ))+
-  geom_boxplot()+
-  labs(title = "Boxplot of Generation & Suicide", x = "Generation", y = "Suicide")
+geom_boxplot()+
+labs(title = "Boxplot of Generation & Suicide", x = "Generation", y = "Suicide")
 ```
 
 From this boxplot, we see that the average suicide rate/100k people is varied among generation. More specifically, we notice that Generation Z and Millienials have lower rates than the average value of around 2.
 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`population`)) + 
-  geom_histogram() +
-  labs(title="Distribution of Population", x="Population")
+geom_histogram() +
+labs(title="Distribution of Population", x="Population")
 ```
 We will have to log transform population. In addition, we will mean center it so it is easier to interpret.
 
 ```{r}
 suicideFinal <- suicideFinal %>% mutate(population = log(population), population = population - mean(population))
 ggplot(data=suicideFinal, mapping=aes(x=`population`)) + 
-  geom_histogram() +
-  labs(title="Distribution of Population", x="Population")
+geom_histogram() +
+labs(title="Distribution of Population", x="Population")
 ```
 We see that this plot has is skewed left and has a unimodal distribution. 
 
@@ -222,13 +222,14 @@ We will mean center HDI so it makes it easier to interpret.
 ```{r}
 suicideFinal <- suicideFinal %>% mutate(HDI = HDI - mean(HDI))
 ggplot(data=suicideFinal, mapping=aes(x=`HDI`)) + 
-  geom_histogram() +
-  labs(title="Distribution of HDI", x="HDI")
+geom_histogram() +
+labs(title="Distribution of HDI", x="HDI")
 ```
-The HDI does not have a set distribution. Rather, it is quite parse. 
+The HDI does not have a set distribution. Rather, it is quite parse.
+
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=(`gdp_for_year ($)`))) + geom_histogram() +
-  labs(title="Distribution of GDPs of Countries", x="Value")
+labs(title="Distribution of GDPs of Countries", x="Value")
 ```
 Because this is skewed greatly, a log transformation of gdp is needed. We will also mean center this variable. 
 ```{r}
@@ -237,15 +238,15 @@ suicideFinal<- suicideFinal %>% mutate (`gdp_for_year ($)` = log(`gdp_for_year (
 suicideFinal <- suicideFinal %>% mutate(`gdp_for_year ($)` = `gdp_for_year ($)` - mean(`gdp_for_year ($)`))
 
 ggplot(data=suicideFinal, mapping=aes(x=(`gdp_for_year ($)`))) + geom_histogram() +
-  labs(title="Distribution of GDPs of Countries", x="Value")
+labs(title="Distribution of GDPs of Countries", x="Value")
 ```
 
 Log transforming the data set, we notice that the distribution of GDPs of countries has a near-bimodal distribution.
 
 ```{r}
 ggplot(data=suicide, mapping=aes(x=(`gdp_per_capita ($)`))) +
-  geom_histogram() +
-  labs(title="Distribution of GDP Per Capita of Countries", x="Value")
+geom_histogram() +
+labs(title="Distribution of GDP Per Capita of Countries", x="Value")
 ```
 Like GDP, we will need to log transform this data set. We will also mean center this. 
 
@@ -255,29 +256,29 @@ suicideFinal<- suicideFinal %>% mutate (`gdp_per_capita ($)` = log(`gdp_per_capi
 suicideFinal <- suicideFinal %>% mutate(`gdp_per_capita ($)` = `gdp_per_capita ($)` - mean(`gdp_per_capita ($)`))
 
 ggplot(data=suicideFinal, mapping=aes(x=(`gdp_per_capita ($)`))) +
-  geom_histogram() +
-  labs(title="Distribution of GDP Per Capita of Countries", x="Value")
+geom_histogram() +
+labs(title="Distribution of GDP Per Capita of Countries", x="Value")
 ```
 
 Like the GDP of the country, the GDP Per Capita has a non-normal distribution. Rather, it is skewed to the left and is bimodal. Since these variables are so similar, there could be mulitcollinearity between the two.
 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`HDI`, y=`suicides/100k pop`))+
-  geom_point()+
-  labs(title = "Plot of Suicides/100k vs HDI", x = "HDI", y = "Suicides/100k")
+geom_point()+
+labs(title = "Plot of Suicides/100k vs HDI", x = "HDI", y = "Suicides/100k")
 ```
 We do not see a correlation between HDI and Suicides/100k.
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`gdp_per_capita ($)`, y=`suicides/100k pop`))+
-  geom_point()+
-  labs(title = "Plot of Suicides/100k vs GDP", x = "GDP", y = "Suicides/100k")
+geom_point()+
+labs(title = "Plot of Suicides/100k vs GDP", x = "GDP", y = "Suicides/100k")
 ```
 We do not see a correlation between GDP and Suicides/100k.
 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`HDI`, y=`suicides/100k pop`))+
-  geom_point()+
-  labs(title = "Plot of Suicides/100k vs GDP Per Capita", x = "GDP Per Capita", y = "Suicides/100k")
+geom_point()+
+labs(title = "Plot of Suicides/100k vs GDP Per Capita", x = "GDP Per Capita", y = "Suicides/100k")
 ```
 We do not see a correlation between GDP per capita and Suicides/100k.
 
@@ -285,11 +286,11 @@ We do not see a correlation between GDP per capita and Suicides/100k.
 pairs(`suicides/100k pop` ~ `HDI` + `gdp_for_year ($)` + `gdp_per_capita ($)` + population, data = suicideFinal)
 ```
 
-From the pairs plot, it looks as if  HDI, and gdp_for_year do not have a clear linear relationship with suicides/100k pop. However, gdp_per_capita seems to be positively correlated with suicides/100k pop, meaning as gdp_per_capita increases, so does suicides/100k pop. Additionally, it looks as if HDI and gdp_per_capita seem to have a strong non-linear relationship, indicating that we should continue looking into this relationship and perhaps include an interaction term between these two variables. Similarly, HDI and gdp_for_year also seem to have a strong non-linear relationship, so we should include an interaction term between these two variables as well. We also see a strong evidence of multicollinearity between GDP for year and GDP per capita that we must address in the model.
+From the pairs plot, it looks as if HDI, and gdp_for_year do not have a clear linear relationship with suicides/100k pop. However, gdp_per_capita seems to be positively correlated with suicides/100k pop, meaning as gdp_per_capita increases, so does suicides/100k pop. Additionally, it looks as if HDI and gdp_per_capita seem to have a strong non-linear relationship, indicating that we should continue looking into this relationship and perhaps include an interaction term between these two variables. Similarly, HDI and gdp_for_year also seem to have a strong non-linear relationship, so we should include an interaction term between these two variables as well. We also see a strong evidence of multicollinearity between GDP for year and GDP per capita that we must address in the model.
 
 We are very concerned about multicollinearity between all of these variables, so we will look into VIF.
 
-We plan to do a multiple linear regression because suicides/100k pop is a quantitative variable (there are no levels to it, since it is a continuous variable).  
+We plan to do a multiple linear regression because suicides/100k pop is a quantitative variable (there are no levels to it, since it is a continuous variable).
 
 ## Section 3. Data
 We are not going to include country in this model as there are over 188 countries and we can already account for much of this variability based off of region and continent. 
@@ -300,7 +301,7 @@ regfit_backward <- step(model1, direction = "backward")
 regfit_backward
 ```
 
-We chose a multiple linear regression model because we want to predict the value of a variable based on multile different independent variables. Based on backward selection, we found that sex, age  population, HDI, gdp for year, and gdp per capita, and region are relevant predictors, whereas population, continent, and generation are not. 
+We chose a multiple linear regression model because we want to predict the value of a variable based on multile different independent variables. Based on backward selection, we found that sex, age population, HDI, gdp for year, and gdp per capita, and region are relevant predictors, whereas population, continent, and generation are not. 
 
 # Testing of Interesting Interactions
 For the interaction effects, we will look into the interaction of each quantitative variable with each qualitative variable. We will also look at a select few qualitative variables with one another.
@@ -310,29 +311,28 @@ model2 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp
 
 anova(model1,model2)
 ```
-The F statistic is 2.4591 and the p-value is 0.003639, which is  small. We can can conclude that the interaction effect of HDI and region is a significant predictor.
+The F statistic is 2.4591 and the p-value is 0.003639, which is small. We can can conclude that the interaction effect of HDI and region is a significant predictor.
 
 ```{r}
 model3 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + region*population, data = suicideFinal)
 
 anova(model1,model3)
 ```
-The F statistic is 4.3923  and the p-value is 4.641e-08, which is very low We can can conclude that the interaction effect of region and population is  a significant predictor.
-
+The F statistic is 4.3923 and the p-value is 4.641e-08, which is very low We can can conclude that the interaction effect of region and population is a significant predictor.
 
 ```{r}
 model4 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + region*`gdp_for_year ($)`, data = suicideFinal)
 
 anova(model1,model4)
 ```
-The F statistic is 2.216  and the p-value is 0.007552 , which is below .05. We can can conclude that the interaction effect of region and GDP for year is  a significant predictor.
+The F statistic is 2.216 and the p-value is 0.007552 , which is below .05. We can can conclude that the interaction effect of region and GDP for year is a significant predictor.
 
 ```{r}
 model5 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + region*`gdp_per_capita ($)`, data = suicideFinal)
 
 anova(model1,model5)
 ```
-The F statistic is 1.2491   and the p-value is 0.2387, which is above .05 We can can conclude that the interaction effect of region and gdp per capita is not a significant predictor.
+The F statistic is 1.2491 and the p-value is 0.2387, which is above .05 We can can conclude that the interaction effect of region and gdp per capita is not a significant predictor.
 
 ```{r}
 model6 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + sex*HDI, data = suicideFinal)
@@ -346,7 +346,7 @@ model10 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gd
 
 anova(model1,model10)
 ```
-The F statistic is 13.857   and the p-value is 4.027e-13, which is smaller than 0.05. We can can conclude that the interaction effect of age and HDI is significant predictor.
+The F statistic is 13.857 and the p-value is 4.027e-13, which is smaller than 0.05. We can can conclude that the interaction effect of age and HDI is significant predictor.
 
 ```{r}
 model11 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + age*`gdp_per_capita ($)`, data = suicideFinal)
@@ -360,23 +360,61 @@ model12 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gd
 
 anova(model1,model12)
 ```
-The F statistic is 27.466   and the p-value is 2.2e-16, which is smaller than 0.05. We can can conclude that the interaction effect of age and gdp for year is significant predictor.
+The F statistic is 27.466 and the p-value is 2.2e-16, which is smaller than 0.05. We can can conclude that the interaction effect of age and gdp for year is significant predictor.
 
 ```{r}
 model13 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + age*population, data = suicideFinal)
 
 anova(model1,model13)
 ```
-The F statistic is 23.793  and the p-value is 2.2e-16, which is smaller than 0.05. We can can conclude that the interaction effect of age and gdp per capita is a significant predictor.
+The F statistic is 23.793 and the p-value is 2.2e-16, which is smaller than 0.05. We can can conclude that the interaction effect of age and gdp per capita is a significant predictor.
 
 ```{r}
 
 ```
 
-From this, analysis, we will include 7 interactoin effects in our new model
+From this, analysis, we will include 7 interaction effects in our new model
 ```{r}
 finalmodel <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + region*HDI + region*`gdp_for_year ($)` + region*`gdp_per_capita ($)` + age*HDI + age*population + age*`gdp_per_capita ($)` + age*`gdp_for_year ($)`, data = suicideFinal)
 kable(tidy(finalmodel))
+```
+
+```{r}
+ggplot(data=suicideFinal,mapping=aes(x=year,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and year with regards to region view", 
+x="year", 
+y="year",
+color="region")
+
+ggplot(data=suicideFinal,mapping=aes(x=suicides_no,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and suicides_no with regards to region view", 
+x="suicides_no", 
+y="suicides",
+color="region")
+
+ggplot(data=suicideFinal,mapping=aes(x=population,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and population with regards to region view", 
+x="population", 
+y="suicides",
+color="region")
+
+ggplot(data=suicideFinal,mapping=aes(x=HDI,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and hdi with regards to region view", 
+x="hdi", 
+y="suicides",
+color="region")
+
+ggplot(data=suicideFinal,mapping=aes(x=`gdp_per_capita ($)`,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and gdp / capita with regards to region view", 
+x="gdp / capita", 
+y="suicides",
+color="region")
+
+ggplot(data=suicideFinal,mapping=aes(x=`gdp_for_year ($)`,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and gdp / year with regards to region view", 
+x="gdp / year", 
+y="suicides",
+color="region")
 ```
 
 

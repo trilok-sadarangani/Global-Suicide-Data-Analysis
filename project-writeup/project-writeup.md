@@ -3,14 +3,14 @@ Stat210 Final Project
 CamFam
 May 1st, 2019
 
-    ## ── Attaching packages ─────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ───────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
     ## ✔ tibble  2.0.0     ✔ dplyr   0.7.8
     ## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
     ## ✔ readr   1.3.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ──────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -152,7 +152,7 @@ is the year HDI values were collected.
     ##  n obs: 1056 
     ##  n variables: 12 
     ## 
-    ## ── Variable type:character ─────────────────────────────────────────
+    ## ── Variable type:character ───────────────────────────────────────────────────────────────────────────────────────────
     ##      variable missing complete    n min max empty n_unique
     ##           age       0     1056 1056   9  11     0        6
     ##       country       0     1056 1056   4  28     0       88
@@ -160,7 +160,7 @@ is the year HDI values were collected.
     ##    generation       0     1056 1056   6  12     0        4
     ##           sex       0     1056 1056   4   6     0        2
     ## 
-    ## ── Variable type:numeric ───────────────────────────────────────────
+    ## ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────────────────────
     ##            variable missing complete    n          mean            sd
     ##    gdp_for_year ($)       0     1056 1056       5.9e+11       1.8e+12
     ##  gdp_per_capita ($)       0     1056 1056   23857.19      22474.17   
@@ -224,11 +224,11 @@ variable.
     ##  n obs: 1056 
     ##  n variables: 14 
     ## 
-    ## ── Variable type:character ─────────────────────────────────────────
+    ## ── Variable type:character ───────────────────────────────────────────────────────────────────────────────────────────
     ##      variable missing complete    n min max empty n_unique
     ##  country-year       0     1056 1056   8  32     0       88
     ## 
-    ## ── Variable type:factor ────────────────────────────────────────────
+    ## ── Variable type:factor ──────────────────────────────────────────────────────────────────────────────────────────────
     ##    variable missing complete    n n_unique
     ##         age       0     1056 1056        6
     ##   continent       0     1056 1056        5
@@ -244,7 +244,7 @@ variable.
     ##  Car: 120, Nor: 120, Wes: 120, Eas: 108   FALSE
     ##               fem: 528, mal: 528, NA: 0   FALSE
     ## 
-    ## ── Variable type:numeric ───────────────────────────────────────────
+    ## ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────────────────────
     ##            variable missing complete    n          mean            sd
     ##    gdp_for_year ($)       0     1056 1056       5.9e+11       1.8e+12
     ##  gdp_per_capita ($)       0     1056 1056   23857.19      22474.17   
@@ -269,7 +269,7 @@ variable.
     ## 
     ## Skim summary statistics
     ## 
-    ## ── Variable type:numeric ───────────────────────────────────────────
+    ## ── Variable type:numeric ─────────────────────────────────────────────────────────────────────────────────────────────
     ##                          variable missing complete    n  mean    sd p0 p25
     ##  suicideFinal$`suicides/100k pop`       0     1056 1056 11.22 16.94  0 0.8
     ##   p50   p75   p100     hist
