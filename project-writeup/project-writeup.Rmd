@@ -52,7 +52,6 @@ suicideNew <- suicideNew %>% mutate(sex = as.factor(sex))
 
 ```{r}
 HDINA <- suicideNew %>% filter(is.na(`HDI for year`))
-
 ```
 The countries that do not have HDI calculated for them are Aruba, Puerto Rico, Korea, and Russia. Online, we can find the HDI from 2010 of South Korea and Russia, which are .884 and .780 respectively. We will do these after we add regions to our data set. 
 
@@ -136,7 +135,8 @@ suicideFinal <- suicideFinal %>% mutate (`suicides/100k pop` = log(`suicides/100
 ```
 
 ```{r}
-=======
+ggplot(data=suicideFinal, mapping=aes(x=`suicides/100k pop`)) + geom_histogram() +
+  labs(title="Distribution of the Log Number of Suicides per 100,000 People", x="Log Number of Suicides per 100,000 People")
 ```
 
 Based on this histogram, we can see that it is not normally distributed and is extremely right skewed. In fact, from skimming this variable, we can see that the mean number of suicides per 100,000 people is only 11.22, while the maximum number of suicides per 100,000 people in this dataset is 182.32. Thus, there is at least one extreme outlier in the response variable, indicating that we should perform a log transformation on the response variable. 
@@ -156,7 +156,6 @@ suicideFinal <- suicideFinal %>% mutate (`suicides/100k pop` = log(`suicides/100
 ```
 
 ```{r}
->>>>>>> Trilok
 ggplot(data=suicideFinal, mapping=aes(x=`suicides/100k pop`)) + 
   geom_histogram() +
   labs(title="Distribution of the Log Number of Suicides per 100,000 People", x="Log Number of Suicides per 100,000 People")
