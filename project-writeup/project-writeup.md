@@ -510,7 +510,7 @@ population, HDI, gdp for year, and gdp per capita, and region are
 relevant predictors, whereas population, continent, and generation are
 not.
 
-# Testing of Interesting Interactions
+### Testing of Interesting Interactions
 
 For the interaction effects, we will look into the interaction of each
 quantitative variable with each qualitative variable. We will also look
@@ -739,6 +739,76 @@ model
 |      age5-14 years:`gdp_for_year ($)`       |  0.3607650   | 0.2951526  |  1.2222998  | 0.2218882 |
 |      age55-74 years:`gdp_for_year ($)`      |  0.0088806   | 0.2681111  |  0.0331229  | 0.9735833 |
 |       age75+ years:`gdp_for_year ($)`       |  0.3127316   | 0.2495005  |  1.2534309  | 0.2103479 |
+
+### Model Assumptions
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
+
+From the residual vs. predicted values, the residuals with lower
+predicted values seem to be more sparse and spread out than the others,
+which may be worth looking into. However, for the most part, the
+majority of the residuals are randomly distributed around the red line
+and do not exhibit any obvious nonlinear trends. Thus, we can conclude
+that constant variance is satisfied.
+
+We will now look at predictors vs. residuals to more closely examine
+linearity.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-46-1.png)<!-- -->
+
+While there are some differences between some of the means of the
+residuals for some regions, these means do not seem to vary by too much,
+and thus the linearity assumption is moderately satisfied for this
+variable. However, there are a few regions with some extreme residuals,
+such as the Carribean and Western Asia. It could be worth looking into
+these more.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
+
+While there is some differences between the means of the residuals for
+the two gender groups, these means do not seem to vary by too much, and
+the plots seem to have very similar distributions, and thus the
+linearity assumption is moderately satisfied for this variable.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+
+Again, while there are some differences between some of the means of the
+residuals for some age groups, these means do not seem to vary by too
+much, and thus the linearity assumption is satisfied for this variable.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-49-1.png)<!-- -->
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-51-1.png)<!-- -->
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
+
+For all of these scatterplots, the residuals seem to be scattered pretty
+evenly around the 0 line, and none of them show an obvious curving
+shape, so we can conclude that the linearity assumption is met for these
+predictors as well.
+
+We also need to check the normality and independence assumptions. For
+normality, we can create a QQ-plot of the residuals and a histogram of
+the distribution of residuals for this
+    model.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-53-1.png)<!-- -->
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-54-1.png)<!-- -->
+
+According to the QQ-plot, the normality assumption seems to be satisfied
+because the majority of the points seem to align well with the expected
+QQ-plot line. In addition, the histogram seems to be approximately
+normal and follows a mostly smooth curve.
+
+Finally, based on the description of the data, the independence
+assumption seems to be met because this data was not collected over
+time, since we only took the year 2010, and there does not appear to be
+a cluster effect.
 
 ### Section 4 - References
 
