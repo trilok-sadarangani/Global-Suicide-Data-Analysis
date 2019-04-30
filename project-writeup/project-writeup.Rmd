@@ -19,6 +19,7 @@ library(skimr)
 library(modelr)
 library(leaps)
 library(plyr)
+library(rms)
 ```
 
 ```{r load-data}
@@ -29,7 +30,8 @@ suicide <- read_csv("/cloud/project/data/master.csv")
 
 With suicide being one of the leading causes of death for teens in America, we thought it would be interesting to see how the U.S. stacks up against other countries all over the world in terms of the number of suicides that occur, as well as what factors may contribute to the significant number of suicides in the U.S. and other countries.[1] We want to explore how economic status, along with variables such as age, sex, and human development index, affects suicide rates all across the world. Our hypothesis is that generally, in poorer countries we predict that suicide rates will lower. 
 
-Our response variable will be suicides/100k pop, which is the number of suicides per 100,000 people in a certain country and year, which is stored as a numeric in our dataset. Our predictors variables will be age, sex, country, year, HDI, gdp_for_year, gdp_per_capita, and generation. Age is the age an individual was when they passed, sex is the gender of that individual, country is the country they are from, year is the year they passed, HDI for year is the human development index for a given country and year, gdp_for_year is the GDP for a given country and year, gdp_per_capita is the GDP per capita for a given country and year, and generation is the generation that an individual belongs to. We wish to understand how the number of suicides per 100,000 people in a certain country and year changes as year, GDP, GDP per capita, and HDI increase or decreases, meaning we want to understand the population coefficients for year, gdp_for_year, gdp_per_capita, and HDI for year. Additionally, we want to understand whether age, sex, generation, and country have an effect on the number of suicides per 100,000 people, meaning we also want to understand the population coefficients for these variables.
+
+Our response variable will be suicides/100k pop, which is the number of suicides per 100,000 people in a certain country and year, which is stored as a numeric in our dataset. Our predictors variables will be age, sex, country, year, HDI, gdp_for_year, gdp_per_capita, generation, region and continent. Age is the age an individual was when they passed, sex is the gender of that individual, country is the country they are from, year is the year they passed, HDI for year is the human development index for a given country and year, gdp_for_year is the GDP for a given country and year, gdp_per_capita is the GDP per capita for a given country and year, and generation is the generation that an individual belongs to. We wish to understand how the number of suicides per 100,000 people in a certain country and year changes as year, GDP, GDP per capita, and HDI increase or decreases, meaning we want to understand the population coefficients for year, gdp_for_year, gdp_per_capita, and HDI for year. Additionally, we want to understand whether age, sex, generation, and country have an effect on the number of suicides per 100,000 people, meaning we also want to understand the population coefficients for these variables.
 
 The variables relevant to the analysis of our research question are stated above: suicides/100k pop, age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation. Additionally, suicides_no (which is the number of suicides for individuals who are of a certain age group and sex and who passed in a certain country and year) and population, (which is the total number of individuals who are of a certain age group and sex and who live in a certain country in a certain year), since these are used to calculate suicides/100k pop.
 
@@ -134,6 +136,27 @@ suicideFinal <- suicideFinal %>% mutate (`suicides/100k pop` = log(`suicides/100
 ```
 
 ```{r}
+=======
+```
+
+Based on this histogram, we can see that it is not normally distributed and is extremely right skewed. In fact, from skimming this variable, we can see that the mean number of suicides per 100,000 people is only 11.22, while the maximum number of suicides per 100,000 people in this dataset is 182.32. Thus, there is at least one extreme outlier in the response variable, indicating that we should perform a log transformation on the response variable. 
+
+Since this response variable has negative infinity values (this stems from the fact that some countries have 0 suicides), we will first increase the suicide number by 1 for each country and then recalculate suicides per 100k.
+
+```{r}
+suicideFinal <- suicideFinal %>% mutate (`suicides_no` = `suicides_no`+1)
+```
+
+```{r}
+suicideFinal <- suicideFinal %>% mutate (`suicides/100k pop` = `suicides_no`/(population/100000))
+```
+
+```{r}
+suicideFinal <- suicideFinal %>% mutate (`suicides/100k pop` = log(`suicides/100k pop`))
+```
+
+```{r}
+>>>>>>> Trilok
 ggplot(data=suicideFinal, mapping=aes(x=`suicides/100k pop`)) + 
   geom_histogram() +
   labs(title="Distribution of the Log Number of Suicides per 100,000 People", x="Log Number of Suicides per 100,000 People")
@@ -225,15 +248,14 @@ Because this is skewed greatly, a log transformation of gdp is needed.
 ```{r}
 suicideFinal<- suicideFinal %>% mutate (`gdp_for_year ($)` = log(`gdp_for_year ($)`))
 
-
 ggplot(data=suicideFinal, mapping=aes(x=(`gdp_for_year ($)`))) + geom_histogram() +
   labs(title="Distribution of GDPs of Countries", x="Value")
 ```
 
-Log transforming the data set, we notice that the distribution of GDPs of countries has a bimodal distribution.
+Log transforming the data set, we notice that the distribution of GDPs of countries has a bimonial distribution.
 
 ```{r}
-ggplot(data=suicide, mapping=aes(x=(`gdp_per_capita ($)`))) +
+ggplot(data=suicideFinal, mapping=aes(x=(`gdp_per_capita ($)`))) +
   geom_histogram() +
   labs(title="Distribution of GDP Per Capita of Countries", x="Value")
 ```
@@ -245,6 +267,7 @@ suicideFinal<- suicideFinal %>% mutate (`gdp_per_capita ($)` = log(`gdp_per_capi
 ggplot(data=suicideFinal, mapping=aes(x=(`gdp_per_capita ($)`))) +
   geom_histogram() +
   labs(title="Distribution of GDP Per Capita of Countries", x="Value")
+
 ```
 
 Like the GDP of the country, the GDP Per Capita has a non-normal distribution. Rather, it is skewed to the left. Since these variables are so similar, there could be mulitcollinearity between the two.
@@ -276,7 +299,7 @@ pairs(`suicides/100k pop` ~ `HDI` + `gdp_for_year ($)` + `gdp_per_capita ($)`, d
 From the pairs plot, it looks as if  HDI, and gdp_for_year do not have a clear linear relationship with suicides/100k pop. However, gdp_per_capita seems to be positively correlated with suicides/100k pop, meaning as gdp_per_capita increases, so does suicides/100k pop. Additionally, it looks as if HDI and gdp_per_capita seem to have a strong non-linear relationship, indicating that we should continue looking into this relationship and perhaps include an interaction term between these two variables. Similarly, HDI and gdp_for_year also seem to have a strong non-linear relationship, so we should include an interaction term between these two variables as well.
 
 ```{r}
-pairs(`suicides/100k pop` ~ log(`gdp_for_year ($)`) + log(`gdp_per_capita ($)`), data = suicide)
+pairs(`suicides/100k pop` ~ log(`gdp_for_year ($)`) + log(`gdp_per_capita ($)`), data = suicideFinal)
 ```
 
 As mentioned before, we do see evidence of multicollinearity that we must address in the model.
@@ -285,8 +308,100 @@ We plan to do a multiple linear regression because suicides/100k pop is a quanti
 
 ## Section 3. Data
 ```{r}
-glimpse(suicide)
+model1 <- lm(`suicides/100k pop` ~ country+year+sex+age+suicides_no + population + country-year + HDI + (`gdp_for_year ($)`) + (`gdp_per_capita ($)`) + continent + region + generation, data = suicideFinal)
+
+regfit_backward <- step(model1, direction = "backward")
+regfit_backward
+
 ```
+
+We chose a multiple linear regression model because we want to predict the value of a variable based on multile different independent variables. Based on backward selection, we found that continent, region, generation, HDI, gdp/year and gdp/capita, so decided to include country, sex, age, suicides_no and population.
+
+# Testing of Interesting Interactions
+```{r}
+model2 <- lm(formula = `suicides/100k pop` ~ country*sex + sex + age + suicides_no + population, data = suicideFinal)
+
+anova(model1,model2)
+```
+The F statistic is 1.4266 and the p-value is 0.008494, which is  small. We can can conclude that the interaction effect of country and sex is a significant predictor.
+
+```{r}
+model3 <- lm(formula = `suicides/100k pop` ~ country*age + sex + age + suicides_no + population, data = suicideFinal)
+
+anova(model1,model3)
+```
+The F statistic is 2.2847 and the p-value is 2.2e-16, which is  very small. We can can conclude that the interaction effect of country and age is a significant predictor.
+
+
+```{r}
+model4 <- lm(formula = `suicides/100k pop` ~ country*suicides_no + sex + age + suicides_no + population, data = suicideFinal)
+
+anova(model1,model4)
+```
+The F statistic is 6.7103 and the p-value is 2.2e-16, which is  very small. We can can conclude that the interaction effect of country and suicides_no is a significant predictor.
+
+```{r}
+model5 <- lm(formula = `suicides/100k pop` ~ country*population + sex + age + suicides_no + population, data = suicideFinal)
+
+anova(model1,model5)
+```
+The F statistic is 2.6156 and the p-value is 2.103e-12, which is  very small. We can can conclude that the interaction effect of country and population is a significant predictor.
+
+
+```{r}
+model6 <- lm(formula = `suicides/100k pop` ~ country + sex*age + age + suicides_no + population, data = suicideFinal)
+
+anova(model1,model6)
+```
+The F statistic is 19.946 and the p-value is 2.2e-16, which is  very small. We can can conclude that the interaction effect of sex and age is a significant predictor.
+
+
+```{r}
+model7 <- lm(formula = `suicides/100k pop` ~ country + sex*suicides_no + age + suicides_no + population, data = suicideFinal)
+
+anova(model1,model7)
+```
+The F statistic is 8.8535 and the p-value is 0.002999, which is  very small. We can can conclude that the interaction effect of sex and suicides_no is a significant predictor.
+
+
+```{r}
+model8 <- lm(formula = `suicides/100k pop` ~ country + sex*population + age + suicides_no + population, data = suicideFinal)
+
+anova(model1,model8)
+```
+The F statistic is 2.9748 and the p-value is 0.08489, which is larger than 0.05. We can can conclude that the interaction effect of sex and population is not significant predictor.
+
+
+```{r}
+model9 <- lm(formula = `suicides/100k pop` ~ country + sex + age*suicides_no + suicides_no + population, data = suicideFinal)
+
+anova(model1,model9)
+```
+The F statistic is 6.2058 and the p-value is 1.132e-05, which is smaller than 0.05. We can can conclude that the interaction effect of age and suicides_no is significant predictor.
+
+
+```{r}
+model10 <- lm(formula = `suicides/100k pop` ~ country + sex + age*population + suicides_no + population, data = suicideFinal)
+
+anova(model1,model10)
+```
+The F statistic is 3.7101 and the p-value is 0.002483, which is smaller than 0.05. We can can conclude that the interaction effect of age and population is significant predictor.
+
+```{r}
+model11 <- lm(formula = `suicides/100k pop` ~ country + sex + age + suicides_no*population + population, data = suicideFinal)
+
+anova(model1,model11)
+```
+The F statistic is 43.415 and the p-value is 7.291e-11, which is smaller than 0.05. We can can conclude that the interaction effect of suicides_no and population is significant predictor.
+
+So, we can conclude that to not include the interaction effect between sex and population. Our updated model will be: 
+
+```{r}
+finalmodel <- lm(formula = `suicides/100k pop` ~ country + sex + age + suicides_no + population + country*sex + country*age + country*suicides_no + country*population + sex*age + sex*suicides_no + age*suicides_no + age*population + suicides_no*population, data = suicideFinal)
+kable(tidy(finalmodel))
+```
+
+
 
 ### Section 4 - References
 - [1] https://www.cdc.gov/nchs/fastats/adolescent-health.htm
