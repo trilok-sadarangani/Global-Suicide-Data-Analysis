@@ -302,7 +302,7 @@ regfit_backward
 
 We chose a multiple linear regression model because we want to predict the value of a variable based on multile different independent variables. Based on backward selection, we found that sex, age  population, HDI, gdp for year, and gdp per capita, and region are relevant predictors, whereas population, continent, and generation are not. 
 
-# Testing of Interesting Interactions
+### Testing of Interesting Interactions
 For the interaction effects, we will look into the interaction of each quantitative variable with each qualitative variable. We will also look at a select few qualitative variables with one another.
 
 ```{r}
@@ -379,7 +379,115 @@ finalmodel <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + 
 kable(tidy(finalmodel))
 ```
 
+### Model Assumptions
 
+```{r}
+suicideFinal <- suicideFinal %>%
+  mutate(predicted = predict.lm(finalmodel), resid = residuals(finalmodel))
+```
+
+```{r}
+ggplot(data=suicideFinal, mapping=aes(x=predicted,y=resid)) +
+  geom_point() + 
+  geom_hline(yintercept=0,color="red")+
+  labs(title="Residuals vs. Predicted Values",
+       x="Predicted Values", 
+       y="Residuals")
+```
+
+From the residual vs. predicted values, the residuals with lower predicted values seem to be more sparse and spread out than the others, which may be worth looking into. However, for the most part, the majority of the residuals are randomly distributed around the red line and do not exhibit any obvious nonlinear trends. Thus, we can conclude that constant variance is satisfied.
+
+We will now look at predictors vs. residuals to more closely examine linearity.
+
+```{r}
+ggplot(data=suicideFinal, mapping=aes(x=region,y=resid)) +
+  geom_boxplot() + 
+  geom_hline(yintercept=0,color="red")+
+  labs(title="Residuals vs. Regions",
+       x="Regions", 
+       y="Residuals") + coord_flip()
+```
+
+While there are some differences between some of the means of the residuals for some regions, these means do not seem to vary by too much, and thus the linearity assumption is moderately satisfied for this variable. However, there are a few regions with some extreme residuals, such as the Carribean and Western Asia. It could be worth looking into these more.
+
+```{r}
+ggplot(data=suicideFinal, mapping=aes(x=sex,y=resid)) +
+  geom_boxplot() + 
+  geom_hline(yintercept=0,color="red")+
+  labs(title="Residuals vs. Sex",
+       x="Sex", 
+       y="Residuals") + coord_flip()
+```
+
+While there is some differences between the means of the residuals for the two gender groups, these means do not seem to vary by too much, and the plots seem to have very similar distributions, and thus the linearity assumption is moderately satisfied for this variable.
+
+```{r}
+ggplot(data=suicideFinal, mapping=aes(x=age,y=resid)) +
+  geom_boxplot() + 
+  geom_hline(yintercept=0,color="red")+
+  labs(title="Residuals vs. Age",
+       x="Age", 
+       y="Residuals") + coord_flip()
+```
+
+Again, while there are some differences between some of the means of the residuals for some age groups, these means do not seem to vary by too much, and thus the linearity assumption is satisfied for this variable.
+
+```{r}
+ggplot(data=suicideFinal, mapping=aes(x=population,y=resid)) +
+  geom_point() + 
+  geom_hline(yintercept=0,color="red")+
+  labs(title="Residuals vs. Population (Centered)",
+       x="Population (Centered)", 
+       y="Residuals")
+```
+
+```{r}
+ggplot(data=suicideFinal, mapping=aes(x=HDI,y=resid)) +
+  geom_point() + 
+  geom_hline(yintercept=0,color="red")+
+  labs(title="Residuals vs. HDI (Centered)",
+       x="HDI (Centered)", 
+       y="Residuals")
+```
+
+```{r}
+ggplot(data=suicideFinal, mapping=aes(x=`gdp_for_year ($)`,y=resid)) +
+  geom_point() + 
+  geom_hline(yintercept=0,color="red")+
+  labs(title="Residuals vs. GDP for Year (Centered)",
+       x="GDP for Year (Centered)", 
+       y="Residuals")
+```
+
+```{r}
+ggplot(data=suicideFinal, mapping=aes(x=`gdp_per_capita ($)`,y=resid)) +
+  geom_point() + 
+  geom_hline(yintercept=0,color="red")+
+  labs(title="Residuals vs. GDP per Capita (Centered)",
+       x="GDP per Capita (Centered)", 
+       y="Residuals")
+```
+
+For all of these scatterplots, the residuals seem to be scattered pretty evenly around the 0 line, and none of them show an obvious curving shape, so we can conclude that the linearity assumption is met for these predictors as well.
+
+We also need to check the normality and independence assumptions. For normality, we can create a QQ-plot of the residuals and a histogram of the distribution of residuals for this model.
+
+```{r}
+ggplot(data=suicideFinal, mapping=aes(sample=resid)) +
+  stat_qq() + 
+  stat_qq_line()+
+labs(title="Normal QQ Plot of Residuals for the Suicide Rate Dataset")
+```
+
+```{r}
+ggplot(data=suicideFinal, mapping=aes(x=resid)) +
+  geom_histogram() +  
+  labs(title="Distribution of the Residuals for the Suicide Rate Dataset", x="Residuals")
+```
+
+According to the QQ-plot, the normality assumption seems to be satisfied because the majority of the points seem to align well with the expected QQ-plot line. In addition, the histogram seems to be approximately normal and follows a mostly smooth curve.
+
+Finally, based on the description of the data, the independence assumption seems to be met because this data was not collected over time, since we only took the year 2010, and there does not appear to be a cluster effect.
 
 ### Section 4 - References
 - [1] https://www.cdc.gov/nchs/fastats/adolescent-health.htm
