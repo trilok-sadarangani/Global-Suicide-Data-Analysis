@@ -194,11 +194,7 @@ We plan to do a multiple linear regression because suicides/100k pop is a quanti
 
 ## Regression Analysis
 
-```{r, echo = FALSE}
-model1 <- lm(`suicides/100k pop` ~ sex + age + population + HDI + (`gdp_for_year ($)`) + (`gdp_per_capita ($)`) + continent + region + generation, data = suicideFinal)
-regfit_backward <- step(model1, direction = "backward")
-```
-After conducting a backward selection, we we found that sex, age population, HDI, gdp for year, and gdp per capita, and region are relevant predictors, whereas population, continent, and generation are not.
+After conducting a backward selection, we we found that sex, age population, HDI, gdp for year, and gdp per capita, and region are relevant predictors, whereas population, continent, and generation are not (See Figure 13).
 
 ### Interesting Interactions
 ```{r}
@@ -331,8 +327,19 @@ Our original hypothesis was that generally, in poorer countries we predict that 
 
 
 ## Additional Work
+AIC Table:
+```{r, echo = FALSE, trace = FALSE}
+model1 <- lm(`suicides/100k pop` ~ sex + age + population + HDI + (`gdp_for_year ($)`) + (`gdp_per_capita ($)`) + continent + region + generation, data = suicideFinal)
+regfit_backward <- step(model1, direction = "backward")
+```
 
-This was our original final model, but concerns of multicollienarity made us get rid of a few variables. In this original model, the intercept is much more realistic at around 7 suicides/100k given the baseline values. Concerns of multicollinearity made us get rid of two variables. However, we also believe that the interaction effects were able to counterract the high intercept and values of certain parameters. For example, we notice that for Northern America the estimate is 
+```{r}
+finalmodel <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + region*HDI + region*`gdp_for_year ($)` + region*`gdp_per_capita ($)` + age*HDI + age*population + age*`gdp_per_capita ($)` + age*`gdp_for_year ($)`, data = suicideFinal)
+kable(tidy(finalmodel))
+```
+
+
+This was our original final model, but concerns of multicollienarity made us get rid of a few variables. In this original model, the intercept is much more realistic at around 7 suicides/100k given the baseline values. Concerns of multicollinearity made us get rid of two variables. However, we also believe that the interaction effects were able to counterract the high intercept and values of certain parameters. For example, we notice that for Northern America the estimate is -13, but the interaction effects between GDP and Region for North America are around 11, which counterracts this. 
 
 
 
