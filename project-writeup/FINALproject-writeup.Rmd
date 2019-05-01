@@ -1,0 +1,191 @@
+---
+title: "CAMFAM: An Analysis of Suicide Rates"
+date: May 1st, 2019
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r load-packages, include = FALSE}
+library(tidyverse)
+library(dslabs)
+library(nnet)
+library(knitr)
+library(broom)
+library(skimr)
+library(modelr)
+library(leaps)
+library(plyr)
+library(dplyr)
+library(rms)
+```
+
+```{r load-data, include = FALSE}
+suicide <- read_csv("/cloud/project/data/master.csv")
+```
+## Section 1. Introduction
+With suicide being one of the leading causes of death for teens in the world, it is important to not only see how Northern America (Canada, Greenland, and the United States) stack up with the rest of the world but also the key trends of suicide rates among different groups and what factors shed light onto these different rates[1] We want to explore how economic status, along with variables such as age, sex, and human development index, affects suicide rates all across the world. Our hypothesis is that generally, in poorer countries we predict that suicide rates will lower.
+
+Our response variable will be suicides/100k pop, which is the number of suicides per 100,000 people in a certain country and year, which is stored as a numeric in our dataset. Our predictors variables will be age, sex, HDI, gdp_for_year, gdp_per_capita, generation, region and continent. Age is the age an individual was when they passed, sex is the gender of that individual, country is the country they are from, year is the year they passed, HDI for year is the human development index for a given country and year, gdp_for_year is the GDP for a given country and year, gdp_per_capita is the GDP per capita for a given country and year, and generation is the generation that an individual belongs to. We wish to understand how the number of suicides per 100,000 people in a certain country and year changes as year, GDP, GDP per capita, and HDI increase or decreases, meaning we want to understand the population coefficients for year, gdp_for_year, gdp_per_capita, and HDI for year. Additionally, we want to understand whether age, sex, generation, and country have an effect on the number of suicides per 100,000 people, meaning we also want to understand the population coefficients for these variables. We will not include country and suicide/no in our analysis because having 188 different levels is unrealistic for the former and the latter is manifested in the response variable and population. 
+
+### EDA
+```{r, echo = FALSE}
+suicideNew <- suicide%>% filter(year == 2010)
+suicideNew <- suicideNew %>% mutate(age = as.factor(age))
+suicideNew <- suicideNew %>% mutate(country = as.factor(country))
+suicideNew <- suicideNew %>% mutate(generation = as.factor(generation))
+suicideNew <- suicideNew %>% mutate(sex = as.factor(sex))
+gapminder2010 <- gapminder %>% filter(year == 2010)
+gapminder2010 <- gapminder2010 %>% select(country, continent, region)
+gapminder2010 <- data.frame(lapply(gapminder2010, as.character), stringsAsFactors=FALSE)
+gapminder2010$country <- replace(gapminder2010$country, gapminder2010$country=="Kyrgyz Republic", "Kyrgyzstan")
+gapminder2010$country <- replace(gapminder2010$country, gapminder2010$country=="Slovak Republic", "Slovakia")
+gapminder2010$country <- replace(gapminder2010$country, gapminder2010$country=="South Korea", "Republic of Korea")
+gapminder2010$country <- replace(gapminder2010$country, gapminder2010$country=="Russia", "Russian Federation")
+gapminder2010$country <- replace(gapminder2010$country, gapminder2010$country=="St. Lucia", "Saint Lucia")
+gapminder2010$country <- replace(gapminder2010$country, gapminder2010$country=="St. Vincent and the Grenadines", "Saint Vincent and Grenadines")
+gapminder2010 <- data.frame(lapply(gapminder2010, as.character), stringsAsFactors=TRUE)
+suicideFinal <- merge(suicideNew, gapminder2010, by = "country", all.x = TRUE)
+names(suicideFinal)[names(suicideFinal) == 'HDI for year'] <- 'HDI'
+group.means<-ddply(suicideFinal,c("region"),summarise,mean=mean(HDI, na.rm = TRUE))
+for(i in 1:nrow(suicideFinal)){
+  if (suicideFinal$country[i] == "Republic of Korea"){
+    suicideFinal$HDI[i] = .884
+  }
+  if (suicideFinal$country[i] == "Russian Federation"){
+    suicideFinal$HDI[i] = .780
+  }
+  if (suicideFinal$country[i] == "Aruba" | suicideFinal$country[i] == "Puerto Rico"){
+    suicideFinal$HDI[i] = .751
+  }
+}
+suicideFinal <- suicideFinal %>% mutate (`suicides_no` = `suicides_no`+1)
+suicideFinal <- suicideFinal %>% mutate (`suicides/100k pop` = `suicides_no`/(population/100000))
+```
+
+Given the longitudinal structure of our data and the need for making a multilevel model, we are going to use the data collected in 2010. This year has a majority of the countries in the origianl data set and also is the year HDI values were collected. Since region and continent were not in this data set orginially, we used the gapminder data set as the cold deck and merged those values into the suicide data set.
+
+Since South Korea and Russia did not have HDI values, we found them from online and imputed those (had values of .884 and .780 respectively). However, Aruba and Puerto Rico's HDI's were not available, so we took the average of the HDI in the Caribbean and used a mean imputation for those values. 
+
+For the response variable, since there are a few negative infinity values, we added one to each number of suicides, divided by population (to turn into suicided/100k) and then log transformed. We log transformed because of the original skewed histogram (Figure 1).
+
+```{r message = FALSE, warning = FALSE, echo = FALSE}
+suicideFinal <- suicideFinal %>% mutate (`suicides/100k pop` = log(`suicides/100k pop`))
+```
+
+```{r, echo = FALSE}
+suicideBar<-ggplot(data=suicideFinal, mapping=aes(x=`suicides/100k pop`)) +
+  geom_histogram() +
+  labs(title="Distribution of Suicides", x="Log Number of Suicides per 100,000 People")
+
+continentBar <- ggplot(data=suicideFinal, mapping=aes(x=`continent`)) + 
+  geom_bar() +
+  labs(title="Bar Plot of Continents", x="Continent") + 
+  theme(axis.text.x = element_text(angle=90))
+
+regionBar <- ggplot(data=suicideFinal, mapping=aes(x=`region`)) + 
+  geom_bar() +
+  labs(title="Bar Plot of Regions", x="Region") + coord_flip() +  theme(axis.text.x = element_text(angle=90))
+
+
+continentBox <- ggplot(data=suicideFinal, mapping=aes(x=`continent`, y= `suicides/100k pop`)) + 
+  geom_boxplot() +
+  labs(title="Continent vs. Suicides", x="Continent", y="Suicides") +
+ theme(axis.text.x = element_text(angle=90))
+
+require(cowplot)
+plot_grid(suicideBar, continentBar, regionBar, continentBox)
+```
+
+The mean number of suicides per 100,000 people is 11.22, while the maximum number of suicides per 100,000 people in this dataset is 182.32. The distribution of this reponse variable is normal. We see that most of our countries are from the Amerias and Europe and are in the regions of Western Asia, Southern Europe, South America, Northern Europe, and the Caribbean. In general, each continent has a similar average number of suicides, with Europe having much more outliers with fewer suicides than the others.
+
+```{r, echo = FALSE}
+ageBox <- ggplot(data=suicideFinal, mapping=aes(x=`age`, y= `suicides/100k pop`)) + 
+  geom_boxplot() +
+  labs(title="Age vs. Suicides", x="Age", y="Suicides") +
+ theme(axis.text.x = element_text(angle=90))
+
+regionBox <- ggplot(data=suicideFinal, mapping=aes(x=`region`, y= `suicides/100k pop`)) + 
+  geom_boxplot() +
+  labs(title="Region vs. Suicides", x="Region", y="Suicides") + coord_flip()
+
+sexBox <- ggplot(data=suicideFinal, mapping=aes(x=sex, y=`suicides/100k pop` ))+
+  geom_boxplot()+
+  labs(title = "Boxplot of Gender & Suicide", x = "gender", y = "suicide")
+
+generationBox <- ggplot(data=suicideFinal, mapping=aes(x=generation, y=`suicides/100k pop` ))+
+  geom_boxplot()+
+  labs(title = "Boxplot of Generation & Suicide", x = "Generation", y = "Suicide") +
+ theme(axis.text.x = element_text(angle=90))
+
+require(cowplot)
+plot_grid(ageBox, regionBox, generationBox, sexBox)
+```
+
+As age increases, suicide rate tends to increase in general. The 5-14 age group is far lower than the other age groups, which is expected. The average number of suicides/100k for each region is around 7.38. We see Southern Africa as a key outlier with far less suicides and Eastern Africa with far more suicides than the average. We notice that males have a higher suicide rate/100k people than females. However, there are many outliers in this data set so we must explore further.
+We notice that Generation Z is significantly lower in terms of the average number of suicides/100k of 7.38.
+
+Due to the skewed histograms of GDP, GDP per capita, and population, we log transformed them (Figures 2,3,4). We also mean center all the quantitative variables.
+
+```{r, echo = FALSE}
+suicideFinal <- suicideFinal %>% mutate(population = log(population), population = population - mean(population))
+popHist <- ggplot(data=suicideFinal, mapping=aes(x=`population`)) + 
+  geom_histogram() +
+  labs(title="Distribution of Population", x="Population")
+
+suicideFinal <- suicideFinal %>% mutate(HDI = HDI - mean(HDI))
+hdiHist <- ggplot(data=suicideFinal, mapping=aes(x=`HDI`)) + 
+  geom_histogram() +
+  labs(title="Distribution of HDI", x="HDI")
+
+suicideFinal<- suicideFinal %>% mutate (`gdp_for_year ($)` = log(`gdp_for_year ($)`))
+suicideFinal <- suicideFinal %>% mutate(`gdp_for_year ($)` = `gdp_for_year ($)` - mean(`gdp_for_year ($)`))
+gdpHist <- ggplot(data=suicideFinal, mapping=aes(x=(`gdp_for_year ($)`))) + geom_histogram() +
+  labs(title="Distribution of GDPs of Countries", x="Value")
+
+suicideFinal<- suicideFinal %>% mutate (`gdp_per_capita ($)` = log(`gdp_per_capita ($)`))
+suicideFinal <- suicideFinal %>% mutate(`gdp_per_capita ($)` = `gdp_per_capita ($)` - mean(`gdp_per_capita ($)`))
+gdpcapHist <- ggplot(data=suicideFinal, mapping=aes(x=(`gdp_per_capita ($)`))) +
+  geom_histogram() +
+  labs(title="Distribution of GDP Per Capita", x="Value")
+
+require(cowplot)
+plot_grid(gdpHist, gdpcapHist, popHist, hdiHist)
+```
+
+The HDI does not have a set distribution. Rather, it is quite sparse. The distribution of population is skewed left and has a unimodal distribution. We notice that the distribution of GDPs of countries has a near-bimodal distribution.  The GDP Per Capita is skewed to the left and is bimodal.
+
+```{r, echo = FALSE}
+hdiDist <- ggplot(data=suicideFinal, mapping=aes(x=`HDI`, y=`suicides/100k pop`))+
+  geom_point()+
+  labs(title = "Plot of Suicides/100k vs HDI", x = "HDI", y = "Suicides/100k")
+
+popDist <- ggplot(data=suicideFinal, mapping=aes(x=`population`, y=`suicides/100k pop`))+
+  geom_point()+
+  labs(title = "Plot of Suicides/100k vs Pop", x = "Population", y = "Suicides/100k")
+
+gdpcapDist <- ggplot(data=suicideFinal, mapping=aes(x=`gdp_per_capita ($)`, y=`suicides/100k pop`))+
+  geom_point()+
+  labs(title = "Plot of Suicides/100k vs GDP Per Capita", x = "GDP Per Capita", y = "Suicides/100k")
+
+gdpDist <- ggplot(data=suicideFinal, mapping=aes(x=`gdp_for_year ($)`, y=`suicides/100k pop`))+
+  geom_point()+
+  labs(title = "Plot of Suicides/100k vs GDP", x = "GDP", y = "Suicides/100k")
+
+require(cowplot)
+plot_grid(hdiDist, popDist, gdpDist, gdpcapDist)
+```
+
+We do not see correlations between HDI, GDP, and GDP per capita and suicides/100k. We notice that as population has a specific cutoff.
+
+
+
+
+
+##Section 2. Regression Analysis
+
+
+
+###

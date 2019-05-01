@@ -611,8 +611,18 @@ tidy(vif(finalmodel3))
 Now we see that all VIF values are below 10, meaning that we do not have any multicollinearity. Adding back the interaction terms that still have both main effects in the model, our final model is: 
 
 ```{r}
-finalmodel <- lm(formula = `suicides/100k pop` ~ sex + age + population + `gdp_per_capita ($)` + region + region*`gdp_per_capita ($)` + age*population + age*`gdp_per_capita ($)`, data = suicideFinal)
+suicideFinal <- suicideFinal %>% mutate (gdp_per_capita = `gdp_per_capita ($)`)
+finalmodel <- lm(formula = `suicides/100k pop` ~ sex + age + population + gdp_per_capita + region + region*gdp_per_capita + age*population + age*gdp_per_capita, data = suicideFinal)
 kable(tidy(finalmodel))
+```
+
+```{r}
+modelnoage <- lm(formula = `suicides/100k pop` ~ sex + population + gdp_per_capita + region + region*gdp_per_capita, data = suicideFinal)
+anova(modelnoage,finalmodel)
+```
+```{r}
+modelnosex <- lm(formula = `suicides/100k pop` ~ age + population + gdp_per_capita + region + region*gdp_per_capita + age*population + age*gdp_per_capita, data = suicideFinal)
+anova(modelnosex,finalmodel)
 ```
 
 ### Model Validation 
@@ -622,7 +632,7 @@ We are again removing our interaction terms in this part because the map() funct
 ```{r}
 set.seed(04012019)
 mydata_cv <- crossv_kfold(suicideFinal, 5)
-models <- map(mydata_cv$train, ~ lm(`suicides/100k pop` ~ sex + age + population + `gdp_per_capita ($)` + region, data = .))
+models <- map(mydata_cv$train, ~ lm(`suicides/100k pop` ~ sex + age + population + gdp_per_capita + region, data = .))
 test_mse <- map2_dbl(models, mydata_cv$test, mse)
 test_mse
 ```
@@ -631,7 +641,88 @@ All of these values are relatively small, so we can conclude that our model pred
 
 ### Section 3: Discussion and Limitations
 
+# Discussion
+Our original hypothesis was that the economic status of a country (as determined by the country's GDP per capita) would predict that country's suicide rates. However, in our model, the p-value for gdp_per_capita is 0.8842420. At a .05 significance level, we find that the relationship between economic status and suicide rates is insignificant. A more significant predictor (as determined by the p-value less than our significance level of .05) is population. In our nested-F tests above, we also found age and sex to be a significant predictors of suicide rates. 
+
+# Test Cases
+```{r}
+x0 = data.frame(sex = "male", age = "15-24 years", population = 2.2, gdp_per_capita = 1.2, region = "Northern America")
+predict.lm(finalmodel, x0, interval = "confidence")
+
+exp(3.409644)
+```
+For males in a Northern American country with a population 2.2 above the log of the mean and GDP per capita 1.2 above the log of the mean, who are 15-24 years of age, we expect the median suicides per 100k to be approximately 30.3.
+
+```{r}
+x0 = data.frame(sex = "female", age = "15-24 years", population = 2.2, gdp_per_capita = 1.2, region = "Northern America")
+predict.lm(finalmodel, x0, interval = "confidence")
+
+exp(2.365282)
+```
+For females in a Northern American country with a population 2.2 above the log of the mean and GDP per capita 1.2 above the log of the mean, who are 15-24 years of age, we expect the median suicides per 100k to be approximately 10.6, which is much lower than the male rate. This shows that suicide rates vary by sex, holding all else constant.
+
+```{r}
+x0 = data.frame(sex = "male", age = "5-14 years", population = 2.2, gdp_per_capita = 1.2, region = "Northern America")
+predict.lm(finalmodel, x0, interval = "confidence")
+
+exp(2.922471)
+```
+For males in a Northern American country with a population 2.2 above the log of the mean and GDP per capita 1.2 above the log of the mean, who are 5-14 years of age, we expect the median suicides per 100k to be approximately 18.6.
+
+```{r}
+x0 = data.frame(sex = "male", age = "15-24 years", population = 2.2, gdp_per_capita = 1.2, region = "Northern America")
+predict.lm(finalmodel, x0, interval = "confidence")
+exp(3.409644)
+```
+For males in a Northern American country with a population 2.2 above the log of the mean and GDP per capita 1.2 above the log of the mean, who are 15-24 years of age, we expect the median suicides per 100k to be approximately 30.3.
+
+```{r}
+x0 = data.frame(sex = "male", age = "25-34 years", population = 2.2, gdp_per_capita = 1.2, region = "Northern America")
+predict.lm(finalmodel, x0, interval = "confidence")
+exp(3.706615)
+```
+For males in a Northern American country with a population 2.2 above the log of the mean and GDP per capita 1.2 above the log of the mean, who are 25-34 years of age, we expect the median suicides per 100k to be approximately 40.7.
+
+```{r}
+x0 = data.frame(sex = "male", age = "35-54 years", population = 2.2, gdp_per_capita = 1.2, region = "Northern America")
+predict.lm(finalmodel, x0, interval = "confidence")
+exp(3.832711)
+```
+For males in a Northern American country with a population 2.2 above the log of the mean and GDP per capita 1.2 above the log of the mean, who are 35-54 years of age, we expect the median suicides per 100k to be approximately 46.2.
+
+```{r}
+x0 = data.frame(sex = "male", age = "55-74 years", population = 2.2, gdp_per_capita = 1.2, region = "Northern America")
+predict.lm(finalmodel, x0, interval = "confidence")
+exp(4.057684)
+```
+For males in a Northern American country with a population 2.2 above the log of the mean and GDP per capita 1.2 above the log of the mean, who are 55-74 years of age, we expect the median suicides per 100k to be approximately 57.8.
+
+```{r}
+x0 = data.frame(sex = "male", age = "75+ years", population = 2.2, gdp_per_capita = 1.2, region = "Northern America")
+predict.lm(finalmodel, x0, interval = "confidence")
+exp(4.6576)
+```
+For males in a Northern American country with a population 2.2 above the log of the mean and GDP per capita 1.2 above the log of the mean, who are 75+ years of age, we expect the median suicides per 100k to be approximately 105.4. We can see that as age increases, suicides per 100k also increase, holding all else constant.
+
+```{r}
+x0 = data.frame(sex = "male", age = "15-24 years", population = 2, gdp_per_capita = 1.2, region = "Northern America")
+predict.lm(finalmodel, x0, interval = "confidence")
+exp(3.86042)
+```
+For males in a Northern American country with a population 2 above the log of the mean and GDP per capita 1.2 above the log of the mean, who are 15-24 years of age, we expect the median suicides per 100k to be approximately 47.5.
+
+```{r}
+x0 = data.frame(sex = "male", age = "15-24 years", population = 1, gdp_per_capita = 1.2, region = "Northern America")
+predict.lm(finalmodel, x0, interval = "confidence")
+exp(6.114297)
+```
+For males in a Northern American country with a population at the log of the mean and GDP per capita 1.2 above the log of the mean, who are 15-24 years of age, we expect the median suicides per 100k to be approximately 452.3. The vast difference between suicide rates in the highly-populated subset versus the lower-populated subset shows that suicide rates differ by population.
+
+# Limitations
+Suicide rate in general can vary a lot depending on the year. Just looking at it by year, we noticed that some countries' average values tend to change over time. As such, our model might not be the most accurate; however, we can predict certain things to a reasonable degree of accuracy. HDI is a limitation because you can only calculate that every 5 years. For predicting, we have to plug in numbers that make sense for a region, or else it gives us a negative grade. In terms of what we could have done better, we could have assessed multicollinearity before selecting the model, which may have changed the variables in the final model. We also could have renamed our mean-centered variables so that we wouldn't get confused later on when trying to differentiate. If we were to conduct this project again, we would utilize a time series model, as suicide rates vary across time.
+
 ### Section 4: Conclusions
+
 
 ### Section 5: Additional Work 
 
