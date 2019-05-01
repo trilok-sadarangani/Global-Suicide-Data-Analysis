@@ -137,18 +137,18 @@ Figure 13).
 
 ### Interesting Interactions
 
-![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
-
-From all of these plots, we see interactions between each qualitative
-and quantitative variable tested. However, after conducting nested F
-tests, we see that there are interaction effects between all of the
-above interactions except region and population. There were no
-interaction effects between sex and any quantitative
+![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+Note: Legend for this plot encompasses the other three. From all of
+these plots, we see interactions between each qualitative and
+quantitative variable tested. However, after conducting nested F tests,
+we see that there are interaction effects between all of the above
+interactions except region and population. There were no interaction
+effects between sex and any quantitative
     variable.
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 From the residual vs. predicted values, the residuals with lower
 predicted values seem to be more sparse and spread out than the others,
@@ -173,7 +173,7 @@ For our qualitative predictors, linearity is moderately to completely
 satisfied as well (Figures 9, 10, 11 have more
 information).
 
-![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 There are 762 points with high leverage, meaning these points are some
 sorts of outliers. However, these points do not have a significant
@@ -456,11 +456,11 @@ were multicollinear, considering that they both reflect economic status
 of a
 country.
 
-![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
-
 ![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 ![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 While there are some differences between some of the means of the
 residuals for some regions, these means do not seem to vary by too much,

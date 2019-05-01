@@ -223,10 +223,17 @@ color="region") + theme(legend.position = "none")
 legend_b <- get_legend(regionGDP + theme(legend.position="bottom"))
 
 require(cowplot)
-plots <- plot_grid(regionPop, regionHdi, regionGDPCAP, regionGDP)
-plot_grid(plots, legend_b, ncol = 1, rel_heights = c(1, .1))
+plots <- plot_grid(regionPop, regionHdi, regionGDPCAP)
 ```
 
+```{r}
+ggplot(data=suicideFinal,mapping=aes(x=`gdp_for_year ($)`,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="GDP & Region Interaction", 
+x="GDP / year", 
+y="suicides",
+color="region")
+```
+Note: Legend for this plot encompasses the other three.
 From all of these plots, we see interactions between each qualitative and quantitative variable tested. However, after conducting nested F tests, we see that there are interaction effects between all of the above interactions except region and population. There were no interaction effects between sex and any quantitative variable.
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
