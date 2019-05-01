@@ -142,51 +142,14 @@ continuous variable).
 
 ## Regression Analysis
 
-    ## Start:  AIC=-436.98
-    ## `suicides/100k pop` ~ sex + age + population + HDI + (`gdp_for_year ($)`) + 
-    ##     (`gdp_per_capita ($)`) + continent + region + generation
-    ## 
-    ## 
-    ## Step:  AIC=-436.98
-    ## `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + 
-    ##     `gdp_per_capita ($)` + continent + region
-    ## 
-    ## 
-    ## Step:  AIC=-436.98
-    ## `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + 
-    ##     `gdp_per_capita ($)` + region
-    ## 
-    ##                        Df Sum of Sq     RSS     AIC
-    ## - `gdp_per_capita ($)`  1      0.13  664.73 -438.78
-    ## <none>                               664.61 -436.98
-    ## - HDI                   1      1.56  666.16 -436.51
-    ## - `gdp_for_year ($)`    1      2.85  667.46 -434.46
-    ## - population            1      4.97  669.58 -431.11
-    ## - region               15    241.88  906.49 -139.21
-    ## - sex                   1    290.42  955.02  -56.14
-    ## - age                   5    769.95 1434.55  365.52
-    ## 
-    ## Step:  AIC=-438.78
-    ## `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + 
-    ##     region
-    ## 
-    ##                      Df Sum of Sq     RSS     AIC
-    ## <none>                             664.73 -438.78
-    ## - `gdp_for_year ($)`  1      3.65  668.38 -435.00
-    ## - HDI                 1      4.50  669.23 -433.66
-    ## - population          1     10.81  675.55 -423.74
-    ## - region             15    252.00  916.73 -129.35
-    ## - sex                 1    290.37  955.10  -58.05
-    ## - age                 5    773.61 1438.34  366.31
-
 After conducting a backward selection, we we found that sex, age
 population, HDI, gdp for year, and gdp per capita, and region are
 relevant predictors, whereas population, continent, and generation are
-not.
+not (See Figure 13).
 
 ### Interesting Interactions
 
-![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 From all of these plots, we see interactions between each qualitative
 and quantitative variable tested. However, after conducting nested F
@@ -197,7 +160,7 @@ effects between sex and any quantitative
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 From the residual vs. predicted values, the residuals with lower
 predicted values seem to be more sparse and spread out than the others,
@@ -222,7 +185,7 @@ For our qualitative predictors, linearity is moderately to completely
 satisfied (Figures 9, 10, 11 have more
 information).
 
-![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 There are 762 points with high leverage, meaning they affect something
 about the model. However, these points do not have a significant
@@ -373,12 +336,132 @@ effect on suicide rates as population, age, and sex do.
 
 ## Additional Work
 
+AIC Table:
+
+    ## Start:  AIC=-436.98
+    ## `suicides/100k pop` ~ sex + age + population + HDI + (`gdp_for_year ($)`) + 
+    ##     (`gdp_per_capita ($)`) + continent + region + generation
+    ## 
+    ## 
+    ## Step:  AIC=-436.98
+    ## `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + 
+    ##     `gdp_per_capita ($)` + continent + region
+    ## 
+    ## 
+    ## Step:  AIC=-436.98
+    ## `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + 
+    ##     `gdp_per_capita ($)` + region
+    ## 
+    ##                        Df Sum of Sq     RSS     AIC
+    ## - `gdp_per_capita ($)`  1      0.13  664.73 -438.78
+    ## <none>                               664.61 -436.98
+    ## - HDI                   1      1.56  666.16 -436.51
+    ## - `gdp_for_year ($)`    1      2.85  667.46 -434.46
+    ## - population            1      4.97  669.58 -431.11
+    ## - region               15    241.88  906.49 -139.21
+    ## - sex                   1    290.42  955.02  -56.14
+    ## - age                   5    769.95 1434.55  365.52
+    ## 
+    ## Step:  AIC=-438.78
+    ## `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + 
+    ##     region
+    ## 
+    ##                      Df Sum of Sq     RSS     AIC
+    ## <none>                             664.73 -438.78
+    ## - `gdp_for_year ($)`  1      3.65  668.38 -435.00
+    ## - HDI                 1      4.50  669.23 -433.66
+    ## - population          1     10.81  675.55 -423.74
+    ## - region             15    252.00  916.73 -129.35
+    ## - sex                 1    290.37  955.10  -58.05
+    ## - age                 5    773.61 1438.34  366.31
+
+|                    term                     |   estimate   | std.error  |  statistic  |  p.value  |
+| :-----------------------------------------: | :----------: | :--------: | :---------: | :-------: |
+|                 (Intercept)                 |  2.5199093   | 7.9046711  |  0.3187874  | 0.7499557 |
+|                   sexmale                   |  1.0366314   | 0.0416535  | 24.8870099  | 0.0000000 |
+|               age25-34 years                |  15.9584239  | 9.2728953  |  1.7209753  | 0.0855709 |
+|               age35-54 years                |  1.8670545   | 10.5753940 |  0.1765470  | 0.8599007 |
+|                age5-14 years                |  20.9964213  | 9.4840301  |  2.2138712  | 0.0270672 |
+|               age55-74 years                |  2.5874080   | 8.6162296  |  0.3002947  | 0.7640161 |
+|                age75+ years                 |  13.8415938  | 7.9241816  |  1.7467537  | 0.0809933 |
+|                 population                  |  0.4260107   | 2.9634448  |  0.1437552  | 0.8857233 |
+|                     HDI                     | \-21.2343535 | 25.8760051 | \-0.8206195 | 0.4120626 |
+|             `gdp_for_year ($)`              |  0.0173486   | 0.2649987  |  0.0654667  | 0.9478158 |
+|            `gdp_per_capita ($)`             |  0.2966462   | 0.6165608  |  0.4811304  | 0.6305312 |
+|               regionCaribbean               | \-2.5301383  | 2.5003136  | \-1.0119284 | 0.3118221 |
+|            regionCentral America            | \-2.8510033  | 2.5000954  | \-1.1403578 | 0.2544159 |
+|             regionCentral Asia              | \-0.4741630  | 2.5167399  | \-0.1884037 | 0.8505992 |
+|            regionEastern Africa             | \-4.6153287  | 2.6322969  | \-1.7533466 | 0.0798552 |
+|             regionEastern Asia              |  1.4758395   | 0.8509792  |  1.7342840  | 0.0831822 |
+|            regionEastern Europe             | \-2.1334831  | 2.5062684  | \-0.8512588 | 0.3948336 |
+|           regionNorthern America            | \-1.8160963  | 6.1183772  | \-0.2968265 | 0.7666619 |
+|            regionNorthern Europe            | \-1.5592014  | 2.5133883  | \-0.6203584 | 0.5351661 |
+|             regionSouth America             | \-1.5769908  | 2.4982817  | \-0.6312302 | 0.5280372 |
+|          regionSouth-Eastern Asia           | \-3.7384365  | 2.5820779  | \-1.4478403 | 0.1479815 |
+|            regionSouthern Africa            | \-7.0399931  | 6.2848695  | \-1.1201494 | 0.2629245 |
+|             regionSouthern Asia             | \-4.5399118  | 4.6823311  | \-0.9695837 | 0.3324933 |
+|            regionSouthern Europe            | \-2.5972177  | 2.4974147  | \-1.0399625 | 0.2986138 |
+|             regionWestern Asia              | \-3.2628672  | 2.4967473  | \-1.3068472 | 0.1915712 |
+|            regionWestern Europe             | \-1.2096246  | 2.9662786  | \-0.4077920 | 0.6835155 |
+|             HDI:regionCaribbean             |  30.6319097  | 26.1112565 |  1.1731304  | 0.2410286 |
+|          HDI:regionCentral America          |  28.1189251  | 26.1829169 |  1.0739417  | 0.2831132 |
+|           HDI:regionCentral Asia            |  48.5437722  | 26.3251933 |  1.8440044  | 0.0654842 |
+|          HDI:regionEastern Africa           | \-46.4758831 | 27.7448886 | \-1.6751151 | 0.0942307 |
+|          HDI:regionEastern Europe           |  17.1884396  | 26.4418585 |  0.6500466  | 0.5158145 |
+|         HDI:regionNorthern America          |  13.7593264  | 57.1696475 |  0.2406754  | 0.8098571 |
+|          HDI:regionNorthern Europe          |  8.5400096   | 26.7660263 |  0.3190615  | 0.7497478 |
+|           HDI:regionSouth America           |  15.4973642  | 25.9436039 |  0.5973482  | 0.5504129 |
+|        HDI:regionSouth-Eastern Asia         |  19.7525334  | 19.9735295 |  0.9889355  | 0.3229388 |
+|          HDI:regionSouthern Europe          |  22.8910983  | 26.1949093 |  0.8738758  | 0.3824000 |
+|           HDI:regionWestern Asia            |  29.1020965  | 25.9735906 |  1.1204495  | 0.2627968 |
+|          HDI:regionWestern Europe           |  7.8557090   | 22.4001193 |  0.3506994  | 0.7258892 |
+|     `gdp_for_year ($)`:regionCaribbean      | \-0.3349923  | 0.1478963  | \-2.2650494 | 0.0237273 |
+|  `gdp_for_year ($)`:regionCentral America   | \-0.1011988  | 0.1495226  | \-0.6768122 | 0.4986848 |
+|    `gdp_for_year ($)`:regionCentral Asia    | \-0.4495542  | 0.2142800  | \-2.0979757 | 0.0361629 |
+|    `gdp_for_year ($)`:regionEastern Asia    | \-0.3831628  | 0.4005241  | \-0.9566536 | 0.3389780 |
+|   `gdp_for_year ($)`:regionEastern Europe   |  0.1395157   | 0.1574637  |  0.8860182  | 0.3758251 |
+|  `gdp_for_year ($)`:regionNorthern Europe   | \-0.2227774  | 0.1488423  | \-1.4967347 | 0.1347843 |
+|   `gdp_for_year ($)`:regionSouth America    | \-0.3887931  | 0.1442737  | \-2.6948304 | 0.0071629 |
+| `gdp_for_year ($)`:regionSouth-Eastern Asia |  0.9425181   | 0.5213408  |  1.8078732  | 0.0709327 |
+|  `gdp_for_year ($)`:regionSouthern Europe   | \-0.2046936  | 0.1469101  | \-1.3933262 | 0.1638371 |
+|    `gdp_for_year ($)`:regionWestern Asia    | \-0.0094657  | 0.1502833  | \-0.0629858 | 0.9497906 |
+|    `gdp_per_capita ($)`:regionCaribbean     |  0.1449404   | 0.5516732  |  0.2627288  | 0.7928149 |
+| `gdp_per_capita ($)`:regionCentral America  | \-1.0923013  | 0.6995542  | \-1.5614248 | 0.1187464 |
+|   `gdp_per_capita ($)`:regionCentral Asia   | \-0.9175886  | 0.5856206  | \-1.5668653 | 0.1174690 |
+|  `gdp_per_capita ($)`:regionEastern Europe  | \-0.4036319  | 0.6647629  | \-0.6071817 | 0.5438710 |
+| `gdp_per_capita ($)`:regionNorthern Europe  |  0.4096081   | 0.6600452  |  0.6205758  | 0.5350230 |
+|  `gdp_per_capita ($)`:regionSouth America   |  1.0100262   | 0.6016985  |  1.6786251  | 0.0935439 |
+| `gdp_per_capita ($)`:regionSouthern Europe  | \-0.2989290  | 0.6246232  | \-0.4785749 | 0.6323478 |
+|   `gdp_per_capita ($)`:regionWestern Asia   | \-0.5832564  | 0.5619691  | \-1.0378798 | 0.2995820 |
+|             age25-34 years:HDI              |  1.7942578   | 2.0339682  |  0.8821465  | 0.3779139 |
+|             age35-54 years:HDI              |  6.9028518   | 2.0954559  |  3.2942004  | 0.0010224 |
+|              age5-14 years:HDI              | \-5.2616333  | 2.0945989  | \-2.5120003 | 0.0121647 |
+|             age55-74 years:HDI              |  7.5700050   | 2.2512405  |  3.3625928  | 0.0008020 |
+|              age75+ years:HDI               |  8.1133422   | 2.2604839  |  3.5892060  | 0.0003481 |
+|          age25-34 years:population          | \-6.1706187  | 3.6261276  | \-1.7017103 | 0.0891269 |
+|          age35-54 years:population          | \-0.6014393  | 4.1004269  | \-0.1466772 | 0.8834170 |
+|          age5-14 years:population           | \-8.9796033  | 3.7153035  | \-2.4169232 | 0.0158341 |
+|          age55-74 years:population          | \-0.8372444  | 3.3715255  | \-0.2483281 | 0.8039326 |
+|           age75+ years:population           | \-5.2747910  | 3.1110562  | \-1.6954985 | 0.0902985 |
+|     age25-34 years:`gdp_per_capita ($)`     | \-0.5576948  | 0.3397704  | \-1.6413874 | 0.1010379 |
+|     age35-54 years:`gdp_per_capita ($)`     | \-0.3679886  | 0.3791281  | \-0.9706181 | 0.3319780 |
+|     age5-14 years:`gdp_per_capita ($)`      | \-0.2251742  | 0.3435985  | \-0.6553412 | 0.5124019 |
+|     age55-74 years:`gdp_per_capita ($)`     | \-0.3477536  | 0.3500694  | \-0.9933848 | 0.3207677 |
+|      age75+ years:`gdp_per_capita ($)`      | \-0.6278469  | 0.3310567  | \-1.8964934 | 0.0581887 |
+|      age25-34 years:`gdp_for_year ($)`      |  0.4831941   | 0.2873713  |  1.6814278  | 0.0929985 |
+|      age35-54 years:`gdp_for_year ($)`      |  0.0558644   | 0.3172164  |  0.1761082  | 0.8602453 |
+|      age5-14 years:`gdp_for_year ($)`       |  0.3607650   | 0.2951526  |  1.2222998  | 0.2218882 |
+|      age55-74 years:`gdp_for_year ($)`      |  0.0088806   | 0.2681111  |  0.0331229  | 0.9735833 |
+|       age75+ years:`gdp_for_year ($)`       |  0.3127316   | 0.2495005  |  1.2534309  | 0.2103479 |
+
 This was our original final model, but concerns of multicollienarity
 made us get rid of a few variables. In this original model, the
 intercept is much more realistic at around 7 suicides/100k given the
 baseline values. Concerns of multicollinearity made us get rid of two
 variables. However, we also believe that the interaction effects were
 able to counterract the high intercept and values of certain parameters.
-For example, we notice that for Northern America the estimate is
+For example, we notice that for Northern America the estimate is -13,
+but the interaction effects between GDP and Region for North America are
+around 11, which counterracts this.
 
 ###
