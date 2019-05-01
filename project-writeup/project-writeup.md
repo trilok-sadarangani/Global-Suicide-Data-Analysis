@@ -422,7 +422,7 @@ continuous variable).
 
 We are not going to include country in this model as there are over 188
 countries and we can already account for much of this variability based
-off of region and continent.
+off of region.
 
     ## Start:  AIC=-436.98
     ## `suicides/100k pop` ~ sex + age + population + HDI + (`gdp_for_year ($)`) + 
@@ -1106,6 +1106,10 @@ All of these values are relatively small, so we can conclude that our
 model predicts well.
 
 ### Section 3: Discussion and Limitations
+
+### Section 4: Conclusions
+
+### Section 5: Additional Work
 
 ### Section 4 - References
 
