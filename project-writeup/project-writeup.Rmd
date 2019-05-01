@@ -99,7 +99,7 @@ for(i in 1:nrow(suicideFinal)){
 
 To see the shape of the distribution of the number of suicides per 100,000 people, we can plot a histogram of the suicides/100k pop variable.
 
-```{r}
+```{r message = FALSE, warning = FALSE}
 skim(suicideFinal)
 ggplot(data=suicideFinal, mapping=aes(x=`suicides/100k pop`)) + 
   geom_histogram() +
@@ -126,7 +126,7 @@ suicideFinal <- suicideFinal %>% mutate (`suicides/100k pop` = `suicides_no`/(po
 suicideFinal <- suicideFinal %>% mutate (`suicides/100k pop` = log(`suicides/100k pop`))
 ```
 
-```{r}
+```{r message = FALSE, warning = FALSE}
 ggplot(data=suicideFinal, mapping=aes(x=`suicides/100k pop`)) + 
   geom_histogram() +
   labs(title="Distribution of the Log Number of Suicides per 100,000 People", x="Log Number of Suicides per 100,000 People")
@@ -203,14 +203,14 @@ ggplot(data=suicideFinal, mapping=aes(x=generation, y=`suicides/100k pop` ))+
 
 From this boxplot, we see that the average suicide rate/100k people is varied among generation. More specifically, we notice that Generation Z and Millienials have lower rates than the average value of around 2.
 
-```{r}
+```{r message = FALSE, warning = FALSE}
 ggplot(data=suicideFinal, mapping=aes(x=`population`)) + 
   geom_histogram() +
   labs(title="Distribution of Population", x="Population")
 ```
 We will have to log transform population. In addition, we will mean center it so it is easier to interpret.
 
-```{r}
+```{r message = FALSE, warning = FALSE}
 suicideFinal <- suicideFinal %>% mutate(population = log(population), population = population - mean(population))
 ggplot(data=suicideFinal, mapping=aes(x=`population`)) + 
   geom_histogram() +
@@ -220,19 +220,19 @@ We see that this plot has is skewed left and has a unimodal distribution.
 
 We will mean center HDI so it makes it easier to interpret. 
 
-```{r}
+```{r message = FALSE, warning = FALSE}
 suicideFinal <- suicideFinal %>% mutate(HDI = HDI - mean(HDI))
 ggplot(data=suicideFinal, mapping=aes(x=`HDI`)) + 
   geom_histogram() +
   labs(title="Distribution of HDI", x="HDI")
 ```
 The HDI does not have a set distribution. Rather, it is quite parse. 
-```{r}
+```{r message = FALSE, warning = FALSE}
 ggplot(data=suicideFinal, mapping=aes(x=(`gdp_for_year ($)`))) + geom_histogram() +
   labs(title="Distribution of GDPs of Countries", x="Value")
 ```
 Because this is skewed greatly, a log transformation of gdp is needed. We will also mean center this variable. 
-```{r}
+```{r message = FALSE, warning = FALSE}
 suicideFinal<- suicideFinal %>% mutate (`gdp_for_year ($)` = log(`gdp_for_year ($)`))
 suicideFinal <- suicideFinal %>% mutate(`gdp_for_year ($)` = `gdp_for_year ($)` - mean(`gdp_for_year ($)`))
 ggplot(data=suicideFinal, mapping=aes(x=(`gdp_for_year ($)`))) + geom_histogram() +
@@ -241,14 +241,14 @@ ggplot(data=suicideFinal, mapping=aes(x=(`gdp_for_year ($)`))) + geom_histogram(
 
 Log transforming the data set, we notice that the distribution of GDPs of countries has a near-bimodal distribution.
 
-```{r}
+```{r message = FALSE, warning = FALSE}
 ggplot(data=suicide, mapping=aes(x=(`gdp_per_capita ($)`))) +
   geom_histogram() +
   labs(title="Distribution of GDP Per Capita of Countries", x="Value")
 ```
 Like GDP, we will need to log transform this data set. We will also mean center this. 
 
-```{r}
+```{r message = FALSE, warning = FALSE}
 suicideFinal<- suicideFinal %>% mutate (`gdp_per_capita ($)` = log(`gdp_per_capita ($)`))
 suicideFinal <- suicideFinal %>% mutate(`gdp_per_capita ($)` = `gdp_per_capita ($)` - mean(`gdp_per_capita ($)`))
 ggplot(data=suicideFinal, mapping=aes(x=(`gdp_per_capita ($)`))) +
@@ -495,7 +495,7 @@ ggplot(data=suicideFinal, mapping=aes(sample=resid)) +
 labs(title="Normal QQ Plot of Residuals for the Suicide Rate Dataset")
 ```
 
-```{r message = FALSE}
+```{r message = FALSE, warning = FALSE}
 ggplot(data=suicideFinal, mapping=aes(x=resid)) +
   geom_histogram() +  
   labs(title="Distribution of the Residuals for the Suicide Rate Dataset", x="Residuals")

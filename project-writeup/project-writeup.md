@@ -262,8 +262,6 @@ variable.
     ##     0            0.8       4.81         14.37       182.32    ▇▁▁▁▁▁▁▁
     ##  2010         2010      2010          2010         2010       ▁▁▁▇▁▁▁▁
 
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
 ![](project-writeup_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
     ## 
@@ -286,10 +284,7 @@ transformation on the response variable.
 Since this response variable has negative infinity values (this stems
 from the fact that some countries have 0 suicides), we will first
 increase the suicide number by 1 for each country and then recalculate
-suicides per
-    100k.
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+suicides per 100k.
 
 ![](project-writeup_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
@@ -342,53 +337,30 @@ so we must explore further.
 
 From this boxplot, we see that the average suicide rate/100k people is
 varied among generation. More specifically, we notice that Generation Z
-and Millienials have lower rates than the average value of around
-    2.
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+and Millienials have lower rates than the average value of around 2.
 
 ![](project-writeup_files/figure-gfm/unnamed-chunk-21-1.png)<!-- --> We
 will have to log transform population. In addition, we will mean center
-it so it is easier to
-    interpret.
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+it so it is easier to interpret.
 
 ![](project-writeup_files/figure-gfm/unnamed-chunk-22-1.png)<!-- --> We
 see that this plot has is skewed left and has a unimodal distribution.
 
-We will mean center HDI so it makes it easier to
-    interpret.
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+We will mean center HDI so it makes it easier to interpret.
 
 ![](project-writeup_files/figure-gfm/unnamed-chunk-23-1.png)<!-- --> The
-HDI does not have a set distribution. Rather, it is quite
-    parse.
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
+HDI does not have a set distribution. Rather, it is quite parse.
 ![](project-writeup_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 Because this is skewed greatly, a log transformation of gdp is needed.
-We will also mean center this
-    variable.
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
+We will also mean center this variable.
 ![](project-writeup_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 Log transforming the data set, we notice that the distribution of GDPs
-of countries has a near-bimodal
-    distribution.
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+of countries has a near-bimodal distribution.
 
 ![](project-writeup_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 Like GDP, we will need to log transform this data set. We will also mean
-center
-    this.
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+center this.
 
 ![](project-writeup_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
