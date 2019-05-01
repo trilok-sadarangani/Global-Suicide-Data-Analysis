@@ -6,7 +6,7 @@ May 1st, 2019
 
 With suicide being one of the leading causes of death for teens in the
 world, it is important to not only see how Northern America (Canada,
-Greenland, and the United States) stack up with the rest of the world
+Greenland, and the United States) stack up with the rest of the world,
 but also the key trends of suicide rates among different groups and what
 factors shed light onto these different rates.\[1\] We want to explore
 how economic status, along with variables such as age, sex, and human
@@ -15,123 +15,111 @@ hypothesis is that generally, in poorer countries we predict that
 suicide rates will be lower.
 
 Our response variable will be suicides/100k pop, which is the number of
-suicides per 100,000 people in a certain country and year, which is
-stored as a numeric in our dataset. Our predictors variables will be
-age, sex, HDI, gdp\_for\_year, gdp\_per\_capita, generation, population,
-region and continent. Age is the age an individual was when they passed,
-sex is the gender of that individual, country is the country they are
-from, year is the year they passed, HDI for year is the human
-development index for a given country and year, gdp\_for\_year is the
-GDP for a given country and year, gdp\_per\_capita is the GDP per capita
-for a given country and year, and generation is the generation that an
-individual belongs to. There genereations are silen: born 1928-1945,
-Generation X: born 1965-1980, Generation Z: born 1997-2015, and
-Millennials: born 1981-1996. We wish to understand how the number of
+suicides per 100,000 people in a certain country and year and is stored
+as a numeric in our dataset. Our predictor variables will be age, sex,
+HDI, gdp\_for\_year, gdp\_per\_capita, generation, population, region
+and continent. Age is the age an individual was when they passed, sex is
+the gender of that individual, country is the country they are from,
+year is the year they passed, HDI for year is the human development
+index for a given country and year, gdp\_for\_year is the GDP for a
+given country and year, gdp\_per\_capita is the GDP per capita for a
+given country and year, and generation is the generation that an
+individual belongs to. There generations are Silent (born 1928-1945),
+Generation X (born 1965-1980), Millennials (born 1981-1996), and
+Generation Z (born 1997-2015). We wish to understand how the number of
 suicides per 100,000 people in a certain country and year changes as
-year, GDP, GDP per capita, and HDI increase or decreases, meaning we
-want to understand the population coefficients for year, gdp\_for\_year,
+population, GDP, GDP per capita, and HDI increase or decreases, meaning
+we want to understand the population coefficients for gdp\_for\_year,
 gdp\_per\_capita, and HDI for year. Additionally, we want to understand
-whether age, sex, generation, and country have an effect on the number
+whether age, sex, generation, and location have an effect on the number
 of suicides per 100,000 people, meaning we also want to understand the
 population coefficients for these variables. We will not include country
 and suicide/no in our analysis because having 188 different levels is
-unrealistic for the former and the latter is manifested in the response
-variable and population.
+unrealistic for the former, and the latter is manifested in the response
+variable.
 
 ### EDA
 
 Given the longitudinal structure of our data and the need for making a
 multilevel model, we are going to use the data collected in 2010. This
 year has a majority of the countries in the origianl data set and also
-is the year HDI values were collected. Since region and continent were
-not in this data set orginially, we used the gapminder data set as the
-cold deck and merged those values into the suicide data set.
+is one of the years HDI values were collected. Since region and
+continent were not in this data set orginally, we used the gapminder
+data set as a cold deck and merged those values into the suicide data
+set.
 
-Since South Korea and Russia did not have HDI values, we found them from
-online and imputed those (had values of .884 and .780 respectively).
-However, Aruba and Puerto Rico’s HDI’s were not available, so we took
-the average of the HDI in the Caribbean and used a mean imputation for
-those values.
+Since South Korea and Russia did not have HDI values, we found them
+online and imputed those (they had values of 0.884 and 0.780
+respectively) as well. However, Aruba and Puerto Rico’s HDIs were not
+available, so we took the average of the HDI in the Caribbean and used a
+mean imputation for those values.
 
-For the response variable, since there are a few negative infinity
-values, we added one to each number of suicides, divided by population
-(to turn into suicided/100k) and then log transformed. We log
-transformed because of the original skewed histogram (Figure 1).
-
-    ## Loading required package: cowplot
-
-    ## 
-    ## Attaching package: 'cowplot'
-
-    ## The following object is masked from 'package:ggplot2':
-    ## 
-    ##     ggsave
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+For the response variable, there were several 0 values in the dataset.
+After seeing that the distribution was extremely right skewed (Figure
+1), we decided to log these values. However, this results in several
+negative infinity values, so we decided to add one to each value in the
+number of suicides column in the dataset and then divide this column by
+(population/100,000) to make this our new suicides/100k. Finally, we log
+transformed suicides/100k afterwards. We decided to shift the
+distribution by 1 so as to not alter the overall distribution of the
+response variable.
 
 ![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 The mean number of suicides per 100,000 people is 11.22, while the
 maximum number of suicides per 100,000 people in this dataset is 182.32.
-The distribution of this reponse variable is normal. We see that most of
-our countries are from the Amerias and Europe and are in the regions of
-Western Asia, Southern Europe, South America, Northern Europe, and the
-Caribbean. In general, each continent has a similar average number of
-suicides, with Europe having much more outliers with fewer suicides than
-the others.
+The distribution of the log of the reponse variable is normal. We see
+that most of our countries are from the Americas and Europe and are in
+the regions of Western Asia, Southern Europe, South America, Northern
+Europe, and the Caribbean. In general, each continent has a similar
+average log suicide rate, with Europe having many more outliers with
+fewer suicides than the others.
 
 ![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
-As age increases, suicide rate tends to increase in general. The 5-14
-age group is far lower than the other age groups, which is expected. The
-average number of suicides/100k for each region is around 7.38. We see
-Southern Africa as a key outlier with far less suicides and Eastern
-Africa with far more suicides than the average. We notice that males
-have a higher suicide rate/100k people than females. However, there are
-many outliers in this data set so we must explore further. We notice
-that Generation Z is significantly lower in terms of the average number
-of suicides/100k of 7.38.
+As age increases, log suicide rate tends to increase in general. The
+5-14 age group is far lower than the other age groups, which is
+expected. The average number of suicides/100k for each region is around
+7.38. We see Southern Africa as a key outlier with far less suicides and
+Eastern Africa with far more suicides than the average. We notice that
+males have a higher log suicide rate/100k people than females. However,
+there are many outliers in this data set so we must explore further.
+Finally, we notice that Generation Z is significantly lower in terms of
+the average number of log suicides/100k.
 
 Due to the skewed histograms of GDP, GDP per capita, and population, we
-log transformed them (Figures 2,3,4). We also mean center all the
-quantitative
-    variables.
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+log transformed these variables (Figures 2,3,4). We also mean center all
+of the quantitative variables.
 
 ![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 The HDI does not have a set distribution. Rather, it is quite sparse.
-The distribution of population is skewed left and has a unimodal
-distribution. We notice that the distribution of GDPs of countries has a
-near-bimodal distribution.The GDP Per Capita is skewed to the left and
-is bimodal.
+The distribution of log population is slightly skewed left and has a
+unimodal distribution. We notice that the distribution of log GDPs of
+countries has a near-bimodal distribution. The log GDP Per Capita is
+skewed to the left and is bimodal.
 
 ![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-We do not see correlations between HDI, GDP, and GDP per capita and
-suicides/100k. We notice that there could some sort of linear trend or
-threshold for population and suicides. Perhaps in those countries with
-extremely low populations the number of suicides/100k is generally
-higher.
+We do not see correlations between HDI, log GDP, and log GDP per capita
+and log suicides/100k. We notice that there could some sort of linear
+trend or threshold for log population and log suicides/100k. In those
+countries with extremely low populations, the number of suicides/100k is
+generally higher.
 
 ![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
-From the pairs plot, it looks as if HDI, and gdp\_for\_year do not have
-a clear linear relationship with suicides/100k pop. However,
-gdp\_per\_capita seems to be positively correlated with suicides/100k
-pop, meaning as gdp\_per\_capita increases, so does suicides/100k pop.
-Additionally, it looks as if HDI and gdp\_per\_capita seem to have a
-strong non-linear relationship, indicating that we should continue
-looking into this relationship and perhaps include an interaction term
-between these two variables. Similarly, HDI and gdp\_for\_year also seem
-to have a strong non-linear relationship, so we should include an
-interaction term between these two variables as well. We also see a
-strong evidence of multicollinearity between GDP for year and GDP per
-capita that we must address in the model.
+From the pairs plot, it looks as if HDI and log gdp\_for\_year do not
+have a clear linear relationship with suicides/100k pop. However, log
+gdp\_per\_capita seems to be positively correlated with log
+suicides/100k pop, meaning as log gdp\_per\_capita increases, so does
+log suicides/100k pop. Additionally, it looks as if HDI and log
+gdp\_per\_capita seem to have a strong non-linear relationship,
+indicating that we should continue looking into this relationship.
+Similarly, HDI and log gdp\_for\_year also seem to have a strong
+non-linear relationship. We also see strong evidence of
+multicollinearity between log GDP for year and log GDP per capita that
+we must address in the model.
 
 We are very concerned about multicollinearity between all of these
 variables, so we will look into VIF.
@@ -142,10 +130,10 @@ continuous variable).
 
 ## Regression Analysis
 
-After conducting a backward selection, we we found that sex, age
-population, HDI, gdp for year, and gdp per capita, and region are
-relevant predictors, whereas population, continent, and generation are
-not (See Figure 13).
+After conducting backwards selection, we found that sex, age, log
+population, HDI, log gdp for year, log gdp per capita, and region are
+all relevant predictors, whereas continent and generation are not (See
+Figure 13).
 
 ### Interesting Interactions
 
@@ -153,9 +141,9 @@ not (See Figure 13).
 
 From all of these plots, we see interactions between each qualitative
 and quantitative variable tested. However, after conducting nested F
-tests, we see that there are interaction effects between all the above
-interactions except region and population. There were no interaction
-effects between sex and any quantitative
+tests, we see that there are interaction effects between all of the
+above interactions except region and population. There were no
+interaction effects between sex and any quantitative
     variable.
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
@@ -176,32 +164,32 @@ assumption seems to be met because this data was not collected over
 time, since we only took the year 2010, and there does not appear to be
 a cluster effect.
 
-For our quantitative predictors,the residuals seem to be scattered
+For our quantitative predictors, the residuals seem to be scattered
 pretty evenly around the 0 line, and none of them show an obvious
 curving shape, so we can conclude that the linearity assumption is met
-for these predictors as well (Seen in figures 5,6,7,8)
+for these predictors as well (seen in figures 5,6,7,8).
 
 For our qualitative predictors, linearity is moderately to completely
-satisfied (Figures 9, 10, 11 have more
+satisfied as well (Figures 9, 10, 11 have more
 information).
 
 ![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
-There are 762 points with high leverage, meaning they affect something
-about the model. However, these points do not have a significant
+There are 762 points with high leverage, meaning these points are some
+sorts of outliers. However, these points do not have a significant
 influence on the model coefficients. There are 66 observations that are
 considered to have standarized residuals with large magnitude, which is
 about 6.25% of the total number of observations. This is not a concern
 because this is only a small percentage greater than the standard 5%.
 
 There are some obvious concerns with multicollinearity in this model
-because some of the variance inflation factors are higher than 10.
-Population, HDI, gdp\_for\_year, and gdp per capita all have variance
-inflation factors greater than 10. Based on the pairs plot, we can see
-that HDI, gdp\_for\_year, gdp\_per\_capita, and population are all very
-correlated. After removing HDI and GDP for year, all VIF values are
-below 10, meaning we do not have any multicollinearity. (Figure 12 has
-more
+because some of the variance inflation factors are higher than 10. Log
+population, HDI, log gdp\_for\_year, and log gdp per capita all have
+variance inflation factors greater than 10. Based on the pairs plot, we
+can see that HDI, log gdp\_for\_year, log gdp\_per\_capita, and log
+population are all very correlated. After removing HDI and log GDP for
+year, all VIF values are below 10, meaning we do not have any
+multicollinearity. (Figure 12 has more
 information)
 
 |                   term                    |   estimate   | std.error |  statistic  |  p.value  |
@@ -259,49 +247,34 @@ small, so we can conclude that our model predicts well.
 
 ## Discussion and Limitations
 
-Our Intercept is interpreted as when the predictor variables are log(x)
-= 0, the expected median of suicides per 100,000 people is around
-1689.14 with a baseline of female, age between 15-24 years and region of
-Australia and New Zealand. We will discuss this high amount in
-limitations.
-
-When population is doubled, the median of suicides/100k is expected to
-multiply by a factor of 0.105, which shows that increases in population
-correlate with lower suicide rates. In general countries a higher GDP
-because when when GDP / capita is doubled, the median of suicides/100k
-is expected to multiply by a factor of 0.93. When the gender is male,
-the the median of suicides/100k is expected to multiply by a factor of
-2.85 when compared to the baseline of females
+Our intercept is interpreted as when the mean-centered population and
+gdp per capita are log(x) = 0, the expected median of suicides per
+100,000 people is around 1689.14 with a baseline of female, age between
+15-24 years and region of Australia and New Zealand. We will discuss
+this high number in limitations. When population is doubled, the median
+of suicides/100k is expected to multiply by a factor of 0.105, which
+shows that increases in population correlate with lower suicide rates.
+In general, countries with higher GDP have lower suicide rates because
+when GDP / capita is doubled, the median of suicides/100k is expected to
+multiply by a factor of 0.93. When the gender is male, the median of
+suicides/100k is expected to multiply by a factor of 2.85 when compared
+to the baseline of females.
 
 We see the lowest increases in suicide rate in the Northern America
-model, but the greatest increases in western Europe; however, since gdp
-per capita interacts greatly with this those effects are limited.
-
-For Northern America, we also did predictions based on sex, population,
-and age. We empirically found that in North America, as age increases.
-This corroborates the general intercepts. However, since region is
+region, but the greatest increases in western Europe; however, since gdp
+per capita interacts with region, those effects are limited. For
+Northern America, we also did predictions based on sex, population, and
+age. We empirically found that in North America, as age increases,
+suicide rates tend to increase as well. This does not corroborate the
+general coeffiients with respect to region. However, since region is
 generally not significant, our original hypothesis regarding suicides
 being dependent on region is not extremely valid.
-
-Suicide rate in general can vary a lot depending on the year. Just
-looking at it by year, we noticed that some countries’ average values
-tend to change over time. As such, our model might not be the most
-accurate; however, we can predict certain things to a reasonable degree
-of accuracy. HDI is a limitation because you can only calculate that
-every 5 years. For predicting, we have to plug in numbers that make
-sense for a region, or else it gives us a negative grade. In terms of
-what we could have done better, we could have assessed multicollinearity
-before selecting the model, which may have changed the variables in the
-final model. We also could have renamed our mean-centered variables so
-that we wouldn’t get confused later on when trying to differentiate. If
-we were to conduct this project again, we would utilize a time series
-model, as suicide rates vary across time.
 
 Before we checked for multicollinearity, the intercept for our final
 model was a reasonable number of approximately 12 suicides per 100,000,
 which seemed to fit the distribution of suicides per 100,000 seen in
-EDA. However, after removing HDI and gdp\_for\_year from the final model
-while checking for multicollinearity, the intercept shot up to
+EDA. However, after removing HDI and log gdp\_for\_year from the final
+model while checking for multicollinearity, the intercept shot up to
 approximately 1689 suicides per 100,000. This is an error that we would
 want to look into in the future. Additionally, the coefficient for 5-14
 years is extremely high in both final models, which also does not make
@@ -309,6 +282,21 @@ sense given the distribution of the number of suicides per 100,000 for
 each age group seen in EDA. Although the interaction effects seem to
 somewhat make up for this error, this is also something we would want to
 investigate in the future.
+
+Suicide rates in general can vary a lot depending on the year. Just from
+looking through the different years, we noticed that some countries’
+suicide rates tend to change over time. As such, our model might not be
+the most accurate; however, we can predict certain things to a
+reasonable degree of accuracy. HDI is a limitation because you can only
+calculate this value every 5 years. For predicting, we have to plug in
+numbers that make sense for a region, or else it gives us a negative
+grade. In terms of what we could have done better, we could have
+assessed multicollinearity before selecting the model, which potentially
+could have changed the variables in the final model. We also could have
+renamed our mean-centered and logged variables so that we wouldn’t get
+confused later on when trying to differentiate these. If we were to
+conduct this project again, we would utilize a time series model, as
+suicide rates vary across time.
 
 We believe our regression model is appropriate given our skillset. If we
 could continue to work on this data set, we would see how suicide rates
@@ -324,8 +312,9 @@ multiply by a factor of .93. This proved our hypothesis to be incorrect,
 since when the GDP is lower, the median of suicides/100k is expected to
 higher than it would be when the GDP is higher. However, GDP / capita
 was not significant in our model, meaning it may not have a significant
-effect on suicides/100k. Similarly, INSERT REGION COMPARISON. However,
-region was found to not be significant either. We did find that
+effect on suicides/100k. Surprisingly, North America has a substantially
+lower suicide rate than other developed regions such as Northern Europe.
+However, region was found to not be significant either. We did find that
 population, sex, and age are all significant predictors of
 suicides/100k. According to our final model, suicide rates are higher
 for males than they are for females. Additionally, as age group
@@ -462,6 +451,26 @@ variables. However, we also believe that the interaction effects were
 able to counterract the high intercept and values of certain parameters.
 For example, we notice that for Northern America the estimate is -13,
 but the interaction effects between GDP and Region for North America are
-around 11, which counterracts this.
+around 11, which counterracts this. It also makes sense that HDI and gdp
+were multicollinear, considering that they both reflect economic status
+of a
+country.
 
-###
+![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+![](FINALproject-writeup_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+While there are some differences between some of the means of the
+residuals for some regions, these means do not seem to vary by too much,
+and thus the linearity assumption is moderately satisfied for this
+variable. However, there are a few regions with some extreme residuals,
+such as the Carribean and Western Asia. It could be worth looking into
+these more. While there is some differences between the means of the
+residuals for the two gender groups, these means do not seem to vary by
+too much, and the plots seem to have very similar distributions, and
+thus the linearity assumption is moderately satisfied for this variable.
+Again, while there are some differences between some of the means of the
+residuals for some age groups, these means do not seem to vary by too
+much, and thus the linearity assumption is satisfied for this variable.
