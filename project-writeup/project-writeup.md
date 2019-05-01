@@ -3,14 +3,14 @@ Stat210 Final Project
 CamFam
 May 1st, 2019
 
-    ## ── Attaching packages ───────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ───────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
     ## ✔ tibble  2.0.0     ✔ dplyr   0.7.8
     ## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
     ## ✔ readr   1.3.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ──────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ──────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -152,7 +152,7 @@ is the year HDI values were collected.
     ##  n obs: 1056 
     ##  n variables: 12 
     ## 
-    ## ── Variable type:character ───────────────────────────────────────────
+    ## ── Variable type:character ───────────────────────────────────────
     ##      variable missing complete    n min max empty n_unique
     ##           age       0     1056 1056   9  11     0        6
     ##       country       0     1056 1056   4  28     0       88
@@ -160,7 +160,7 @@ is the year HDI values were collected.
     ##    generation       0     1056 1056   6  12     0        4
     ##           sex       0     1056 1056   4   6     0        2
     ## 
-    ## ── Variable type:numeric ─────────────────────────────────────────────
+    ## ── Variable type:numeric ─────────────────────────────────────────
     ##            variable missing complete    n          mean            sd
     ##    gdp_for_year ($)       0     1056 1056       5.9e+11       1.8e+12
     ##  gdp_per_capita ($)       0     1056 1056   23857.19      22474.17   
@@ -224,11 +224,11 @@ variable.
     ##  n obs: 1056 
     ##  n variables: 14 
     ## 
-    ## ── Variable type:character ───────────────────────────────────────────
+    ## ── Variable type:character ───────────────────────────────────────
     ##      variable missing complete    n min max empty n_unique
     ##  country-year       0     1056 1056   8  32     0       88
     ## 
-    ## ── Variable type:factor ──────────────────────────────────────────────
+    ## ── Variable type:factor ──────────────────────────────────────────
     ##    variable missing complete    n n_unique
     ##         age       0     1056 1056        6
     ##   continent       0     1056 1056        5
@@ -244,7 +244,7 @@ variable.
     ##  Car: 120, Nor: 120, Wes: 120, Eas: 108   FALSE
     ##               fem: 528, mal: 528, NA: 0   FALSE
     ## 
-    ## ── Variable type:numeric ─────────────────────────────────────────────
+    ## ── Variable type:numeric ─────────────────────────────────────────
     ##            variable missing complete    n          mean            sd
     ##    gdp_for_year ($)       0     1056 1056       5.9e+11       1.8e+12
     ##  gdp_per_capita ($)       0     1056 1056   23857.19      22474.17   
@@ -267,7 +267,7 @@ variable.
     ## 
     ## Skim summary statistics
     ## 
-    ## ── Variable type:numeric ─────────────────────────────────────────────
+    ## ── Variable type:numeric ─────────────────────────────────────────
     ##                          variable missing complete    n  mean    sd p0 p25
     ##  suicideFinal$`suicides/100k pop`       0     1056 1056 11.22 16.94  0 0.8
     ##   p50   p75   p100     hist
@@ -1043,55 +1043,81 @@ any multicollinearity. Adding back the interaction terms that still have
 both main effects in the model, our final model
 is:
 
-|                     term                      |   estimate   | std.error |  statistic  |  p.value  |
-| :-------------------------------------------: | :----------: | :-------: | :---------: | :-------: |
-|                  (Intercept)                  |  7.4319749   | 1.2976134 |  5.7274183  | 0.0000000 |
-|                    sexmale                    |  1.0443624   | 0.0449309 | 23.2437684  | 0.0000000 |
-|                age25-34 years                 |  0.1824455   | 1.3419519 |  0.1359553  | 0.8918837 |
-|                age35-54 years                 | \-1.3271798  | 1.3766342 | \-0.9640758 | 0.3352389 |
-|                 age5-14 years                 |  10.1969348  | 1.3442199 |  7.5857637  | 0.0000000 |
-|                age55-74 years                 | \-0.2663786  | 1.2902339 | \-0.2064576 | 0.8364751 |
-|                 age75+ years                  |  3.1581620   | 1.1867781 |  2.6611225  | 0.0079117 |
-|                  population                   | \-2.2538772  | 0.4120662 | \-5.4696964 | 0.0000001 |
-|             `gdp_per_capita ($)`              | \-0.1044137  | 0.7169762 | \-0.1456307 | 0.8842420 |
-|                regionCaribbean                | \-0.7702552  | 0.8021422 | \-0.9602477 | 0.3371606 |
-|             regionCentral America             | \-0.8791535  | 0.8181826 | \-1.0745199 | 0.2828466 |
-|              regionCentral Asia               |  0.2394507   | 0.8298430 |  0.2885494  | 0.7729855 |
-|             regionEastern Africa              | \-0.0058994  | 0.9071472 | \-0.0065032 | 0.9948125 |
-|              regionEastern Asia               |  1.5168428   | 0.8822089 |  1.7193692  | 0.0858538 |
-|             regionEastern Europe              |  0.0924298   | 0.8074347 |  0.1144735  | 0.9088853 |
-|            regionNorthern America             | \-13.2357265 | 9.3860403 | \-1.4101502 | 0.1588035 |
-|             regionNorthern Europe             |  0.0393244   | 0.8077281 |  0.0486852  | 0.9611798 |
-|              regionSouth America              |  0.1015780   | 0.8111703 |  0.1252240  | 0.9003712 |
-|           regionSouth-Eastern Asia            | \-0.5331926  | 0.8128215 | \-0.6559774 | 0.5119882 |
-|             regionSouthern Africa             | \-2.0401081  | 1.2465380 | \-1.6366193 | 0.1020219 |
-|              regionSouthern Asia              | \-1.2780679  | 1.2686499 | \-1.0074236 | 0.3139728 |
-|             regionSouthern Europe             | \-0.5779351  | 0.8046075 | \-0.7182820 | 0.4727497 |
-|              regionWestern Asia               | \-1.4212634  | 0.8036647 | \-1.7684781 | 0.0772831 |
-|             regionWestern Europe              |  1.1486307   | 0.8856006 |  1.2970077  | 0.1949250 |
-|     `gdp_per_capita ($)`:regionCaribbean      |  0.2446517   | 0.7233934 |  0.3382000  | 0.7352828 |
-|  `gdp_per_capita ($)`:regionCentral America   | \-0.0706397  | 0.7265289 | \-0.0972290 | 0.9225638 |
-|    `gdp_per_capita ($)`:regionCentral Asia    |  0.2544162   | 0.7245420 |  0.3511407  | 0.7255561 |
-|   `gdp_per_capita ($)`:regionEastern Africa   |  1.1741816   | 1.2550743 |  0.9355475  | 0.3497301 |
-|    `gdp_per_capita ($)`:regionEastern Asia    | \-0.4709708  | 0.8263977 | \-0.5699081 | 0.5688669 |
-|   `gdp_per_capita ($)`:regionEastern Europe   | \-0.3288133  | 0.7274604 | \-0.4520017 | 0.6513649 |
-|  `gdp_per_capita ($)`:regionNorthern America  |  11.0440498  | 7.5988765 |  1.4533793  | 0.1464294 |
-|  `gdp_per_capita ($)`:regionNorthern Europe   | \-0.2052237  | 0.7213537 | \-0.2844981 | 0.7760871 |
-|   `gdp_per_capita ($)`:regionSouth America    |  0.2566074   | 0.7266446 |  0.3531402  | 0.7240571 |
-| `gdp_per_capita ($)`:regionSouth-Eastern Asia |  0.0830189   | 0.7223317 |  0.1149318  | 0.9085220 |
-|  `gdp_per_capita ($)`:regionSouthern Europe   | \-0.0255527  | 0.7213259 | \-0.0354246 | 0.9717482 |
-|    `gdp_per_capita ($)`:regionWestern Asia    |  0.0086593   | 0.7193692 |  0.0120374  | 0.9903981 |
-|   `gdp_per_capita ($)`:regionWestern Europe   | \-0.8165807  | 0.7657223 | \-1.0664189 | 0.2864894 |
-|           age25-34 years:population           | \-0.0015690  | 0.5238859 | \-0.0029950 | 0.9976110 |
-|           age35-54 years:population           |  0.6714523   | 0.5329288 |  1.2599288  | 0.2079864 |
-|           age5-14 years:population            | \-4.7499597  | 0.5258463 | \-9.0329811 | 0.0000000 |
-|           age55-74 years:population           |  0.2749182   | 0.5042421 |  0.5452108  | 0.5857290 |
-|            age75+ years:population            | \-1.0223252  | 0.4703201 | \-2.1736796 | 0.0299611 |
-|      age25-34 years:`gdp_per_capita ($)`      |  0.0983139   | 0.0743233 |  1.3227877  | 0.1862057 |
-|      age35-54 years:`gdp_per_capita ($)`      |  0.2275430   | 0.0744419 |  3.0566512  | 0.0022971 |
-|      age5-14 years:`gdp_per_capita ($)`       | \-0.1951639  | 0.0743597 | \-2.6245917 | 0.0088064 |
-|      age55-74 years:`gdp_per_capita ($)`      |  0.2579984   | 0.0745822 |  3.4592480  | 0.0005643 |
-|       age75+ years:`gdp_per_capita ($)`       |  0.2824247   | 0.0746506 |  3.7832888  | 0.0001639 |
+|                   term                    |   estimate   | std.error |  statistic  |  p.value  |
+| :---------------------------------------: | :----------: | :-------: | :---------: | :-------: |
+|                (Intercept)                |  7.4319749   | 1.2976134 |  5.7274183  | 0.0000000 |
+|                  sexmale                  |  1.0443624   | 0.0449309 | 23.2437684  | 0.0000000 |
+|              age25-34 years               |  0.1824455   | 1.3419519 |  0.1359553  | 0.8918837 |
+|              age35-54 years               | \-1.3271798  | 1.3766342 | \-0.9640758 | 0.3352389 |
+|               age5-14 years               |  10.1969348  | 1.3442199 |  7.5857637  | 0.0000000 |
+|              age55-74 years               | \-0.2663786  | 1.2902339 | \-0.2064576 | 0.8364751 |
+|               age75+ years                |  3.1581620   | 1.1867781 |  2.6611225  | 0.0079117 |
+|                population                 | \-2.2538772  | 0.4120662 | \-5.4696964 | 0.0000001 |
+|             gdp\_per\_capita              | \-0.1044137  | 0.7169762 | \-0.1456307 | 0.8842420 |
+|              regionCaribbean              | \-0.7702552  | 0.8021422 | \-0.9602477 | 0.3371606 |
+|           regionCentral America           | \-0.8791535  | 0.8181826 | \-1.0745199 | 0.2828466 |
+|            regionCentral Asia             |  0.2394507   | 0.8298430 |  0.2885494  | 0.7729855 |
+|           regionEastern Africa            | \-0.0058994  | 0.9071472 | \-0.0065032 | 0.9948125 |
+|            regionEastern Asia             |  1.5168428   | 0.8822089 |  1.7193692  | 0.0858538 |
+|           regionEastern Europe            |  0.0924298   | 0.8074347 |  0.1144735  | 0.9088853 |
+|          regionNorthern America           | \-13.2357265 | 9.3860403 | \-1.4101502 | 0.1588035 |
+|           regionNorthern Europe           |  0.0393244   | 0.8077281 |  0.0486852  | 0.9611798 |
+|            regionSouth America            |  0.1015780   | 0.8111703 |  0.1252240  | 0.9003712 |
+|         regionSouth-Eastern Asia          | \-0.5331926  | 0.8128215 | \-0.6559774 | 0.5119882 |
+|           regionSouthern Africa           | \-2.0401081  | 1.2465380 | \-1.6366193 | 0.1020219 |
+|            regionSouthern Asia            | \-1.2780679  | 1.2686499 | \-1.0074236 | 0.3139728 |
+|           regionSouthern Europe           | \-0.5779351  | 0.8046075 | \-0.7182820 | 0.4727497 |
+|            regionWestern Asia             | \-1.4212634  | 0.8036647 | \-1.7684781 | 0.0772831 |
+|           regionWestern Europe            |  1.1486307   | 0.8856006 |  1.2970077  | 0.1949250 |
+|     gdp\_per\_capita:regionCaribbean      |  0.2446517   | 0.7233934 |  0.3382000  | 0.7352828 |
+|  gdp\_per\_capita:regionCentral America   | \-0.0706397  | 0.7265289 | \-0.0972290 | 0.9225638 |
+|    gdp\_per\_capita:regionCentral Asia    |  0.2544162   | 0.7245420 |  0.3511407  | 0.7255561 |
+|   gdp\_per\_capita:regionEastern Africa   |  1.1741816   | 1.2550743 |  0.9355475  | 0.3497301 |
+|    gdp\_per\_capita:regionEastern Asia    | \-0.4709708  | 0.8263977 | \-0.5699081 | 0.5688669 |
+|   gdp\_per\_capita:regionEastern Europe   | \-0.3288133  | 0.7274604 | \-0.4520017 | 0.6513649 |
+|  gdp\_per\_capita:regionNorthern America  |  11.0440498  | 7.5988765 |  1.4533793  | 0.1464294 |
+|  gdp\_per\_capita:regionNorthern Europe   | \-0.2052237  | 0.7213537 | \-0.2844981 | 0.7760871 |
+|   gdp\_per\_capita:regionSouth America    |  0.2566074   | 0.7266446 |  0.3531402  | 0.7240571 |
+| gdp\_per\_capita:regionSouth-Eastern Asia |  0.0830189   | 0.7223317 |  0.1149318  | 0.9085220 |
+|  gdp\_per\_capita:regionSouthern Europe   | \-0.0255527  | 0.7213259 | \-0.0354246 | 0.9717482 |
+|    gdp\_per\_capita:regionWestern Asia    |  0.0086593   | 0.7193692 |  0.0120374  | 0.9903981 |
+|   gdp\_per\_capita:regionWestern Europe   | \-0.8165807  | 0.7657223 | \-1.0664189 | 0.2864894 |
+|         age25-34 years:population         | \-0.0015690  | 0.5238859 | \-0.0029950 | 0.9976110 |
+|         age35-54 years:population         |  0.6714523   | 0.5329288 |  1.2599288  | 0.2079864 |
+|         age5-14 years:population          | \-4.7499597  | 0.5258463 | \-9.0329811 | 0.0000000 |
+|         age55-74 years:population         |  0.2749182   | 0.5042421 |  0.5452108  | 0.5857290 |
+|          age75+ years:population          | \-1.0223252  | 0.4703201 | \-2.1736796 | 0.0299611 |
+|      age25-34 years:gdp\_per\_capita      |  0.0983139   | 0.0743233 |  1.3227877  | 0.1862057 |
+|      age35-54 years:gdp\_per\_capita      |  0.2275430   | 0.0744419 |  3.0566512  | 0.0022971 |
+|      age5-14 years:gdp\_per\_capita       | \-0.1951639  | 0.0743597 | \-2.6245917 | 0.0088064 |
+|      age55-74 years:gdp\_per\_capita      |  0.2579984   | 0.0745822 |  3.4592480  | 0.0005643 |
+|       age75+ years:gdp\_per\_capita       |  0.2824247   | 0.0746506 |  3.7832888  | 0.0001639 |
+
+    ## Analysis of Variance Table
+    ## 
+    ## Model 1: `suicides/100k pop` ~ sex + population + gdp_per_capita + region + 
+    ##     region * gdp_per_capita
+    ## Model 2: `suicides/100k pop` ~ sex + age + population + gdp_per_capita + 
+    ##     region + region * gdp_per_capita + age * population + age * 
+    ##     gdp_per_capita
+    ##   Res.Df     RSS Df Sum of Sq      F    Pr(>F)    
+    ## 1   1024 1415.93                                  
+    ## 2   1009  536.72 15    879.21 110.19 < 2.2e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    ## Analysis of Variance Table
+    ## 
+    ## Model 1: `suicides/100k pop` ~ age + population + gdp_per_capita + region + 
+    ##     region * gdp_per_capita + age * population + age * gdp_per_capita
+    ## Model 2: `suicides/100k pop` ~ sex + age + population + gdp_per_capita + 
+    ##     region + region * gdp_per_capita + age * population + age * 
+    ##     gdp_per_capita
+    ##   Res.Df    RSS Df Sum of Sq      F    Pr(>F)    
+    ## 1   1010 824.11                                  
+    ## 2   1009 536.72  1    287.39 540.27 < 2.2e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ### Model Validation
 
@@ -1106,6 +1132,174 @@ All of these values are relatively small, so we can conclude that our
 model predicts well.
 
 ### Section 3: Discussion and Limitations
+
+# Discussion
+
+Our original hypothesis was that the economic status of a country (as
+determined by the country’s GDP per capita) would predict that country’s
+suicide rates. However, in our model, the p-value for gdp\_per\_capita
+is 0.8842420. At a .05 significance level, we find that the relationship
+between economic status and suicide rates is insignificant. A more
+significant predictor (as determined by the p-value less than our
+significance level of .05) is population. In our nested-F tests above,
+we also found age and sex to be a significant predictors of suicide
+rates.
+
+# Test Cases
+
+    ## Warning in predict.lm(finalmodel, x0, interval = "confidence"): prediction
+    ## from a rank-deficient fit may be misleading
+
+    ##        fit      lwr      upr
+    ## 1 3.409644 2.710234 4.109055
+
+    ## [1] 30.25447
+
+For males in a Northern American country with a population 2.2 above the
+log of the mean and GDP per capita 1.2 above the log of the mean, who
+are 15-24 years of age, we expect the median suicides per 100k to be
+approximately
+    30.3.
+
+    ## Warning in predict.lm(finalmodel, x0, interval = "confidence"): prediction
+    ## from a rank-deficient fit may be misleading
+
+    ##        fit      lwr      upr
+    ## 1 2.365282 1.665873 3.064691
+
+    ## [1] 10.64704
+
+For females in a Northern American country with a population 2.2 above
+the log of the mean and GDP per capita 1.2 above the log of the mean,
+who are 15-24 years of age, we expect the median suicides per 100k to be
+approximately 10.6, which is much lower than the male rate. This shows
+that suicide rates vary by sex, holding all else
+    constant.
+
+    ## Warning in predict.lm(finalmodel, x0, interval = "confidence"): prediction
+    ## from a rank-deficient fit may be misleading
+
+    ##        fit      lwr      upr
+    ## 1 2.922471 2.228339 3.616603
+
+    ## [1] 18.58716
+
+For males in a Northern American country with a population 2.2 above the
+log of the mean and GDP per capita 1.2 above the log of the mean, who
+are 5-14 years of age, we expect the median suicides per 100k to be
+approximately
+    18.6.
+
+    ## Warning in predict.lm(finalmodel, x0, interval = "confidence"): prediction
+    ## from a rank-deficient fit may be misleading
+
+    ##        fit      lwr      upr
+    ## 1 3.409644 2.710234 4.109055
+
+    ## [1] 30.25447
+
+For males in a Northern American country with a population 2.2 above the
+log of the mean and GDP per capita 1.2 above the log of the mean, who
+are 15-24 years of age, we expect the median suicides per 100k to be
+approximately
+    30.3.
+
+    ## Warning in predict.lm(finalmodel, x0, interval = "confidence"): prediction
+    ## from a rank-deficient fit may be misleading
+
+    ##        fit     lwr      upr
+    ## 1 3.706615 3.00572 4.407509
+
+    ## [1] 40.71575
+
+For males in a Northern American country with a population 2.2 above the
+log of the mean and GDP per capita 1.2 above the log of the mean, who
+are 25-34 years of age, we expect the median suicides per 100k to be
+approximately
+    40.7.
+
+    ## Warning in predict.lm(finalmodel, x0, interval = "confidence"): prediction
+    ## from a rank-deficient fit may be misleading
+
+    ##        fit     lwr      upr
+    ## 1 3.832711 3.10729 4.558133
+
+    ## [1] 46.18758
+
+For males in a Northern American country with a population 2.2 above the
+log of the mean and GDP per capita 1.2 above the log of the mean, who
+are 35-54 years of age, we expect the median suicides per 100k to be
+approximately
+    46.2.
+
+    ## Warning in predict.lm(finalmodel, x0, interval = "confidence"): prediction
+    ## from a rank-deficient fit may be misleading
+
+    ##        fit      lwr      upr
+    ## 1 4.057684 3.363107 4.752261
+
+    ## [1] 57.8402
+
+For males in a Northern American country with a population 2.2 above the
+log of the mean and GDP per capita 1.2 above the log of the mean, who
+are 55-74 years of age, we expect the median suicides per 100k to be
+approximately
+    57.8.
+
+    ## Warning in predict.lm(finalmodel, x0, interval = "confidence"): prediction
+    ## from a rank-deficient fit may be misleading
+
+    ##      fit      lwr      upr
+    ## 1 4.6576 4.002046 5.313155
+
+    ## [1] 105.3829
+
+For males in a Northern American country with a population 2.2 above the
+log of the mean and GDP per capita 1.2 above the log of the mean, who
+are 75+ years of age, we expect the median suicides per 100k to be
+approximately 105.4. We can see that as age increases, suicides per 100k
+also increase, holding all else
+    constant.
+
+    ## Warning in predict.lm(finalmodel, x0, interval = "confidence"): prediction
+    ## from a rank-deficient fit may be misleading
+
+    ##       fit      lwr      upr
+    ## 1 3.86042 3.077674 4.643165
+
+    ## [1] 47.48529
+
+For males in a Northern American country with a population 2 above the
+log of the mean and GDP per capita 1.2 above the log of the mean, who
+are 15-24 years of age, we expect the median suicides per 100k to be
+approximately
+    47.5.
+
+    ## Warning in predict.lm(finalmodel, x0, interval = "confidence"): prediction
+    ## from a rank-deficient fit may be misleading
+
+    ##        fit      lwr     upr
+    ## 1 6.114297 4.694834 7.53376
+
+    ## [1] 452.278
+
+For males in a Northern American country with a population at the log of
+the mean and GDP per capita 1.2 above the log of the mean, who are 15-24
+years of age, we expect the median suicides per 100k to be approximately
+452.3. The vast difference between suicide rates in the highly-populated
+subset versus the lower-populated subset shows that suicide rates differ
+by population.
+
+# Limitations
+
+Suicide rate in general can vary a lot depending on the year. Just
+looking at it by year, we noticed that some countries tend to have their
+average values change over time. As such, our model might not be the
+most accurate; however, we can predict certain things to a reasonable
+degree of accuracy. (predict and compare it to 2011) HDI is a limitation
+because you can only calculate that every 5 years. For predicting, we
+have to plug in numbers that make sense for a region, or else it gives
+us a negative grade.
 
 ### Section 4: Conclusions
 
