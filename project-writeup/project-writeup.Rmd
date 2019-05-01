@@ -615,6 +615,10 @@ finalmodel <- lm(formula = `suicides/100k pop` ~ sex + age + population + gdp_pe
 kable(tidy(finalmodel))
 ```
 
+
+
+
+
 ```{r}
 modelnoage <- lm(formula = `suicides/100k pop` ~ sex + population + gdp_per_capita + region + region*gdp_per_capita, data = suicideFinal)
 anova(modelnoage,finalmodel)
