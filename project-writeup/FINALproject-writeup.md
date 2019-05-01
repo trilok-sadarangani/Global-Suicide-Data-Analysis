@@ -8,32 +8,35 @@ With suicide being one of the leading causes of death for teens in the
 world, it is important to not only see how Northern America (Canada,
 Greenland, and the United States) stack up with the rest of the world
 but also the key trends of suicide rates among different groups and what
-factors shed light onto these different rates\[1\] We want to explore
+factors shed light onto these different rates.\[1\] We want to explore
 how economic status, along with variables such as age, sex, and human
 development index, affects suicide rates all across the world. Our
 hypothesis is that generally, in poorer countries we predict that
-suicide rates will lower.
+suicide rates will be lower.
 
 Our response variable will be suicides/100k pop, which is the number of
 suicides per 100,000 people in a certain country and year, which is
 stored as a numeric in our dataset. Our predictors variables will be
-age, sex, HDI, gdp\_for\_year, gdp\_per\_capita, generation, region and
-continent. Age is the age an individual was when they passed, sex is the
-gender of that individual, country is the country they are from, year is
-the year they passed, HDI for year is the human development index for a
-given country and year, gdp\_for\_year is the GDP for a given country
-and year, gdp\_per\_capita is the GDP per capita for a given country and
-year, and generation is the generation that an individual belongs to. We
-wish to understand how the number of suicides per 100,000 people in a
-certain country and year changes as year, GDP, GDP per capita, and HDI
-increase or decreases, meaning we want to understand the population
-coefficients for year, gdp\_for\_year, gdp\_per\_capita, and HDI for
-year. Additionally, we want to understand whether age, sex, generation,
-and country have an effect on the number of suicides per 100,000 people,
-meaning we also want to understand the population coefficients for these
-variables. We will not include country and suicide/no in our analysis
-because having 188 different levels is unrealistic for the former and
-the latter is manifested in the response variable and population.
+age, sex, HDI, gdp\_for\_year, gdp\_per\_capita, generation, population,
+region and continent. Age is the age an individual was when they passed,
+sex is the gender of that individual, country is the country they are
+from, year is the year they passed, HDI for year is the human
+development index for a given country and year, gdp\_for\_year is the
+GDP for a given country and year, gdp\_per\_capita is the GDP per capita
+for a given country and year, and generation is the generation that an
+individual belongs to. There genereations are silen: born 1928-1945,
+Generation X: born 1965-1980, Generation Z: born 1997-2015, and
+Millennials: born 1981-1996. We wish to understand how the number of
+suicides per 100,000 people in a certain country and year changes as
+year, GDP, GDP per capita, and HDI increase or decreases, meaning we
+want to understand the population coefficients for year, gdp\_for\_year,
+gdp\_per\_capita, and HDI for year. Additionally, we want to understand
+whether age, sex, generation, and country have an effect on the number
+of suicides per 100,000 people, meaning we also want to understand the
+population coefficients for these variables. We will not include country
+and suicide/no in our analysis because having 188 different levels is
+unrealistic for the former and the latter is manifested in the response
+variable and population.
 
 ### EDA
 
@@ -311,6 +314,26 @@ We see the lowest increases in suicide rate in the Northern America
 model, but the greatest increases in western Europe; however, since gdp
 per capita interacts greatly with this those effects are limited.
 
+For Northern America, we also did predictions based on sex, population,
+and age. We empirically found that in North America, as age increases.
+This corroborates the general intercepts. However, since region is
+generally not significant, our original hypothesis regarding suicides
+being dependent on region is not extremely valid.
+
+Suicide rate in general can vary a lot depending on the year. Just
+looking at it by year, we noticed that some countries’ average values
+tend to change over time. As such, our model might not be the most
+accurate; however, we can predict certain things to a reasonable degree
+of accuracy. HDI is a limitation because you can only calculate that
+every 5 years. For predicting, we have to plug in numbers that make
+sense for a region, or else it gives us a negative grade. In terms of
+what we could have done better, we could have assessed multicollinearity
+before selecting the model, which may have changed the variables in the
+final model. We also could have renamed our mean-centered variables so
+that we wouldn’t get confused later on when trying to differentiate. If
+we were to conduct this project again, we would utilize a time series
+model, as suicide rates vary across time.
+
 Before we checked for multicollinearity, the intercept for our final
 model was a reasonable number of approximately 12 suicides per 100,000,
 which seemed to fit the distribution of suicides per 100,000 seen in
@@ -324,13 +347,38 @@ each age group seen in EDA. Although the interaction effects seem to
 somewhat make up for this error, this is also something we would want to
 investigate in the future.
 
+We believe our regression model is appropriate given our skillset. If we
+could continue to work on this data set, we would see how suicide rates
+are changing over time and use this data to make better conclusions
+about future rates.
+
 ## Conclusion
 
-In this section, you should summarize your project and highlight any
-final points you wish the reader to get from the project.
+Our original hypothesis was that generally, in poorer countries we
+predict that suicide rates will lower. According to our final model,
+when GDP / capita is doubled, the median of suicides/100k is expected to
+multiply by a factor of .93. This proved our hypothesis to be incorrect,
+since when the GDP is lower, the median of suicides/100k is expected to
+higher than it would be when the GDP is higher. However, GDP / capita
+was not significant in our model, meaning it may not have a significant
+effect on suicides/100k. Similarly, INSERT REGION COMPARISON. However,
+region was found to not be significant either. We did find that
+population, sex, and age are all significant predictors of
+suicides/100k. According to our final model, suicide rates are higher
+for males than they are for females. Additionally, as age group
+increases, suicide rate increases as well. Finally, smaller populations
+tend to have higher suicides rates than larger populations do. Overall,
+we found that economic status and location do not have as large of an
+effect on suicide rates as population, age, and sex do.
 
 ## Additional Work
 
 This was our original final model, but concerns of multicollienarity
+made us get rid of a few variables. In this original model, the
+intercept is much more realistic at around 7 suicides/100k given the
+baseline values. Concerns of multicollinearity made us get rid of two
+variables. However, we also believe that the interaction effects were
+able to counterract the high intercept and values of certain parameters.
+For example, we notice that for Northern America the estimate is
 
 ###
