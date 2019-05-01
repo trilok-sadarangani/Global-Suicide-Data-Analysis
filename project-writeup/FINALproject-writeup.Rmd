@@ -25,7 +25,7 @@ library(rms)
 ```{r load-data, include = FALSE}
 suicide <- read_csv("/cloud/project/data/master.csv")
 ```
-## Section 1. Introduction
+## Introduction
 With suicide being one of the leading causes of death for teens in the world, it is important to not only see how Northern America (Canada, Greenland, and the United States) stack up with the rest of the world but also the key trends of suicide rates among different groups and what factors shed light onto these different rates[1] We want to explore how economic status, along with variables such as age, sex, and human development index, affects suicide rates all across the world. Our hypothesis is that generally, in poorer countries we predict that suicide rates will lower.
 
 Our response variable will be suicides/100k pop, which is the number of suicides per 100,000 people in a certain country and year, which is stored as a numeric in our dataset. Our predictors variables will be age, sex, HDI, gdp_for_year, gdp_per_capita, generation, region and continent. Age is the age an individual was when they passed, sex is the gender of that individual, country is the country they are from, year is the year they passed, HDI for year is the human development index for a given country and year, gdp_for_year is the GDP for a given country and year, gdp_per_capita is the GDP per capita for a given country and year, and generation is the generation that an individual belongs to. We wish to understand how the number of suicides per 100,000 people in a certain country and year changes as year, GDP, GDP per capita, and HDI increase or decreases, meaning we want to understand the population coefficients for year, gdp_for_year, gdp_per_capita, and HDI for year. Additionally, we want to understand whether age, sex, generation, and country have an effect on the number of suicides per 100,000 people, meaning we also want to understand the population coefficients for these variables. We will not include country and suicide/no in our analysis because having 188 different levels is unrealistic for the former and the latter is manifested in the response variable and population. 
@@ -129,7 +129,7 @@ We notice that Generation Z is significantly lower in terms of the average numbe
 
 Due to the skewed histograms of GDP, GDP per capita, and population, we log transformed them (Figures 2,3,4). We also mean center all the quantitative variables.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.height = 4}
 suicideFinal <- suicideFinal %>% mutate(population = log(population), population = population - mean(population))
 popHist <- ggplot(data=suicideFinal, mapping=aes(x=`population`)) + 
   geom_histogram() +
@@ -155,9 +155,9 @@ require(cowplot)
 plot_grid(gdpHist, gdpcapHist, popHist, hdiHist)
 ```
 
-The HDI does not have a set distribution. Rather, it is quite sparse. The distribution of population is skewed left and has a unimodal distribution. We notice that the distribution of GDPs of countries has a near-bimodal distribution.  The GDP Per Capita is skewed to the left and is bimodal.
+The HDI does not have a set distribution. Rather, it is quite sparse. The distribution of population is skewed left and has a unimodal distribution. We notice that the distribution of GDPs of countries has a near-bimodal distribution.The GDP Per Capita is skewed to the left and is bimodal.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.height = 4}
 hdiDist <- ggplot(data=suicideFinal, mapping=aes(x=`HDI`, y=`suicides/100k pop`))+
   geom_point()+
   labs(title = "Plot of Suicides/100k vs HDI", x = "HDI", y = "Suicides/100k")
@@ -178,14 +178,153 @@ require(cowplot)
 plot_grid(hdiDist, popDist, gdpDist, gdpcapDist)
 ```
 
-We do not see correlations between HDI, GDP, and GDP per capita and suicides/100k. We notice that as population has a specific cutoff.
+We do not see correlations between HDI, GDP, and GDP per capita and suicides/100k. We notice that there could some sort of linear trend or threshold for population and suicides. Perhaps in those countries with extremely low populations the number of suicides/100k is generally higher.
+
+```{r, fig.height = 4, echo = FALSE}
+pairs(`suicides/100k pop` ~ `HDI` + `gdp_for_year ($)` + `gdp_per_capita ($)` + population, data = suicideFinal)
+```
+
+From the pairs plot, it looks as if HDI, and gdp_for_year do not have a clear linear relationship with suicides/100k pop. However, gdp_per_capita seems to be positively correlated with suicides/100k pop, meaning as gdp_per_capita increases, so does suicides/100k pop. Additionally, it looks as if HDI and gdp_per_capita seem to have a strong non-linear relationship, indicating that we should continue looking into this relationship and perhaps include an interaction term between these two variables. Similarly, HDI and gdp_for_year also seem to have a strong non-linear relationship, so we should include an interaction term between these two variables as well. We also see a strong evidence of multicollinearity between GDP for year and GDP per capita that we must address in the model.
+
+We are very concerned about multicollinearity between all of these variables, so we will look into VIF.
+
+We plan to do a multiple linear regression because suicides/100k pop is a quantitative variable (there are no levels to it, since it is a continuous variable).
 
 
+## Regression Analysis
+
+```{r, echo = FALSE}
+model1 <- lm(`suicides/100k pop` ~ sex + age + population + HDI + (`gdp_for_year ($)`) + (`gdp_per_capita ($)`) + continent + region + generation, data = suicideFinal)
+regfit_backward <- step(model1, direction = "backward")
+```
+After conducting a backward selection, we we found that sex, age population, HDI, gdp for year, and gdp per capita, and region are relevant predictors, whereas population, continent, and generation are not.
+
+### Interesting Interactions
+```{r}
+regionPop <- ggplot(data=suicideFinal,mapping=aes(x=population,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="Population & Region Interaction", 
+x="population", 
+y="suicides",
+color="region") + theme(legend.position = "none")
+
+regionHdi <-  ggplot(data=suicideFinal,mapping=aes(x=HDI,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="HDI & Region Interaction", 
+x="HDI", 
+y="suicides",
+color="region") + theme(legend.position = "none")
+
+regionGDPCAP <- ggplot(data=suicideFinal,mapping=aes(x=`gdp_per_capita ($)`,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="GDP/Capita & Region Interaction", 
+x="GDP / capita", 
+y="suicides",
+color="region") + theme(legend.position = "none")
+
+regionGDP <- ggplot(data=suicideFinal,mapping=aes(x=`gdp_for_year ($)`,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="GDP & Region Interaction", 
+x="GDP / year", 
+y="suicides",
+color="region") + theme(legend.position = "none")
+
+legend_b <- get_legend(regionGDP + theme(legend.position="bottom"))
+
+require(cowplot)
+plots <- plot_grid(regionPop, regionHdi, regionGDPCAP, regionGDP)
+plot_grid(plots, legend_b, ncol = 1, rel_heights = c(1, .1))
+```
 
 
+From all of these plots, we see interactions between each qualitative and quantitative variable tested. However, after conducting nested F tests, we see that there are interaction effects between all the above interactions except region and population. There were no interaction effects between sex and any quantitative variable.
 
-##Section 2. Regression Analysis
+```{r, echo = FALSE}
+finalmodel <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + region*HDI + region*`gdp_for_year ($)` + region*`gdp_per_capita ($)` + age*HDI + age*population + age*`gdp_per_capita ($)` + age*`gdp_for_year ($)`, data = suicideFinal)
+```
 
+```{r, echo = FALSE,  warning = FALSE}
+suicideFinal <- suicideFinal %>%
+  mutate(predicted = predict.lm(finalmodel), resid = residuals(finalmodel))
+
+resids<- ggplot(data=suicideFinal, mapping=aes(x=predicted,y=resid)) +
+  geom_point() + 
+  geom_hline(yintercept=0,color="red")+
+  labs(title="Residuals vs. Predicted Values",
+       x="Predicted Values", 
+       y="Residuals")
+
+qq<- ggplot(data=suicideFinal, mapping=aes(sample=resid)) +
+  stat_qq() + 
+  stat_qq_line()+
+labs(title="Normal QQ Plot of Residuals")
+
+distResids <- ggplot(data=suicideFinal, mapping=aes(x=resid)) +
+  geom_histogram() +  
+  labs(title="Distribution of the Residuals", x="Residuals")
+
+plot_grid(resids, qq, distResids)
+```
+
+From the residual vs. predicted values, the residuals with lower predicted values seem to be more sparse and spread out than the others, which may be worth looking into. However, for the most part, the majority of the residuals are randomly distributed around the red line and do not exhibit any obvious nonlinear trends. Thus, we can conclude that constant variance is satisfied. According to the QQ-plot, the normality assumption seems to be satisfied because the majority of the points seem to align well with the expected QQ-plot line. In addition, the histogram seems to be approximately normal and follows a mostly smooth curve. Based on the description of the data, the independence assumption seems to be met because this data was not collected over time, since we only took the year 2010, and there does not appear to be a cluster effect.
+
+For our quantitative predictors,the residuals seem to be scattered pretty evenly around the 0 line, and none of them show an obvious curving shape, so we can conclude that the linearity assumption is met for these predictors as well (Seen in figures 5,6,7,8)
+
+For our qualitative predictors, linearity is moderately to completely satisfied (Figures  9, 10, 11 have more information).
+
+```{r, echo = FALSE}
+suicidesoutput <- augment(finalmodel) %>%
+  dplyr::mutate(obs_num = row_number())
+leverage_threshold <- 2*(25+1)/nrow(suicidesoutput)
+
+leverage<- ggplot(data = suicidesoutput, aes(x = obs_num,y = .hat)) + 
+geom_point(alpha = 0.7) + 
+geom_hline(yintercept = leverage_threshold,color = "red")+
+labs(x = "Observation Number",y = "Leverage",title = "Leverage") +
+geom_text(aes(label=ifelse(.hat > leverage_threshold, as.character(obs_num), "")), nudge_x = 4)
+
+cooks <- ggplot(data = suicidesoutput, aes(x = obs_num, y = .cooksd)) + 
+geom_point(alpha = 0.7) + 
+geom_hline(yintercept=1,color = "red")+
+labs(x= "Observation Number",y = "Cook's Distance",title = "Cook's Distance") +
+geom_text(aes(label = ifelse(.hat>1,as.character(obs_num),"")))
+
+stand <- ggplot(data = suicidesoutput, aes(x = .fitted,y = .std.resid)) +
+  geom_point(alpha = 0.7) + 
+  geom_hline(yintercept = 0,color = "red") +
+  geom_hline(yintercept = -2,color = "red",linetype = "dotted") +
+  geom_hline(yintercept = 2,color = "red",linetype = "dotted") + labs(x ="Predicted Value",y ="Standardized Residuals",title = "Standardized Residuals vs. Predicted") + geom_text(aes(label = ifelse(abs(.std.resid) >2,as.character(obs_num),"")), nudge_x = 0.3)
+
+plot_grid(leverage, cooks, stand)
+```
+
+
+There are 762 points with high leverage, meaning they affect something about the model. However, these points do not have a significant influence on the model coefficients. There are 66 observations that are considered to have standarized residuals with large magnitude, which is about 6.25% of the total number of observations. This is not a concern because this is only a small percentage greater than the standard 5%.
+
+There are some obvious concerns with multicollinearity in this model because some of the variance inflation factors are higher than 10. Population, HDI, gdp_for_year, and gdp per capita all have variance inflation factors greater than 10. Based on the pairs plot, we can see that HDI, gdp_for_year, gdp_per_capita, and population are all very correlated. After removing HDI and GDP for year, all VIF values are below 10, meaning we do not have any multicollinearity. (Figure 12 has more information)
+
+```{r}
+suicideFinal <- suicideFinal %>% mutate (gdp_per_capita = `gdp_per_capita ($)`)
+
+finalmodel <- lm(formula = `suicides/100k pop` ~ sex + age + population + gdp_per_capita + region + region*gdp_per_capita + age*population + age*gdp_per_capita, data = suicideFinal)
+kable(tidy(finalmodel))
+```
+
+In validating our model, we see that the mean squared error values are small, so we can conclude that our model predicts well. 
+
+## Discussion and Limitations
+
+Our Intercept is interpreted as when the predictor variables are log(x) = 0, the expected median of suicides per 100,000 people is around  1689.14  with a baseline of female, age between 15-24 years and region of Australia and New Zealand. We will discuss this high amount in limitations.  
+
+When population is doubled, the median of suicides/100k is expected to multiply by a factor of 0.105, which shows that increases in population correlate with lower suicide rates. In general countries a higher GDP because when when GDP / capita is doubled, the median of suicides/100k is expected to multiply by a factor of 0.93. When the gender is male, the  the median of suicides/100k is expected to multiply by a factor of 2.85 when compared to the baseline of females
+
+We see the lowest increases in suicide rate in the Northern America model, but the greatest increases in western Europe; however, since gdp per capita interacts greatly with this those effects are limited. 
+
+Before we checked for multicollinearity, the intercept for our final model was a reasonable number of approximately 12 suicides per 100,000, which seemed to fit the distribution of suicides per 100,000 seen in EDA. However, after removing HDI and gdp_for_year from the final model while checking for multicollinearity, the intercept shot up to approximately 1689 suicides per 100,000. This is an error that we would want to look into in the future. Additionally, the coefficient for 5-14 years is extremely high in both final models, which also does not make sense given the distribution of the number of suicides per 100,000 for each age group seen in EDA. Although the interaction effects seem to somewhat make up for this error, this is also something we would want to investigate in the future.
+
+## Conclusion
+
+In this section, you should summarize your project and highlight any final points you wish the reader to get from the project.
+
+
+## Additional Work
+This was our original final model, but concerns of multicollienarity 
 
 
 ###
