@@ -19,6 +19,7 @@ library(skimr)
 library(modelr)
 library(leaps)
 library(plyr)
+library(dplyr)
 library(rms)
 ```
 
@@ -298,32 +299,60 @@ regfit_backward
 We chose a multiple linear regression model because we want to predict the value of a variable based on multile different independent variables. Based on backward selection, we found that sex, age  population, HDI, gdp for year, and gdp per capita, and region are relevant predictors, whereas population, continent, and generation are not. 
 
 ### Testing of Interesting Interactions
+
 For the interaction effects, we will look into the interaction of each quantitative variable with each qualitative variable. We will also look at a select few qualitative variables with one another.
+
+```{r}
+ggplot(data=suicideFinal,mapping=aes(x=population,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and population with regards to region", 
+x="population", 
+y="suicides",
+color="region")
+
+ggplot(data=suicideFinal,mapping=aes(x=HDI,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and HDI with regards to region", 
+x="HDI", 
+y="suicides",
+color="region")
+
+ggplot(data=suicideFinal,mapping=aes(x=`gdp_per_capita ($)`,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and GDP / capita with regards to region view", 
+x="GDP / capita", 
+y="suicides",
+color="region")
+
+ggplot(data=suicideFinal,mapping=aes(x=`gdp_for_year ($)`,y=`suicides/100k pop`,color=as.factor(region))) +
+geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and GDP / year with regards to region view", 
+x="GDP / year", 
+y="suicides",
+color="region")
+```
+
+There seems to be a significant interaction effect between all of the quantitative variables that were selected in backwards selection (population, GDP per capita, GDP for year, and HDI) and region because the lines are not relatively parallel, as the slopes of the all of the lines in each graph look to be quite different. Thus, we will use Nested F Tests to formally test if any of these interactions are significant.
 
 ```{r}
 model2 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + region*HDI, data = suicideFinal)
 anova(model1,model2)
 ```
-The F statistic is 2.4591 and the p-value is 0.003639, which is  small. We can can conclude that the interaction effect of HDI and region is a significant predictor.
+The F statistic is 2.4591 and the p-value is 0.003639, which is  small. We can conclude that the interaction effect of HDI and region is a significant predictor.
 
 ```{r}
 model3 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + region*population, data = suicideFinal)
 anova(model1,model3)
 ```
-The F statistic is 4.3923  and the p-value is 4.641e-08, which is very low We can can conclude that the interaction effect of region and population is  a significant predictor.
-
+The F statistic is 4.3923 and the p-value is 4.641e-08, which is very low. We can conclude that the interaction effect of region and population is  a significant predictor.
 
 ```{r}
 model4 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + region*`gdp_for_year ($)`, data = suicideFinal)
 anova(model1,model4)
 ```
-The F statistic is 2.216  and the p-value is 0.007552 , which is below .05. We can can conclude that the interaction effect of region and GDP for year is  a significant predictor.
+The F statistic is 2.216 and the p-value is 0.007552 , which is below .05. We can conclude that the interaction effect of region and GDP for year is  a significant predictor.
 
 ```{r}
 model5 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + region*`gdp_per_capita ($)`, data = suicideFinal)
 anova(model1,model5)
 ```
-The F statistic is 1.2491   and the p-value is 0.2387, which is above .05 We can can conclude that the interaction effect of region and gdp per capita is not a significant predictor.
+The F statistic is 1.2491 and the p-value is 0.2387, which is above .05. Contrary to what we first thought, we can conclude that the interaction effect of region and gdp per capita is not a significant predictor.
 
 ```{r}
 model6 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + sex*HDI, data = suicideFinal)
@@ -335,30 +364,27 @@ We see that sex will not have a significant effect on any interactions. We will 
 model10 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + age*HDI, data = suicideFinal)
 anova(model1,model10)
 ```
-The F statistic is 13.857   and the p-value is 4.027e-13, which is smaller than 0.05. We can can conclude that the interaction effect of age and HDI is significant predictor.
+The F statistic is 13.857 and the p-value is 4.027e-13, which is smaller than 0.05. We can conclude that the interaction effect of age and HDI is significant predictor.
 
 ```{r}
 model11 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + age*`gdp_per_capita ($)`, data = suicideFinal)
 anova(model1,model11)
 ```
-The F statistic is 3.0279 and the p-value is 0.01015, which is smaller than 0.05. We can can conclude that the interaction effect of age and gdp per capita is a significant predictor.
+The F statistic is 3.0279 and the p-value is 0.01015, which is smaller than 0.05. We can conclude that the interaction effect of age and gdp per capita is a significant predictor.
 
 ```{r}
 model12 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + age*`gdp_for_year ($)`, data = suicideFinal)
 anova(model1,model12)
 ```
-The F statistic is 27.466   and the p-value is 2.2e-16, which is smaller than 0.05. We can can conclude that the interaction effect of age and gdp for year is significant predictor.
+The F statistic is 27.466 and the p-value is 2.2e-16, which is smaller than 0.05. We can conclude that the interaction effect of age and gdp for year is significant predictor.
 
 ```{r}
 model13 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + age*population, data = suicideFinal)
 anova(model1,model13)
 ```
-The F statistic is 23.793  and the p-value is 2.2e-16, which is smaller than 0.05. We can can conclude that the interaction effect of age and gdp per capita is a significant predictor.
+The F statistic is 23.793 and the p-value is 2.2e-16, which is smaller than 0.05. We can conclude that the interaction effect of age and gdp per capita is a significant predictor.
 
-```{r}
-```
-
-From this, analysis, we will include 7 interactoin effects in our new model
+From this, analysis, we will include 7 interaction effects in our new model
 ```{r}
 finalmodel <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + region*HDI + region*`gdp_for_year ($)` + region*`gdp_per_capita ($)` + age*HDI + age*population + age*`gdp_per_capita ($)` + age*`gdp_for_year ($)`, data = suicideFinal)
 kable(tidy(finalmodel))
@@ -368,45 +394,6 @@ kable(tidy(finalmodel))
 finalmodel <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + region*HDI + region*`gdp_for_year ($)` + region*`gdp_per_capita ($)` + age*HDI + age*population + age*`gdp_per_capita ($)` + age*`gdp_for_year ($)`, data = suicideFinal)
 kable(tidy(finalmodel))
 ```
-
-```{r}
-ggplot(data=suicideFinal,mapping=aes(x=year,y=`suicides/100k pop`,color=as.factor(region))) +
-geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and year with regards to region view", 
-x="year", 
-y="year",
-color="region")
-
-ggplot(data=suicideFinal,mapping=aes(x=suicides_no,y=`suicides/100k pop`,color=as.factor(region))) +
-geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and suicides_no with regards to region view", 
-x="suicides_no", 
-y="suicides",
-color="region")
-
-ggplot(data=suicideFinal,mapping=aes(x=population,y=`suicides/100k pop`,color=as.factor(region))) +
-geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and population with regards to region view", 
-x="population", 
-y="suicides",
-color="region")
-
-ggplot(data=suicideFinal,mapping=aes(x=HDI,y=`suicides/100k pop`,color=as.factor(region))) +
-geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and hdi with regards to region view", 
-x="hdi", 
-y="suicides",
-color="region")
-
-ggplot(data=suicideFinal,mapping=aes(x=`gdp_per_capita ($)`,y=`suicides/100k pop`,color=as.factor(region))) +
-geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and gdp / capita with regards to region view", 
-x="gdp / capita", 
-y="suicides",
-color="region")
-
-ggplot(data=suicideFinal,mapping=aes(x=`gdp_for_year ($)`,y=`suicides/100k pop`,color=as.factor(region))) +
-geom_smooth(method="lm", se=FALSE) + labs(title="Relationship between suicides/100k pop and gdp / year with regards to region view", 
-x="gdp / year", 
-y="suicides",
-color="region")
-```
-There is a significant interaction effect between bedrooms and waterfront because the lines are not relatively parallel, as the slopes of the two lines look to be quite different. The rate of increase of the log price of houses on the waterfront is greater than the rate of increase of the log price of houses not on the waterfront. This means that as the number of bedrooms of houses on the waterfront increases by one, the log price increases as well and increases more than the log price for houses not on the waterfront as the number of bedrooms increases by one.
 
 ### Model Assumptions
 
@@ -518,13 +505,13 @@ According to the QQ-plot, the normality assumption seems to be satisfied because
 
 Finally, based on the description of the data, the independence assumption seems to be met because this data was not collected over time, since we only took the year 2010, and there does not appear to be a cluster effect.
 
-# Leverage
+### Leverage
+
 ```{r}
-
 suicidesoutput <- augment(finalmodel) %>%
-  mutate(obs_num = row_number())
+  dplyr::mutate(obs_num = row_number())
 
-leverage_threshold <- 2*(14+1)/nrow(suicidesoutput)
+leverage_threshold <- 2*(25+1)/nrow(suicidesoutput)
 
 ggplot(data = suicidesoutput, aes(x = obs_num,y = .hat)) + 
 geom_point(alpha = 0.7) + 
@@ -536,8 +523,10 @@ geom_text(aes(label=ifelse(.hat > leverage_threshold, as.character(obs_num), "")
 
 ```{r}
 suicidesoutput %>% filter(.hat > leverage_threshold) %>% 
-  select(region, population - mean(population), HDI - mean(HDI), GDP - mean(GDP), `gdp_for_year ($)` - mean(`gdp_for_year ($)`), `gdp_per_capita ($)` - mean(`gdp_per_capita ($)`))
+  select(region, population, age, sex, HDI, gdp_for_year...., gdp_per_capita....)
 ```
+
+There are 762 points with high leverage.
 
 ```{r}
 ggplot(data = suicidesoutput, aes(x = obs_num, y = .cooksd)) + 
@@ -547,6 +536,7 @@ labs(x= "Observation Number",y = "Cook's Distance",title = "Cook's Distance") +
 geom_text(aes(label = ifelse(.hat>1,as.character(obs_num),"")))
 
 ```
+
 Based on cook’s distance, these points do not have a significant influence on the model coefficients. None of these points have a cook’s distance that is greater than the threshold of 1.
 
 ```{r}
@@ -559,19 +549,68 @@ ggplot(data = suicidesoutput, aes(x = .fitted,y = .std.resid)) +
 
 ```{r}
 suicidesoutput %>% filter(abs(.std.resid) > 2) %>% 
-  select(region, population - mean(population), HDI - mean(HDI), GDP - mean(GDP), `gdp_for_year ($)` - mean(`gdp_for_year ($)`), `gdp_per_capita ($)` - mean(`gdp_per_capita ($)`))
+  select(region, population, age, sex, HDI, gdp_for_year...., gdp_per_capita....)
 ```
-There are 7 observations that are considered to have standarized residuals with large magnitude.
+
+There are 66 observations that are considered to have standarized residuals with large magnitude.
 
 Based on a N(0,1) distribution, we expect 5% of observations to have standardized residuals with magnitude greater than 2 because of the 68-95-99.7 rule.
 
-There are 7 observations flagged as having standardized residuals with large magnitude and 185 observations in total, so approximately 3.78% of observations have standardized residuals with magnitude greater than 2. This is not a concern because this is less than 5%.
-
+There are 66 observations flagged as having standardized residuals with large magnitude and 1056 observations in total, so approximately 6.25% of observations have standardized residuals with magnitude greater than 2. This is not a concern because this is only a small percentage greater than 5%.
 
 ```{r}
 tidy(vif(finalmodel))
 ```
 
+Because all of the values are NA, this means these variables are perfectly or almost perfectly correlated. This is most likely to our inclusion of interaction terms in our model. Thus, we will remove these terms and run VIF again. 
+
+```{r}
+finalmodel1 <-lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region , data = suicideFinal)
+tidy(vif(finalmodel1))
+```
+
+There are some obvious concerns with multicollinearity in this model because the threshold for the variance inflation factor is 10, and some of the variance inflation factors are higher than 10. Population, HDI, `gdp_for_year ($)`, and `gdp_for_year ($)` all have variance inflation factors greater than 10.
+
+```{r}
+pairs(`suicides/100k pop` ~ `HDI` + `gdp_for_year ($)` + `gdp_per_capita ($)` + population, data = suicideFinal)
+```
+
+Based on this pairs plot from EDA, we can see that HDI, gdp_for_year, gdp_per_capita, and population are all very correlated. Thus, we will remove gdp_for_year from the model, since it seems to have the strongest correlation with all three of the other variables, and run VIF again. 
+
+```{r}
+finalmodel2 <-lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_per_capita ($)` + region , data = suicideFinal)
+tidy(vif(finalmodel2))
+```
+
+All predictors now have variance inflation factors less than 10 except for HDI. Thus, we can remove HDI as well from the model.
+
+```{r}
+finalmodel3 <-lm(formula = `suicides/100k pop` ~ sex + age + population + `gdp_per_capita ($)` + region , data = suicideFinal)
+tidy(vif(finalmodel3))
+```
+
+Now we see that all VIF values are below 10, meaning that we do not have any multicollinearity. Adding back the interaction terms that still have both main effects in the model, our final model is: 
+
+```{r}
+finalmodel <- lm(formula = `suicides/100k pop` ~ sex + age + population + `gdp_per_capita ($)` + region + region*`gdp_per_capita ($)` + age*population + age*`gdp_per_capita ($)`, data = suicideFinal)
+kable(tidy(finalmodel))
+```
+
+### Model Validation 
+
+We are again removing our interaction terms in this part because the map() function cannot calculate 'models' with the interaction terms in the model.
+
+```{r}
+set.seed(04012019)
+mydata_cv <- crossv_kfold(suicideFinal, 5)
+models <- map(mydata_cv$train, ~ lm(`suicides/100k pop` ~ sex + age + population + `gdp_per_capita ($)` + region, data = .))
+test_mse <- map2_dbl(models, mydata_cv$test, mse)
+test_mse
+```
+
+All of these values are relatively small, so we can conclude that our model predicts well.
+
+### Section 3: Discussion and Limitations
 
 ### Section 4 - References
 - [1] https://www.cdc.gov/nchs/fastats/adolescent-health.htm
