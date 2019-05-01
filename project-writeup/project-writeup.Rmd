@@ -31,7 +31,6 @@ suicide <- read_csv("/cloud/project/data/master.csv")
 
 With suicide being one of the leading causes of death for teens in America, we thought it would be interesting to see how the U.S. stacks up against other countries all over the world in terms of the number of suicides that occur, as well as what factors may contribute to the significant number of suicides in the U.S. and other countries.[1] We want to explore how economic status, along with variables such as age, sex, and human development index, affects suicide rates all across the world. Our hypothesis is that generally, in poorer countries we predict that suicide rates will lower. 
 
-
 Our response variable will be suicides/100k pop, which is the number of suicides per 100,000 people in a certain country and year, which is stored as a numeric in our dataset. Our predictors variables will be age, sex, country, year, HDI, gdp_for_year, gdp_per_capita, generation, region and continent. Age is the age an individual was when they passed, sex is the gender of that individual, country is the country they are from, year is the year they passed, HDI for year is the human development index for a given country and year, gdp_for_year is the GDP for a given country and year, gdp_per_capita is the GDP per capita for a given country and year, and generation is the generation that an individual belongs to. We wish to understand how the number of suicides per 100,000 people in a certain country and year changes as year, GDP, GDP per capita, and HDI increase or decreases, meaning we want to understand the population coefficients for year, gdp_for_year, gdp_per_capita, and HDI for year. Additionally, we want to understand whether age, sex, generation, and country have an effect on the number of suicides per 100,000 people, meaning we also want to understand the population coefficients for these variables.
 
 The variables relevant to the analysis of our research question are stated above: suicides/100k pop, age, sex, country, year, HDI for year, gdp_for_year, gdp_per_capita, and generation. Additionally, suicides_no (which is the number of suicides for individuals who are of a certain age group and sex and who passed in a certain country and year) and population, (which is the total number of individuals who are of a certain age group and sex and who live in a certain country in a certain year), since these are used to calculate suicides/100k pop.
@@ -40,11 +39,11 @@ We will now perform exploratory data analysis on the variables that we plan to u
 
 Given the longitudinal structure of our data and the need for making a multilevel model, we are going to use the data collected in 2010 as that year has a majority of the countries in the origianl data set and also is the year HDI values were collected.
 
-
 ```{r}
 suicideNew <- suicide%>% filter(year == 2010)
 skim(suicideNew)
 ```
+
 We first need to turn our character variables into factors.
 ```{r}
 suicideNew <- suicideNew %>% mutate(age = as.factor(age))
@@ -56,11 +55,13 @@ suicideNew <- suicideNew %>% mutate(sex = as.factor(sex))
 ```{r}
 HDINA <- suicideNew %>% filter(is.na(`HDI for year`))
 ```
+
 The countries that do not have HDI calculated for them are Aruba, Puerto Rico, Korea, and Russia. Online, we can find the HDI from 2010 of South Korea and Russia, which are .884 and .780 respectively. We will do these after we add regions to our data set. 
 
 Later on in this EDA, we will want to do a boxplot of the countries; however, that will be indiscernable based on the number of countries. Instead, we should group countries into regions and their continents. 
 
 We will use the gapminder dataset for countries and regions. We will extract the country, continent, and region from gapMinder, change the names of differing countries, and then merge.
+
 ```{r}
 gapminder2010 <- gapminder %>% filter(year == 2010)
 gapminder2010 <- gapminder2010 %>% select(country, continent, region)
@@ -79,7 +80,6 @@ names(suicideFinal)[names(suicideFinal) == 'HDI for year'] <- 'HDI'
 Online, we can find the HDI from 2010 of South Korea and Russia, which are .884 and .780 respectively. 
 Since the HDI's of Puerto Rico and Aruba are not publicly available, those we will find use the average HDI from the Caribbean to impute. 
 
-
 ```{r}
 group.means<-ddply(suicideFinal,c("region"),summarise,mean=mean(HDI, na.rm = TRUE))
 group.means
@@ -95,7 +95,6 @@ for(i in 1:nrow(suicideFinal)){
   }
 }
 ```
-
 
 To see the shape of the distribution of the number of suicides per 100,000 people, we can plot a histogram of the suicides/100k pop variable.
 
@@ -134,7 +133,7 @@ ggplot(data=suicideFinal, mapping=aes(x=`suicides/100k pop`)) +
 
 From log transforming suicides/100k pop, we can already see that the extreme outliers have disappeared, and the histogram seems to be approximately normally distributed. 
 
-Note: suicides/100k pop is now log transformed for all plots below. 
+Note: suicides/100k pop is now log transformed for all plots below.
 
 We will now look at an overview of the relationships that suicides/100k pop has with each of the quantitative predictor variables (age, sex, country, year, HDI, gdp_for_year, gdp_per_capita, and generation), as well as the relationships these variables have with each other.
 
@@ -143,12 +142,14 @@ ggplot(data=suicideFinal, mapping=aes(x=`age`)) +
   geom_bar() +
   labs(title="Bar Plot of Ages", x="Age")
 ```
+
 In our data set, all ages have the same number of counts. 
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`sex`)) + 
   geom_bar() +
   labs(title="Bar Plot of gender", x="Sex")
 ```
+
 In our data set, male and female have the same count
 
 ```{r}
@@ -156,6 +157,7 @@ ggplot(data=suicideFinal, mapping=aes(x=`continent`)) +
   geom_bar() +
   labs(title="Bar Plot of Continents", x="Continent")
 ```
+
 In our data set, we see that most of the countries are from the Americas and Europe. 
 
 ```{r}
@@ -163,6 +165,7 @@ ggplot(data=suicideFinal, mapping=aes(x=`region`)) +
   geom_bar() +
   labs(title="Bar Plot of Regions", x="Region") + coord_flip()
 ```
+
 From this bar graph, we notice that most of our data set seems high in regions from Western Asia, Southern Europe, South America, Northern Europe, and the Caribbean. 
 
 ```{r}
@@ -178,6 +181,7 @@ ggplot(data=suicideFinal, mapping=aes(x=`continent`, y= `suicides/100k pop`)) +
   geom_boxplot() +
   labs(title="Continent vs. Suicides", x="Continent", y="Suicides")
 ```
+
 In general, each continent has a similar average number of suicides, with Europe having much more outliers with fewer suicides than the others. 
 
 ```{r}
@@ -185,6 +189,7 @@ ggplot(data=suicideFinal, mapping=aes(x=`region`, y= `suicides/100k pop`)) +
   geom_boxplot() +
   labs(title="Region vs. Suicides", x="Region", y="Suicides") + coord_flip()
 ```
+
 The average number of suicides/100k for each region is around 2. We see Souther Africa as a key outlier with far less suicides and Eastern Africa with far more suicides than the average. 
 
 ```{r}
@@ -208,6 +213,7 @@ ggplot(data=suicideFinal, mapping=aes(x=`population`)) +
   geom_histogram() +
   labs(title="Distribution of Population", x="Population")
 ```
+
 We will have to log transform population. In addition, we will mean center it so it is easier to interpret.
 
 ```{r message = FALSE, warning = FALSE}
@@ -216,6 +222,7 @@ ggplot(data=suicideFinal, mapping=aes(x=`population`)) +
   geom_histogram() +
   labs(title="Distribution of Population", x="Population")
 ```
+
 We see that this plot has is skewed left and has a unimodal distribution. 
 
 We will mean center HDI so it makes it easier to interpret. 
@@ -226,12 +233,16 @@ ggplot(data=suicideFinal, mapping=aes(x=`HDI`)) +
   geom_histogram() +
   labs(title="Distribution of HDI", x="HDI")
 ```
-The HDI does not have a set distribution. Rather, it is quite parse. 
+
+The HDI does not have a set distribution. Rather, it is quite sparse. 
+
 ```{r message = FALSE, warning = FALSE}
 ggplot(data=suicideFinal, mapping=aes(x=(`gdp_for_year ($)`))) + geom_histogram() +
   labs(title="Distribution of GDPs of Countries", x="Value")
 ```
+
 Because this is skewed greatly, a log transformation of gdp is needed. We will also mean center this variable. 
+
 ```{r message = FALSE, warning = FALSE}
 suicideFinal<- suicideFinal %>% mutate (`gdp_for_year ($)` = log(`gdp_for_year ($)`))
 suicideFinal <- suicideFinal %>% mutate(`gdp_for_year ($)` = `gdp_for_year ($)` - mean(`gdp_for_year ($)`))
@@ -246,6 +257,7 @@ ggplot(data=suicide, mapping=aes(x=(`gdp_per_capita ($)`))) +
   geom_histogram() +
   labs(title="Distribution of GDP Per Capita of Countries", x="Value")
 ```
+
 Like GDP, we will need to log transform this data set. We will also mean center this. 
 
 ```{r message = FALSE, warning = FALSE}
@@ -263,12 +275,15 @@ ggplot(data=suicideFinal, mapping=aes(x=`HDI`, y=`suicides/100k pop`))+
   geom_point()+
   labs(title = "Plot of Suicides/100k vs HDI", x = "HDI", y = "Suicides/100k")
 ```
+
 We do not see a correlation between HDI and Suicides/100k.
+
 ```{r}
 ggplot(data=suicideFinal, mapping=aes(x=`gdp_per_capita ($)`, y=`suicides/100k pop`))+
   geom_point()+
   labs(title = "Plot of Suicides/100k vs GDP", x = "GDP", y = "Suicides/100k")
 ```
+
 We do not see a correlation between GDP and Suicides/100k.
 
 ```{r}
@@ -276,6 +291,7 @@ ggplot(data=suicideFinal, mapping=aes(x=`HDI`, y=`suicides/100k pop`))+
   geom_point()+
   labs(title = "Plot of Suicides/100k vs GDP Per Capita", x = "GDP Per Capita", y = "Suicides/100k")
 ```
+
 We do not see a correlation between GDP per capita and Suicides/100k.
 
 ```{r}

@@ -299,16 +299,20 @@ pop has with each of the quantitative predictor variables (age, sex,
 country, year, HDI, gdp\_for\_year, gdp\_per\_capita, and generation),
 as well as the relationships these variables have with each other.
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-12-1.png)<!-- --> In
-our data set, all ages have the same number of counts.
-![](project-writeup_files/figure-gfm/unnamed-chunk-13-1.png)<!-- --> In
-our data set, male and female have the same count
+![](project-writeup_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-14-1.png)<!-- --> In
-our data set, we see that most of the countries are from the Americas
+In our data set, all ages have the same number of counts.
+![](project-writeup_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+In our data set, male and female have the same count
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+In our data set, we see that most of the countries are from the Americas
 and Europe.
 
 ![](project-writeup_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
 From this bar graph, we notice that most of our data set seems high in
 regions from Western Asia, Southern Europe, South America, Northern
 Europe, and the Caribbean.
@@ -318,12 +322,15 @@ Europe, and the Caribbean.
 By examining these boxplots, we can tell that as age increases, suicide
 rate tends to increase in general.
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-17-1.png)<!-- --> In
-general, each continent has a similar average number of suicides, with
-Europe having much more outliers with fewer suicides than the others.
+![](project-writeup_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-18-1.png)<!-- --> The
-average number of suicides/100k for each region is around 2. We see
+In general, each continent has a similar average number of suicides,
+with Europe having much more outliers with fewer suicides than the
+others.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+The average number of suicides/100k for each region is around 2. We see
 Souther Africa as a key outlier with far less suicides and Eastern
 Africa with far more suicides than the average.
 
@@ -339,26 +346,34 @@ From this boxplot, we see that the average suicide rate/100k people is
 varied among generation. More specifically, we notice that Generation Z
 and Millienials have lower rates than the average value of around 2.
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-21-1.png)<!-- --> We
-will have to log transform population. In addition, we will mean center
-it so it is easier to interpret.
+![](project-writeup_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-22-1.png)<!-- --> We
-see that this plot has is skewed left and has a unimodal distribution.
+We will have to log transform population. In addition, we will mean
+center it so it is easier to interpret.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+
+We see that this plot has is skewed left and has a unimodal
+distribution.
 
 We will mean center HDI so it makes it easier to interpret.
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-23-1.png)<!-- --> The
-HDI does not have a set distribution. Rather, it is quite parse.
+![](project-writeup_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+The HDI does not have a set distribution. Rather, it is quite sparse.
+
 ![](project-writeup_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+
 Because this is skewed greatly, a log transformation of gdp is needed.
 We will also mean center this variable.
+
 ![](project-writeup_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 Log transforming the data set, we notice that the distribution of GDPs
 of countries has a near-bimodal distribution.
 
 ![](project-writeup_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+
 Like GDP, we will need to log transform this data set. We will also mean
 center this.
 
@@ -369,13 +384,17 @@ distribution. Rather, it is skewed to the left and is bimodal. Since
 these variables are so similar, there could be mulitcollinearity between
 the two.
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-28-1.png)<!-- --> We
-do not see a correlation between HDI and Suicides/100k.
-![](project-writeup_files/figure-gfm/unnamed-chunk-29-1.png)<!-- --> We
-do not see a correlation between GDP and Suicides/100k.
+![](project-writeup_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
-![](project-writeup_files/figure-gfm/unnamed-chunk-30-1.png)<!-- --> We
-do not see a correlation between GDP per capita and Suicides/100k.
+We do not see a correlation between HDI and Suicides/100k.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
+
+We do not see a correlation between GDP and Suicides/100k.
+
+![](project-writeup_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+
+We do not see a correlation between GDP per capita and Suicides/100k.
 
 ![](project-writeup_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
 
