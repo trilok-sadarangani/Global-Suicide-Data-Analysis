@@ -722,10 +722,10 @@ exp(6.114297)
 For males in a Northern American country with a population at the log of the mean and GDP per capita 1.2 above the log of the mean, who are 15-24 years of age, we expect the median suicides per 100k to be approximately 452.3. The vast difference between suicide rates in the highly-populated subset versus the lower-populated subset shows that suicide rates differ by population.
 
 # Limitations
-Suicide rate in general can vary a lot depending on the year. Just looking at it by year, we noticed that some countries tend to have their average values change over time. As such, our model might not be the most accurate; however, we can predict certain things to a reasonable degree of accuracy. (predict and compare it to 2011) HDI is a limitation because you can only calculate that every 5 years. For predicting, we have to plug in numbers that make sense for a region, or else it gives us a negative grade.
-
+Suicide rate in general can vary a lot depending on the year. Just looking at it by year, we noticed that some countries' average values tend to change over time. As such, our model might not be the most accurate; however, we can predict certain things to a reasonable degree of accuracy. HDI is a limitation because you can only calculate that every 5 years. For predicting, we have to plug in numbers that make sense for a region, or else it gives us a negative grade. In terms of what we could have done better, we could have assessed multicollinearity before selecting the model, which may have changed the variables in the final model. We also could have renamed our mean-centered variables so that we wouldn't get confused later on when trying to differentiate. If we were to conduct this project again, we would utilize a time series model, as suicide rates vary across time.
 
 ### Section 4: Conclusions
+
 
 ### Section 5: Additional Work 
 
