@@ -376,6 +376,7 @@ The F statistic is 1.2491 and the p-value is 0.2387, which is above .05. Contrar
 model6 <- lm(formula = `suicides/100k pop` ~ sex + age + population + HDI + `gdp_for_year ($)` + `gdp_per_capita ($)` + region + sex*HDI, data = suicideFinal)
 anova(model1,model6)
 ```
+
 We see that sex will not have a significant effect on any interactions. We will not be looking at the interaction effects between sex and other variables.
 
 ```{r}
